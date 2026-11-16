@@ -39,6 +39,9 @@ struct mad_synth {
   unsigned int phase;			/* current processing phase */
 
   struct mad_pcm pcm;			/* PCM output */
+
+  int mpga_window16;			/* amcempega.library: the 16-bit
+					   window (CHANGES.mpga) */
 };
 
 /* single channel PCM selector */

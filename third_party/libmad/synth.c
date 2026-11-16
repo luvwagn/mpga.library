@@ -42,6 +42,8 @@ void mad_synth_init(struct mad_synth *synth)
   synth->pcm.samplerate = 0;
   synth->pcm.channels   = 0;
   synth->pcm.length     = 0;
+
+  synth->mpga_window16 = 0;
 }
 
 /*
@@ -549,40 +551,6 @@ mad_fixed_t const D[17][32] = {
 # if defined(ASO_SYNTH)
 void synth_full(struct mad_synth *, struct mad_frame const *,
 		unsigned int, unsigned int);
-# elif defined(MPGA_WINDOW_ASM)
-/*
- * amcempega.library (CHANGES.mpga): synth_full with its window in 68k
- * assembler (src/synth_68k.s), the same sums of the same products
- */
-void mpga_window_full(mad_fixed_t const (*)[8], mad_fixed_t const (*)[8],
-		      mad_fixed_t const (*)[8], mad_fixed_t const (*)[32],
-		      unsigned int, unsigned int, mad_fixed_t *);
-
-static
-void synth_full(struct mad_synth *synth, struct mad_frame const *frame,
-		unsigned int nch, unsigned int ns)
-{
-  unsigned int phase, ch, s;
-  mad_fixed_t *pcm1, (*filter)[2][2][16][8];
-  mad_fixed_t const (*sbsample)[36][32];
-
-  for (ch = 0; ch < nch; ++ch) {
-    sbsample = &frame->sbsample[ch];
-    filter   = &synth->filter[ch];
-    phase    = synth->phase;
-    pcm1     = synth->pcm.samples[ch];
-
-    for (s = 0; s < ns; ++s) {
-      dct32((*sbsample)[s], phase >> 1,
-	    (*filter)[0][phase & 1], (*filter)[1][phase & 1]);
-      mpga_window_full((*filter)[0][phase & 1], (*filter)[0][~phase & 1],
-		       (*filter)[1][~phase & 1], D,
-		       phase & ~1, ((phase - 1) & 0xf) | 1, pcm1);
-      pcm1 += 32;
-      phase = (phase + 1) % 16;
-    }
-  }
-}
 # else
 /*
  * NAME:	synth->full()
@@ -860,6 +828,104 @@ void synth_half(struct mad_synth *synth, struct mad_frame const *frame,
 }
 
 /*
+ * amcempega.library (CHANGES.mpga): the window after the DCT, 32 samples
+ * a slot (or the even subbands' 16, at half the rate), in 68k assembler
+ * (src/synth_68k.s; MPGA_WINDOW_ASM) or here in C: the 32-bit window the
+ * same sums as synth_full's and synth_half's, the 16-bit one (medium and
+ * low quality: one MULS.W a product) the same in C as in assembler.
+ */
+typedef void mpga_window_t(mad_fixed_t const (*)[8], mad_fixed_t const (*)[8],
+			   mad_fixed_t const (*)[8], mad_fixed_t const (*)[32],
+			   unsigned int, unsigned int, mad_fixed_t *);
+# if defined(MPGA_WINDOW_ASM)
+mpga_window_t mpga_window_full, mpga_window_half, mpga_window_full16, mpga_window_half16;
+# else
+/* the 16-bit window: each filter value's 16 fractional bits to 13 (>> 3),
+ * a word; each window value's low word; the 16 x 16 products summed in 32
+ * bits; the sum's 27 fractional bits to 28 */
+#  define F16(x)	((mad_fixed_t) (signed short) ((x) >> 3))
+#  define D16(x)	((mad_fixed_t) (signed short) (x))
+
+static
+void mpga_window16(mad_fixed_t const (*fe)[8], mad_fixed_t const (*fx)[8],
+		   mad_fixed_t const (*fo)[8], mad_fixed_t const (*Dp)[32],
+		   unsigned int pe, unsigned int po, mad_fixed_t *pcm,
+		   unsigned int step)
+{
+  static unsigned char const o[8] = { 0, 14, 12, 10, 8, 6, 4, 2 };
+  unsigned int k, sb;
+  mad_fixed_t a, b, *pcm1 = pcm;
+  int gap = (32 / step - 2);
+
+  a = 0;
+  for (k = 0; k < 8; ++k)
+    a += F16(fe[0][k]) * D16(Dp[0][pe + o[k]]) - F16(fx[0][k]) * D16(Dp[0][po + o[k]]);
+  *pcm1++ = (mad_fixed_t) ((unsigned long) a << 1);
+
+  for (sb = step; sb < 16; sb += step) {
+    mad_fixed_t const *f1 = fe[sb], *f2 = fo[sb - 1], *d = Dp[sb];
+    a = b = 0;
+    for (k = 0; k < 8; ++k) {
+      a += F16(f1[k]) * D16(d[pe + o[k]]) - F16(f2[k]) * D16(d[po + o[k]]);
+      b += F16(f1[k]) * D16(d[15 - pe + 2 * k]) + F16(f2[k]) * D16(d[15 - po + 2 * k]);
+    }
+    pcm1[gap] = (mad_fixed_t) ((unsigned long) b << 1);
+    *pcm1++ = (mad_fixed_t) ((unsigned long) a << 1);
+    gap -= 2;
+  }
+
+  a = 0;
+  for (k = 0; k < 8; ++k)
+    a -= F16(fo[15][k]) * D16(Dp[16][po + o[k]]);
+  *pcm1 = (mad_fixed_t) ((unsigned long) a << 1);
+}
+
+static
+void mpga_window_full16(mad_fixed_t const (*fe)[8], mad_fixed_t const (*fx)[8],
+			mad_fixed_t const (*fo)[8], mad_fixed_t const (*Dp)[32],
+			unsigned int pe, unsigned int po, mad_fixed_t *pcm)
+{
+  mpga_window16(fe, fx, fo, Dp, pe, po, pcm, 1);
+}
+
+static
+void mpga_window_half16(mad_fixed_t const (*fe)[8], mad_fixed_t const (*fx)[8],
+			mad_fixed_t const (*fo)[8], mad_fixed_t const (*Dp)[32],
+			unsigned int pe, unsigned int po, mad_fixed_t *pcm)
+{
+  mpga_window16(fe, fx, fo, Dp, pe, po, pcm, 2);
+}
+# endif
+
+static
+void mpga_synth(struct mad_synth *synth, struct mad_frame const *frame,
+		unsigned int nch, unsigned int ns, mpga_window_t *window,
+		unsigned int per_slot)
+{
+  unsigned int phase, ch, s;
+  mad_fixed_t *pcm1, (*filter)[2][2][16][8];
+  mad_fixed_t const (*sbsample)[36][32];
+
+  for (ch = 0; ch < nch; ++ch) {
+    sbsample = &frame->sbsample[ch];
+    filter   = &synth->filter[ch];
+    phase    = synth->phase;
+    pcm1     = synth->pcm.samples[ch];
+
+    for (s = 0; s < ns; ++s) {
+      dct32((*sbsample)[s], phase >> 1,
+	    (*filter)[0][phase & 1], (*filter)[1][phase & 1]);
+      window((mad_fixed_t const (*)[8]) (*filter)[0][phase & 1],
+	     (mad_fixed_t const (*)[8]) (*filter)[0][~phase & 1],
+	     (mad_fixed_t const (*)[8]) (*filter)[1][~phase & 1], D,
+	     phase & ~1, ((phase - 1) & 0xf) | 1, pcm1);
+      pcm1 += per_slot;
+      phase = (phase + 1) % 16;
+    }
+  }
+}
+
+/*
  * NAME:	synth->frame()
  * DESCRIPTION:	perform PCM synthesis of frame subband samples
  */
@@ -885,7 +951,21 @@ void mad_synth_frame(struct mad_synth *synth, struct mad_frame const *frame)
     synth_frame = synth_half;
   }
 
-  synth_frame(synth, frame, nch, ns);
+  /* amcempega.library: its windows (the 16-bit one at medium and low
+   * quality; the 68k's in assembler) */
+  if (synth->mpga_window16)
+    mpga_synth(synth, frame, nch, ns,
+	       (frame->options & MAD_OPTION_HALFSAMPLERATE) ? mpga_window_half16 : mpga_window_full16,
+	       (frame->options & MAD_OPTION_HALFSAMPLERATE) ? 16 : 32);
+# if defined(MPGA_WINDOW_ASM)
+  else
+    mpga_synth(synth, frame, nch, ns,
+	       (frame->options & MAD_OPTION_HALFSAMPLERATE) ? mpga_window_half : mpga_window_full,
+	       (frame->options & MAD_OPTION_HALFSAMPLERATE) ? 16 : 32);
+# else
+  else
+    synth_frame(synth, frame, nch, ns);
+# endif
 
   synth->phase = (synth->phase + ns) % 16;
 }

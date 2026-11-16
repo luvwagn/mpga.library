@@ -113,11 +113,11 @@ static const char *base(const char *p)
 }
 
 enum { AS_IS, HALF, QUARTER, MONO, MONO_HALF, LOUD50, BYNAME, SEEK,
-       TO_S16, TO_S16I, TO_S8, TO_S8D, TO_S14, TO_S14_MONO, WAYS };
+       TO_S16, TO_S16I, TO_S8, TO_S8D, TO_S14, TO_S14_MONO, MEDIUM, MEDIUM_HALF, WAYS };
 static const char *const way_name[WAYS] = {
     "as it is", "22 kHz", "11 kHz", "mono", "mono 22 kHz", "half loudness", "by name", "from 1 s",
     "to 16-bit rings", "to AHI's 16-bit stereo", "to Paula's 8 bits", "to 8 bits dithered, 3 times as loud",
-    "to Paula's 14 bits", "to 14 bits, mono"
+    "to Paula's 14 bits", "to 14 bits, mono", "medium quality", "medium quality, 22 kHz"
 };
 
 #define RING 4096                   /* (MPGA_decode_to's rings: small, so they wrap) */
@@ -186,7 +186,8 @@ static int one(const char *file, int way, LONG frames, FILE *w)
     MPEGA_STREAM *s;
     LONG n, i, nf = 0, err = 0;
     ULONG samples = 0, crc = 0, t = 0;
-    WORD div = way == HALF || way == MONO_HALF ? 2 : way == QUARTER ? 4 : 1;
+    WORD div = way == HALF || way == MONO_HALF || way == MEDIUM_HALF ? 2 : way == QUARTER ? 4 : 1;
+    WORD q = way == MEDIUM || way == MEDIUM_HALF ? MPEGA_QUALITY_MEDIUM : MPEGA_QUALITY_HIGH;
     WORD mono = way == MONO || way == MONO_HALF || way == TO_S14_MONO;
     static WORD r16[2][RING], ri[2 * RING];
     static UBYTE r8[4][RING];
@@ -201,8 +202,8 @@ static int one(const char *file, int way, LONG frames, FILE *w)
     c.bs_access = way == BYNAME ? NULL : &hook;
     c.layer_1_2.mono.freq_div = c.layer_1_2.stereo.freq_div = div;
     c.layer_3.mono.freq_div = c.layer_3.stereo.freq_div = div;
-    c.layer_1_2.mono.quality = c.layer_1_2.stereo.quality = MPEGA_QUALITY_HIGH;
-    c.layer_3.mono.quality = c.layer_3.stereo.quality = MPEGA_QUALITY_HIGH;
+    c.layer_1_2.mono.quality = c.layer_1_2.stereo.quality = q;
+    c.layer_3.mono.quality = c.layer_3.stereo.quality = q;
     c.layer_1_2.force_mono = c.layer_3.force_mono = mono;
     c.check_mpeg = 1;
     if (!(s = MPEGA_open((char *)file, &c))) {
@@ -243,7 +244,7 @@ static int one(const char *file, int way, LONG frames, FILE *w)
         break;
     }
     while (!err && nf < frames) {
-        if (way >= TO_S16) {
+        if (way >= TO_S16 && way <= TO_S14_MONO) {
             ULONG at = o.mo_Index;
             n = MPGA_decode_to(s, &o);
             if (n > 0) {
@@ -284,7 +285,7 @@ static int one(const char *file, int way, LONG frames, FILE *w)
     printf("%s, %s: %ld Hz, %d channels: %ld frames, %lu samples, %lu ms, crc %08lx%s", base(file),
            way_name[way], (long)s->dec_frequency, s->dec_channels, (long)nf, (unsigned long)samples,
            (unsigned long)t, (unsigned long)crc, err ? " (error)" : "");
-    if (way >= TO_S16)
+    if (way >= TO_S16 && way <= TO_S14_MONO)
         printf(", peak %u, %lu clipped", (unsigned)peak, (unsigned long)o.mo_Clipped);
     printf("\n");
     MPEGA_close(s);
@@ -341,8 +342,9 @@ int main(int argc, char **argv)
         for (way = 0; way < WAYS; way++) {
             if (only >= 0 && way != only)
                 continue;
-            one(argv[i], way, frames, way == AS_IS ? w : NULL);
-            if (w && way == AS_IS) {
+            BOOL wr = only >= 0 ? way == only : way == AS_IS;      /* (-w: that way's samples) */
+            one(argv[i], way, frames, wr ? w : NULL);
+            if (w && wr) {
                 fclose(w);
                 w = NULL;
             }

@@ -32,6 +32,12 @@ Changes:
    either option the file decodes as before.
 
 3. (15 November 2026) synth.c: with MPGA_WINDOW_ASM (the 68k's build),
-   synth_full's window is amcempega.library's src/synth_68k.s: the same
-   sums of the same 32-bit products (OPT_SSO), so the same samples; the
-   host builds the C as it was.
+   synth_full's and synth_half's window after the DCT is amcempega.library's
+   src/synth_68k.s (mpga_synth calls it a slot at a time): the same sums of
+   the same 32-bit products (OPT_SSO), so the same samples; the host builds
+   the C as it was.
+4. (15 November 2026) synth.h, synth.c: struct mad_synth's mpga_window16
+   (0 from mad_synth_init): the window's products 16-bit instead, each
+   filter value's 16 fractional bits shifted to 13, each window value's
+   low word, one MULS.W each (amcempega.library's medium and low quality);
+   in C on the host (mpga_window16), in assembler on the 68k, the same.

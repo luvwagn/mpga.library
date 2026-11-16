@@ -4,6 +4,12 @@ amcempega.library: changes
 1.0 (15 November 2026)
 ----------------------
 
+- Medium and low quality (MPEGA_QUALITY_MEDIUM, LOW): the synthesis
+  window's products 16-bit, one MULS.W each: 9% fewer 68020 cycles for
+  MP3 (4.46 M a frame of 128 kbit/s stereo), 11% for Layer II (3.90 M),
+  at 70 dB from a float decoder (high: 83 dB; mpega 2.4's best: 34 dB for
+  MP3, 56 dB for Layer II).
+- 22 and 11 kHz: the half-rate synthesis window in assembler too.
 - MPGA_decode_to, the library's own: each frame straight into the
   program's ring buffers as 16-bit (two buffers, or interleaved for
   AHI), 8-bit for Paula (dithered or not) or Paula's 14 bits (a high

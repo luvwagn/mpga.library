@@ -345,6 +345,8 @@ static void settings(struct Mpga *m, const MPEGA_CTRL *c)
     m->div = (UBYTE)div;
     m->pub.dec_channels = m->out_ch;
     m->pub.dec_quality = o->quality < 0 ? 0 : o->quality > 2 ? 2 : o->quality;
+    /* below the highest: the synthesis window's products 16-bit (MULS.W) */
+    m->sy.mpga_window16 = m->pub.dec_quality < MPEGA_QUALITY_HIGH;
     m->pub.dec_frequency = m->pub.frequency / div;
     m->ms.options = mad_options(m);
 }

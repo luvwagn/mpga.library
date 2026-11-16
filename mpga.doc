@@ -158,7 +158,10 @@ amcempega.library/MPEGA_open                     amcempega.library/MPEGA_open
         The stream; or NULL (not MPEG audio, no memory, no such file).
 
     NOTES
-        Every quality decodes at the highest so far.
+        MPEGA_QUALITY_HIGH: the synthesis in 32-bit products (about 83 dB
+        from a floating-point decoder). MEDIUM and LOW: its window in
+        16-bit products, about a tenth faster on a 68020 or 68030 (about
+        70 dB).
 
 amcempega.library/MPEGA_scale                   amcempega.library/MPEGA_scale
 
