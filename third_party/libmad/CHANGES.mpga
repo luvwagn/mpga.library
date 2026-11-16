@@ -22,3 +22,11 @@ Changes:
      against the end of the buffer first (length-check: CVE-2017-8374).
    Damaged or hostile files can no longer make the decoder read or write
    past its buffers.
+
+2. (15 November 2026) At half the sample rate (MAD_OPTION_HALFSAMPLERATE)
+   and at a quarter (MPGA_OPTION_QUARTER, new in stream.h), layer3.c
+   leaves out the subbands above what is heard: 16 of the 32 (8 at a
+   quarter) get the IMDCT, the rest are zero (III_overlap_z), and the
+   alias reduction stops one subband above them. Less work, and nothing
+   above the halved rate for the half-rate synthesis to alias. Without
+   either option the file decodes as before.

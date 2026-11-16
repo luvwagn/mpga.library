@@ -314,6 +314,15 @@ static ULONG frame_samples(const struct mad_header *h)
     return 32 * MAD_NSBSAMPLES(h);
 }
 
+/* libmad's options for the rate asked for: at a half or a quarter of it,
+ * the half-rate synthesis, and Layer III's subbands above what is heard
+ * left out (MPGA_OPTION_QUARTER: third_party/libmad/CHANGES.mpga) */
+static int mad_options(const struct Mpga *m)
+{
+    return m->div == 4 ? MAD_OPTION_HALFSAMPLERATE | MPGA_OPTION_QUARTER :
+           m->div == 2 ? MAD_OPTION_HALFSAMPLERATE : 0;
+}
+
 /* the decoding's settings for this stream, as the program asked */
 static void settings(struct Mpga *m, const MPEGA_CTRL *c)
 {
@@ -333,7 +342,7 @@ static void settings(struct Mpga *m, const MPEGA_CTRL *c)
     m->pub.dec_channels = m->out_ch;
     m->pub.dec_quality = o->quality < 0 ? 0 : o->quality > 2 ? 2 : o->quality;
     m->pub.dec_frequency = m->pub.frequency / div;
-    m->ms.options = div > 1 ? MAD_OPTION_HALFSAMPLERATE : 0;
+    m->ms.options = mad_options(m);
 }
 
 /* MPEGA_open's work, on the stream's stack: TRUE if it is MPEG audio */
@@ -476,8 +485,6 @@ static LONG output(struct Mpga *m, WORD **pcm)
             a = l[i];
             b = r[i];
         }
-        if (m->out_ch == 1 && p->channels > 1)
-            a = (a >> 1) + (b >> 1);
         if (g != MAD_F_ONE) {
             a = mad_f_mul(a, g);
             b = mad_f_mul(b, g);
@@ -488,6 +495,34 @@ static LONG output(struct Mpga *m, WORD **pcm)
     }
     m->out_samples += n;
     return (LONG)n;
+}
+
+/* Before the synthesis, what the output does not need left out of it.
+ * Mono from stereo: the two channels' subband samples averaged into one
+ * (the synthesis is linear), so that only one channel is synthesised.
+ * At a half or a quarter of the rate: the subbands above it zero (Layer
+ * III's are already: libmad left them out), so that the half-rate
+ * synthesis has nothing above it to alias. */
+static void reduce(struct Mpga *m)
+{
+    struct mad_frame *f = &m->mf;
+    unsigned int ns = MAD_NSBSAMPLES(&f->header), s, sb, top;
+    if (m->out_ch == 1 && f->header.mode != MAD_MODE_SINGLE_CHANNEL) {
+        for (s = 0; s < ns; s++) {
+            mad_fixed_t *l = f->sbsample[0][s];
+            const mad_fixed_t *r = f->sbsample[1][s];
+            for (sb = 0; sb < 32; sb++)
+                l[sb] = (l[sb] >> 1) + (r[sb] >> 1);
+        }
+        f->header.mode = MAD_MODE_SINGLE_CHANNEL;   /* (one channel synthesised) */
+    }
+    top = m->div == 4 ? 8 : m->div == 2 ? 16 : 32;
+    if (top < 32 && f->header.layer != MAD_LAYER_III) {
+        unsigned int ch, nch = MAD_NCHANNELS(&f->header);
+        for (ch = 0; ch < nch; ch++)
+            for (s = 0; s < ns; s++)
+                memset(&f->sbsample[ch][s][top], 0, (32 - top) * sizeof(mad_fixed_t));
+    }
 }
 
 /* MPEGA_decode_frame's work, on the stream's stack */
@@ -519,6 +554,7 @@ static LONG decode_work(APTR arg)
         }
         break;
     }
+    reduce(m);
     mad_synth_frame(&m->sy, &m->mf);
     return output(m, m->pcm);
 }
@@ -553,7 +589,7 @@ static LONG seek_work(APTR arg)
     m->eof = FALSE;
     mad_stream_finish(&m->ms);
     mad_stream_init(&m->ms);
-    m->ms.options = m->div > 1 ? MAD_OPTION_HALFSAMPLERATE : 0;
+    m->ms.options = mad_options(m);
     mad_frame_mute(&m->mf);
     mad_synth_mute(&m->sy);
     m->skip_info = FALSE;

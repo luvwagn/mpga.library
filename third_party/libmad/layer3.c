@@ -2514,7 +2514,8 @@ enum mad_error III_decode(struct mad_bitptr *ptr, struct mad_frame *frame,
 # endif
       }
       else
-	III_aliasreduce(xr[ch], 576);
+	III_aliasreduce(xr[ch], (frame->options & MPGA_OPTION_QUARTER) ? 9 * 18 :
+			(frame->options & MAD_OPTION_HALFSAMPLERATE) ? 17 * 18 : 576);
 
       l = 0;
 
@@ -2550,6 +2551,15 @@ enum mad_error III_decode(struct mad_bitptr *ptr, struct mad_frame *frame,
 	--i;
 
       sblimit = 32 - (576 - i) / 18;
+
+      /* amcempega.library (CHANGES.mpga): at half the sample rate only the
+       * lower 16 subbands are heard (at a quarter, 8), so the upper ones
+       * are left out here (and are zero, so the half-rate synthesis has
+       * nothing to alias) */
+      if ((frame->options & MPGA_OPTION_QUARTER) && sblimit > 8)
+	sblimit = 8;
+      else if ((frame->options & MAD_OPTION_HALFSAMPLERATE) && sblimit > 16)
+	sblimit = 16;
 
       if (channel->block_type != 2) {
 	/* long blocks */
