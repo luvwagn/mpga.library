@@ -1,0 +1,24 @@
+libmad for amcempega.library: where it came from, and what was changed
+=======================================================================
+
+Source: libmad 0.15.1b (Underbit Technologies, Robert Leslie, February
+2004), from github.com/markjeee/libmad's import of libmad-0.15.1b.tar.gz.
+Its COPYING has the SHA-256 that buildroot records for the release
+tarball's (32b1062f7da8...). The decoder's sources, its tables and its
+documentation are kept; the build system, minimad, the high-level decoder
+API (decoder.c), the generated mad.h and the ARM assembler are left out.
+
+Licence: GPL-2.0-or-later (COPYING, COPYRIGHT), as all of libmad.
+amcempega.library, built from it, is GPL-3.0-or-later.
+
+Changes:
+
+1. (15 November 2026) Debian's security fixes, by Kurt Roeckx (libmad
+   0.15.1b-10, as buildroot carries them: package/libmad/0004-md_size.patch
+   and 0005-length-check.patch):
+   - layer3.c: the size of a Layer III frame's main data checked, and the
+     bit reservoir's (md_size: CVE-2017-8372, CVE-2017-8373);
+   - bit.c, frame.c, layer12.c, layer3.c: every mad_bit_read checked
+     against the end of the buffer first (length-check: CVE-2017-8374).
+   Damaged or hostile files can no longer make the decoder read or write
+   past its buffers.
