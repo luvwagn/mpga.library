@@ -1,0 +1,12 @@
+amcempega.library: changes
+==========================
+
+1.0 (15 November 2026)
+----------------------
+
+- First version: libmad 0.15.1b (with Debian's security fixes) behind
+  mpega.library's seven functions, a 68020 build with each fixed-point
+  multiply one MULS.L 32 x 32 -> 64. MPEG-1, 2 and 2.5, Layers I-III; Xing
+  and Info headers (the length, the seeking table; the Info frame not
+  played); ID3v2 tags passed over; 22 and 11 kHz output, stereo as mono,
+  the loudness; the bitstream hook or a file; a stack of its own.

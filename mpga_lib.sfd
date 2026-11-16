@@ -1,0 +1,19 @@
+==id $Id: mpga_lib.sfd,v 1.0 2026/11/15 $
+* mpega.library's functions (its .fd: bias 30), as amcempega.library offers
+* them: MPEG audio decoded to 16-bit PCM. The structures and constants are
+* in <libraries/mpega.h>. This file and the headers made from it: (c) 2026
+* Brian King, MIT. The library itself is GPL-3.0-or-later (libmad inside).
+==base _MPEGABase
+==basetype struct Library *
+==libname mpega.library
+==bias 30
+==public
+==include <libraries/mpega.h>
+MPEGA_STREAM * MPEGA_open(char * stream_name, MPEGA_CTRL * ctrl) (a0,a1)
+VOID MPEGA_close(MPEGA_STREAM * mpega_stream) (a0)
+LONG MPEGA_decode_frame(MPEGA_STREAM * mpega_stream, WORD ** pcm) (a0,a1)
+LONG MPEGA_seek(MPEGA_STREAM * mpega_stream, ULONG ms_time_position) (a0,d0)
+LONG MPEGA_time(MPEGA_STREAM * mpega_stream, ULONG * ms_time_position) (a0,a1)
+LONG MPEGA_find_sync(BYTE * buffer, LONG buffer_size) (a0,d0)
+LONG MPEGA_scale(MPEGA_STREAM * mpega_stream, LONG scale_percent) (a0,d0)
+==end

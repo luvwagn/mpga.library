@@ -1,0 +1,175 @@
+TABLE OF CONTENTS
+
+amcempega.library/--background--
+amcempega.library/MPEGA_close
+amcempega.library/MPEGA_decode_frame
+amcempega.library/MPEGA_find_sync
+amcempega.library/MPEGA_open
+amcempega.library/MPEGA_scale
+amcempega.library/MPEGA_seek
+amcempega.library/MPEGA_time
+
+amcempega.library/--background--             amcempega.library/--background--
+
+    PURPOSE
+        Decodes MPEG audio (MPEG-1, MPEG-2 and MPEG-2.5; Layers I, II and
+        III) to 16-bit signed PCM, one buffer for each channel. Its
+        functions, structures and constants are mpega.library's (version
+        2), so a program written for mpega.library works with it: open
+        AMCEMPEGANAME instead of "mpega.library".
+
+    USE
+        MPEGA_open a stream (a file by name, or through your bitstream
+        hook), call MPEGA_decode_frame for each frame's samples until it
+        returns MPEGA_ERR_EOF, MPEGA_close it. Only the task that opened a
+        stream may use it; different tasks may each have their own.
+
+    MEMORY AND STACK
+        About 60 KB a stream (with its default 16 KB buffer and its 16 KB
+        stack), from exec.
+        The decoding runs on the stream's own 16 KB stack (exec's
+        StackSwap), so the caller needs little of its own.
+
+    LICENCE
+        The library: GPL-3.0-or-later (libmad inside, GPL-2.0-or-later);
+        its source: https://github.com/luvwagn/mpga.library. This
+        interface (the headers, the .sfd, this document): MIT.
+
+amcempega.library/MPEGA_close                   amcempega.library/MPEGA_close
+
+    NAME
+        MPEGA_close -- a stream closed (V1)
+
+    SYNOPSIS
+        MPEGA_close(mpega_stream)
+                    A0
+        VOID MPEGA_close(MPEGA_STREAM *);
+
+    FUNCTION
+        Closes the stream (its hook's MPEGA_BSFUNC_CLOSE, or the file) and
+        frees it. NULL is ignored.
+
+amcempega.library/MPEGA_decode_frame     amcempega.library/MPEGA_decode_frame
+
+    NAME
+        MPEGA_decode_frame -- the next frame decoded (V1)
+
+    SYNOPSIS
+        samples = MPEGA_decode_frame(mpega_stream, pcm)
+        D0                           A0            A1
+        LONG MPEGA_decode_frame(MPEGA_STREAM *, WORD *[MPEGA_MAX_CHANNELS]);
+
+    FUNCTION
+        Decodes the stream's next frame into pcm[0] (left, or mono) and
+        pcm[1] (right, when dec_channels is 2), each MPEGA_PCM_SIZE WORDs:
+        at dec_frequency, the stream's rate divided as MPEGA_open chose.
+        Damaged frames are passed over. A Xing or Info frame is not sound
+        and gives nothing.
+
+    RESULT
+        The samples a channel (up to MPEGA_PCM_SIZE); or MPEGA_ERR_EOF at
+        the stream's end, MPEGA_ERR_BADFRAME if too many frames in a row
+        would not decode, MPEGA_ERR_BADVALUE.
+
+amcempega.library/MPEGA_find_sync           amcempega.library/MPEGA_find_sync
+
+    NAME
+        MPEGA_find_sync -- an MPEG audio frame header found (V1)
+
+    SYNOPSIS
+        offset = MPEGA_find_sync(buffer, buffer_size)
+        D0                       A0      D0
+        LONG MPEGA_find_sync(BYTE *, LONG);
+
+    FUNCTION
+        Looks for a valid MPEG audio frame header in the buffer.
+
+    RESULT
+        Its offset; or MPEGA_ERR_NO_SYNC.
+
+amcempega.library/MPEGA_open                     amcempega.library/MPEGA_open
+
+    NAME
+        MPEGA_open -- a stream opened (V1)
+
+    SYNOPSIS
+        mpega_stream = MPEGA_open(stream_name, ctrl)
+        D0                        A0           A1
+        MPEGA_STREAM *MPEGA_open(char *, MPEGA_CTRL *);
+
+    FUNCTION
+        Opens the stream: through ctrl->bs_access, your hook (called with
+        the hook in a0, the handle its MPEGA_BSFUNC_OPEN returned in a2,
+        an MPEGA_ACCESS in a1: <libraries/mpega.h>), or, if that is NULL,
+        the file stream_name. Passes over an ID3v2 tag, finds the first
+        frame (with check_mpeg, a second of the same kind after it), reads
+        a Xing or Info header, and fills in the MPEGA_STREAM: the stream's
+        norm (MPEG-2.5's is 2), layer, mode, bitrate, frequency, channels,
+        length (ms_duration: from the Xing header, else from the stream's
+        size and bitrate), and what it decodes to (dec_channels,
+        dec_frequency, dec_quality) from ctrl's settings for its layer:
+        force_mono, then the mono or stereo MPEGA_OUTPUT's freq_div (1, 2
+        or 4; any other: the least that keeps the rate at most freq_max)
+        and quality. stream_buffer_size is the bytes read at a time (4096
+        or more, else 16384).
+
+    RESULT
+        The stream; or NULL (not MPEG audio, no memory, no such file).
+
+    NOTES
+        Every quality decodes at the highest so far.
+
+amcempega.library/MPEGA_scale                   amcempega.library/MPEGA_scale
+
+    NAME
+        MPEGA_scale -- the loudness set (V1)
+
+    SYNOPSIS
+        error = MPEGA_scale(mpega_stream, scale_percent)
+        D0                  A0            D0
+        LONG MPEGA_scale(MPEGA_STREAM *, LONG);
+
+    FUNCTION
+        The samples scaled: 100 as decoded, 50 half, 200 twice (clipped).
+        0 to 799.
+
+    RESULT
+        0; or MPEGA_ERR_BADVALUE.
+
+amcempega.library/MPEGA_seek                     amcempega.library/MPEGA_seek
+
+    NAME
+        MPEGA_seek -- to a time in the stream (V1)
+
+    SYNOPSIS
+        error = MPEGA_seek(mpega_stream, ms_time_position)
+        D0                 A0            D0
+        LONG MPEGA_seek(MPEGA_STREAM *, ULONG);
+
+    FUNCTION
+        The next MPEGA_decode_frame decodes from that time on: the place
+        found from a Xing header's table, else from the bitrate, then the
+        stream read from there (the hook's MPEGA_BSFUNC_SEEK, or the
+        file's). The first frame or two after it may be passed over (the
+        bit reservoir is not there yet).
+
+    RESULT
+        0; or MPEGA_ERR_EOF (past the end), MPEGA_ERR_BADVALUE (the stream
+        cannot seek).
+
+amcempega.library/MPEGA_time                     amcempega.library/MPEGA_time
+
+    NAME
+        MPEGA_time -- where the decoding is (V1)
+
+    SYNOPSIS
+        error = MPEGA_time(mpega_stream, ms_time_position)
+        D0                 A0            A1
+        LONG MPEGA_time(MPEGA_STREAM *, ULONG *);
+
+    FUNCTION
+        The time of the samples given so far, in milliseconds (from the
+        stream's start, or from where MPEGA_seek went).
+
+    RESULT
+        0; or MPEGA_ERR_BADVALUE.

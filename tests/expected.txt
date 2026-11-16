@@ -1,0 +1,60 @@
+l2_44_192.mp2: find_sync 0
+l2_44_192.mp2: MPEG-1 layer 2, mode 0, 44100 Hz, 192 kbit/s, 2 channels, 3004 ms
+l2_44_192.mp2, as it is: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 23ceb042
+l2_44_192.mp2, 22 kHz: 22050 Hz, 2 channels: 115 frames, 66240 samples, 3004 ms, crc ee2a5301
+l2_44_192.mp2, 11 kHz: 11025 Hz, 2 channels: 115 frames, 33120 samples, 3004 ms, crc 3f4006aa
+l2_44_192.mp2, mono: 44100 Hz, 1 channels: 115 frames, 132480 samples, 3004 ms, crc 83d7d388
+l2_44_192.mp2, mono 22 kHz: 22050 Hz, 1 channels: 115 frames, 66240 samples, 3004 ms, crc cc25b34d
+l2_44_192.mp2, half loudness: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 3ad2228a
+l2_44_192.mp2, by name: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 23ceb042
+l2_44_192.mp2, from 1 s: 44100 Hz, 2 channels: 76 frames, 87552 samples, 2985 ms, crc 349cf4ff
+l2_48_mono.mp2: find_sync 0
+l2_48_mono.mp2: MPEG-1 layer 2, mode 3, 48000 Hz, 96 kbit/s, 1 channels, 3000 ms
+l2_48_mono.mp2, as it is: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 54181f2d
+l2_48_mono.mp2, 22 kHz: 24000 Hz, 1 channels: 125 frames, 72000 samples, 3000 ms, crc dd5dbe13
+l2_48_mono.mp2, 11 kHz: 12000 Hz, 1 channels: 125 frames, 36000 samples, 3000 ms, crc 0e3f4d98
+l2_48_mono.mp2, mono: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 54181f2d
+l2_48_mono.mp2, mono 22 kHz: 24000 Hz, 1 channels: 125 frames, 72000 samples, 3000 ms, crc dd5dbe13
+l2_48_mono.mp2, half loudness: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc b5ad7f75
+l2_48_mono.mp2, by name: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 54181f2d
+l2_48_mono.mp2, from 1 s: 48000 Hz, 1 channels: 83 frames, 95616 samples, 2992 ms, crc 86f45fe2
+l3_11_mpeg25.mp3: find_sync 45
+l3_11_mpeg25.mp3: MPEG-2 layer 3, mode 1, 11025 Hz, 24 kbit/s, 2 channels, 3134 ms
+l3_11_mpeg25.mp3, as it is: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 5f4fa170
+l3_11_mpeg25.mp3, 22 kHz: 5512 Hz, 2 channels: 60 frames, 17280 samples, 3134 ms, crc c1e573e7
+l3_11_mpeg25.mp3, 11 kHz: 2756 Hz, 2 channels: 60 frames, 8640 samples, 3134 ms, crc 1f4de89a
+l3_11_mpeg25.mp3, mono: 11025 Hz, 1 channels: 60 frames, 34560 samples, 3134 ms, crc 68233d79
+l3_11_mpeg25.mp3, mono 22 kHz: 5512 Hz, 1 channels: 60 frames, 17280 samples, 3134 ms, crc 98c2917c
+l3_11_mpeg25.mp3, half loudness: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 54dd9ce9
+l3_11_mpeg25.mp3, by name: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 5f4fa170
+l3_11_mpeg25.mp3, from 1 s: 11025 Hz, 2 channels: 38 frames, 21888 samples, 2985 ms, crc 7984e58e
+l3_22_mono.mp3: find_sync 45
+l3_22_mono.mp3: MPEG-2 layer 3, mode 3, 22050 Hz, 40 kbit/s, 1 channels, 3056 ms
+l3_22_mono.mp3, as it is: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 21b99c02
+l3_22_mono.mp3, 22 kHz: 11025 Hz, 1 channels: 117 frames, 33696 samples, 3056 ms, crc 6cd1e9d1
+l3_22_mono.mp3, 11 kHz: 5512 Hz, 1 channels: 117 frames, 16848 samples, 3056 ms, crc ebcf067a
+l3_22_mono.mp3, mono: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 21b99c02
+l3_22_mono.mp3, mono 22 kHz: 11025 Hz, 1 channels: 117 frames, 33696 samples, 3056 ms, crc 6cd1e9d1
+l3_22_mono.mp3, half loudness: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 5d20591d
+l3_22_mono.mp3, by name: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 21b99c02
+l3_22_mono.mp3, from 1 s: 22050 Hz, 1 channels: 76 frames, 43776 samples, 2985 ms, crc 784d98c4
+l3_44_js128.mp3: find_sync 71
+l3_44_js128.mp3: MPEG-1 layer 3, mode 1, 44100 Hz, 128 kbit/s, 2 channels, 3030 ms
+l3_44_js128.mp3, as it is: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a3439886
+l3_44_js128.mp3, 22 kHz: 22050 Hz, 2 channels: 116 frames, 66816 samples, 3030 ms, crc 3d7f9179
+l3_44_js128.mp3, 11 kHz: 11025 Hz, 2 channels: 116 frames, 33408 samples, 3030 ms, crc a84e4a54
+l3_44_js128.mp3, mono: 44100 Hz, 1 channels: 116 frames, 133632 samples, 3030 ms, crc 5b782b76
+l3_44_js128.mp3, mono 22 kHz: 22050 Hz, 1 channels: 116 frames, 66816 samples, 3030 ms, crc e23b9dce
+l3_44_js128.mp3, half loudness: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc 1565c2dc
+l3_44_js128.mp3, by name: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a3439886
+l3_44_js128.mp3, from 1 s: 44100 Hz, 2 channels: 75 frames, 86400 samples, 2959 ms, crc 3b03032f
+l3_48_vbr.mp3: find_sync 45
+l3_48_vbr.mp3: MPEG-1 layer 3, mode 1, 48000 Hz, 320 kbit/s, 2 channels, 3024 ms
+l3_48_vbr.mp3, as it is: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc f5256d2a
+l3_48_vbr.mp3, 22 kHz: 24000 Hz, 2 channels: 126 frames, 72576 samples, 3024 ms, crc c940ba9d
+l3_48_vbr.mp3, 11 kHz: 12000 Hz, 2 channels: 126 frames, 36288 samples, 3024 ms, crc 37844bf6
+l3_48_vbr.mp3, mono: 48000 Hz, 1 channels: 126 frames, 145152 samples, 3024 ms, crc 276d3c8f
+l3_48_vbr.mp3, mono 22 kHz: 24000 Hz, 1 channels: 126 frames, 72576 samples, 3024 ms, crc 95cc154e
+l3_48_vbr.mp3, half loudness: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c7a22021
+l3_48_vbr.mp3, by name: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc f5256d2a
+l3_48_vbr.mp3, from 1 s: 48000 Hz, 2 channels: 82 frames, 94464 samples, 2968 ms, crc e530b9cf
