@@ -6,13 +6,13 @@
  * stream's details. The host's lines and the 68k's must match each other
  * and tests/expected.txt.
  *
- *   mpga_test [-w out.raw] [-n frames] file...
+ *   mpga_test [-w out.raw] [-n frames] [-way n] file...
  *
  * Each file: as it is (the bitstream hook, from memory), 22 kHz, 11 kHz,
  * mono, mono at 22 kHz, at half loudness, through dos.library (the file's
  * name), and from a second in (MPEGA_seek, MPEGA_time). -w writes the
  * first way's samples (for tools/snr.py); -n decodes only that many
- * frames each way.
+ * frames each way; -way only the nth way (0 to 7: make prof).
  *
  * (c) 2026 Brian King, MIT.
  */
@@ -21,7 +21,7 @@
 #include <string.h>
 #include <exec/types.h>
 #include <libraries/mpega.h>
-#ifdef __amigaos__
+#if defined(__amigaos__) && !defined(MPGA_STATIC)
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include <proto/mpega.h>
@@ -187,10 +187,19 @@ int main(int argc, char **argv)
 {
     FILE *w = NULL;
     LONG frames = 0x7fffffff;
-    int i, way;
+    int i, way, only = -1;
 
     crc_init();
-#ifdef __amigaos__
+#ifdef MPGA_STATIC
+    {   /* (make prof: where the program's code is, for tools/prof.py) */
+        FILE *b = fopen("prof.base", "w");
+        if (b) {
+            fprintf(b, "code at %08lx\n", (unsigned long)main);
+            fclose(b);
+        }
+    }
+#endif
+#if defined(__amigaos__) && !defined(MPGA_STATIC)
     if (!(MPEGABase = OpenLibrary((CONST_STRPTR)"PROGDIR:Libs/" MPGA_TEST_LIB, AMCEMPEGAVERSION))) {
         printf("no %s\n", MPGA_TEST_LIB);
         return 20;
@@ -200,6 +209,10 @@ int main(int argc, char **argv)
         FILE *f;
         if (!strcmp(argv[i], "-w") && i + 1 < argc) {
             w = fopen(argv[++i], "wb");
+            continue;
+        }
+        if (!strcmp(argv[i], "-way") && i + 1 < argc) {
+            only = atol(argv[++i]);
             continue;
         }
         if (!strcmp(argv[i], "-n") && i + 1 < argc) {
@@ -218,6 +231,8 @@ int main(int argc, char **argv)
         fclose(f);
         printf("%s: find_sync %ld\n", base(argv[i]), (long)MPEGA_find_sync((BYTE *)data, data_len));
         for (way = 0; way < WAYS; way++) {
+            if (only >= 0 && way != only)
+                continue;
             one(argv[i], way, frames, way == AS_IS ? w : NULL);
             if (w && way == AS_IS) {
                 fclose(w);
@@ -226,7 +241,7 @@ int main(int argc, char **argv)
         }
         free(data);
     }
-#ifdef __amigaos__
+#if defined(__amigaos__) && !defined(MPGA_STATIC)
     CloseLibrary(MPEGABase);
 #endif
     return 0;

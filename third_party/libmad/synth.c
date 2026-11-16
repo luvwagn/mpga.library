@@ -549,6 +549,40 @@ mad_fixed_t const D[17][32] = {
 # if defined(ASO_SYNTH)
 void synth_full(struct mad_synth *, struct mad_frame const *,
 		unsigned int, unsigned int);
+# elif defined(MPGA_WINDOW_ASM)
+/*
+ * amcempega.library (CHANGES.mpga): synth_full with its window in 68k
+ * assembler (src/synth_68k.s), the same sums of the same products
+ */
+void mpga_window_full(mad_fixed_t const (*)[8], mad_fixed_t const (*)[8],
+		      mad_fixed_t const (*)[8], mad_fixed_t const (*)[32],
+		      unsigned int, unsigned int, mad_fixed_t *);
+
+static
+void synth_full(struct mad_synth *synth, struct mad_frame const *frame,
+		unsigned int nch, unsigned int ns)
+{
+  unsigned int phase, ch, s;
+  mad_fixed_t *pcm1, (*filter)[2][2][16][8];
+  mad_fixed_t const (*sbsample)[36][32];
+
+  for (ch = 0; ch < nch; ++ch) {
+    sbsample = &frame->sbsample[ch];
+    filter   = &synth->filter[ch];
+    phase    = synth->phase;
+    pcm1     = synth->pcm.samples[ch];
+
+    for (s = 0; s < ns; ++s) {
+      dct32((*sbsample)[s], phase >> 1,
+	    (*filter)[0][phase & 1], (*filter)[1][phase & 1]);
+      mpga_window_full((*filter)[0][phase & 1], (*filter)[0][~phase & 1],
+		       (*filter)[1][~phase & 1], D,
+		       phase & ~1, ((phase - 1) & 0xf) | 1, pcm1);
+      pcm1 += 32;
+      phase = (phase + 1) % 16;
+    }
+  }
+}
 # else
 /*
  * NAME:	synth->full()

@@ -30,3 +30,8 @@ Changes:
    alias reduction stops one subband above them. Less work, and nothing
    above the halved rate for the half-rate synthesis to alias. Without
    either option the file decodes as before.
+
+3. (15 November 2026) synth.c: with MPGA_WINDOW_ASM (the 68k's build),
+   synth_full's window is amcempega.library's src/synth_68k.s: the same
+   sums of the same 32-bit products (OPT_SSO), so the same samples; the
+   host builds the C as it was.

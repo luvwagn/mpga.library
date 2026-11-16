@@ -38,7 +38,7 @@ CPU     = -m68020
 LIBCC   = $(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -fno-strict-aliasing
 FIX     = $(sort $(wildcard tests/fixtures/*.mp3 tests/fixtures/*.mp2))
 
-.PHONY: all test snr clean
+.PHONY: all test snr prof clean
 
 all: $(LIB)
 
@@ -65,7 +65,14 @@ build/68k/libinit.o: src/libinit.c src/libinit.h src/mpga.c Makefile
 	@$(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -Wall -Wno-array-bounds \
 		-Isrc -DLIB_RT_VERSION=$(LIBVER) -c -o $@ $<
 
-$(LIB): build/68k/libinit.o $(patsubst %.c,build/68k/%.o,$(SRC)) build/68k/stack.o
+build/68k/synth_68k.o: src/synth_68k.s
+	@mkdir -p build/68k
+	@echo "  AS    $<"
+	@$(AS) -o $@ $<
+# the 68k's synthesis window in assembler (the host builds libmad's C)
+build/68k/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM
+
+$(LIB): build/68k/libinit.o $(patsubst %.c,build/68k/%.o,$(SRC)) build/68k/stack.o build/68k/synth_68k.o
 	@echo "  LD    $@"
 	@$(LIBCC) -o $@.dbg $^ -lamiga
 	@$(STRIP) -o $@ $@.dbg
@@ -114,6 +121,38 @@ snr: build/host/mpga_test $(FIX)
 		if [ "$$ch" = 1 ]; then p='pan=stereo|c0=c0|c1=c0'; else p='pan=stereo|c0=c0|c1=c1'; fi; \
 		ffmpeg -v error -y -c:a $$d -i $$f -af "$$p" -f s16le build/snr/$$b.ref; \
 		printf "  %-20s " $$b; $(PYTHON) tools/snr.py build/snr/$$b.raw build/snr/$$b.ref; done
+
+# ---- where a 68020's cycles go (vamos counts them), by function: the
+# decoder built into the test program, each source its own object, so that
+# their static functions can be placed (tools/syms.py)
+#   make prof MP3=file [N=300] [WAY=0]
+N   ?= 300
+PROFOBJ = build/prof/mpga_test.o $(patsubst %.c,build/prof/%.o,$(notdir $(SRC))) build/68k/stack.o \
+          build/68k/synth_68k.o
+build/prof/mpga_test.o: tests/mpga_test.c $(HDR)
+	@mkdir -p build/prof
+	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<
+build/prof/mpga.o: src/mpga.c $(HDR)
+	@mkdir -p build/prof
+	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<
+build/prof/synth.o: $(MAD)/synth.c $(HDR)
+	@mkdir -p build/prof
+	@$(LIBCC) -w -DMPGA_WINDOW_ASM $(FLAGS) -c -o $@ $<
+build/prof/timer.o: $(MAD)/timer.c $(HDR)
+	@mkdir -p build/prof
+	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
+build/prof/%.o: $(MAD)/%.c $(HDR)
+	@mkdir -p build/prof
+	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
+build/prof/mpga_prof: $(PROFOBJ)
+	@echo "  LD    $@"
+	@$(CC) $(CPU) -noixemul -Wl,-Map=$@.map -o $@ $^
+	@$(PYTHON) tools/syms.py $@.map $^ > $@.syms
+prof: build/prof/mpga_prof
+	@rm -rf build/prof/run && mkdir -p build/prof/run && cp build/prof/mpga_prof $(MP3) build/prof/run/
+	@cd build/prof/run && $$(dirname $$(command -v vamos))/python ../../../tools/prof.py ../mpga_prof.syms -- \
+		-C 68020 -m 8192 -s 64 --vols-base-dir vols -V prog:. -- prog:mpga_prof -n $(N) -way $(or $(WAY),0) \
+		prog:$(notdir $(MP3)) 2>&1 | grep -v "WARN\|INFO\|orphan" | head -30
 
 clean:
 	rm -rf build

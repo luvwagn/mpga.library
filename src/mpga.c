@@ -32,6 +32,7 @@
 #include <proto/dos.h>
 #include "stabs.h"
 
+#ifndef MPGA_STATIC                 /* (MPGA_STATIC: built into a program, make prof) */
 const char LibName[] = MPGA_LIBNAME;
 const char LibIdString[] = MPGA_LIBID;
 static const char __attribute__((used)) LibVerTag[] = "$VER: " MPGA_LIBID;
@@ -40,6 +41,7 @@ const UWORD LibRevision = 0;
 
 struct ExecBase *SysBase;
 struct DosLibrary *DOSBase;
+#endif
 
 void *mpga_malloc(size_t n)
 {
@@ -735,7 +737,7 @@ LONG MPEGA_scale(MPEGA_STREAM *s, LONG percent)
     return 0;
 }
 
-#ifdef __amigaos__
+#if defined(__amigaos__) && !defined(MPGA_STATIC)
 /* ---- the library */
 int __UserLibInit(struct Library *lib)
 {
