@@ -20,7 +20,9 @@ ZZ9000's, which decodes on the card).
 - The decoder is [libmad](https://www.underbit.com/products/mad/) 0.15.1b
   (`third_party/libmad`), with Debian's security fixes, each multiply one
   `MULS.L` 32 x 32 -> 64: within one or two steps of 16 bits of a
-  floating-point decoder (about 82 dB; Tavenard's mpega 2.4 is 34 dB).
+  floating-point decoder (about 83 dB; Tavenard's mpega 2.4 is 34 dB for
+  MP3, 56 dB for Layer II). Medium and low quality: the synthesis window's
+  products 16-bit (`MULS.W`), about a tenth faster at about 70 dB.
 - Its working stack is the stream's own (16 KB): a program calling it from
   a task with a 4 KB stack is safe.
 - Its own `MPGA_decode_to` (after mpega's functions): each frame straight
@@ -28,9 +30,8 @@ ZZ9000's, which decodes on the card).
   16-bit interleaved for AHI, 8-bit for Paula (dithered or not), or
   Paula's 14 bits, with each channel's peak and the samples clipped.
 
-Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler; lower
-qualities with 16-bit multiplies for a 68020 or 68030; a 68060 build
-without 64-bit multiplies.
+Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler; a 68060
+build without 64-bit multiplies.
 
 ## Using it
 
@@ -83,13 +84,14 @@ ffmpeg and numpy for `make snr`).
 ## Speed
 
 A 68020's cycles a frame (26.12 ms of sound at 44.1 kHz), as vamos's
-Musashi core counts them, for 10 s of music at 128 kbit/s stereo:
+Musashi core counts them, for 10 s of music at 128 kbit/s stereo MP3
+(and, after the slash, Layer II at 224 kbit/s):
 
-| | 44.1 kHz stereo | 22 kHz | 11 kHz | mono | mono 22 kHz |
-|---|---|---|---|---|---|
-| amcempega.library 1.0 | 4.95 M | 3.37 M | 2.93 M | 3.59 M | 2.51 M |
-| mpega.library 2.4 (Tavenard, integer) | 4.07 M | 2.37 M | 1.31 M | 2.36 M | 1.42 M |
+| | 44.1 kHz stereo | 22 kHz | mono 22 kHz |
+|---|---|---|---|
+| amcempega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M |
+| amcempega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M |
+| mpega.library 2.4 (Tavenard, integer) | 4.07 / 2.92 M | 2.37 M | 1.42 M |
 
-The synthesis filter (its window and 32-point DCT) is 58% of libmad's
-time, Layer III's IMDCT 16%, its Huffman decoding 10%: where the work goes
-next.
+At medium quality the synthesis window is still 42% of the time (its
+36,288 products a frame), the 32-point DCT 17%: where the work goes next.
