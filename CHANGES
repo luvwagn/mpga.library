@@ -4,6 +4,18 @@ amcempega.library: changes
 1.0 (15 November 2026)
 ----------------------
 
+- MPGA_decode_to, the library's own: each frame straight into the
+  program's ring buffers as 16-bit (two buffers, or interleaved for
+  AHI), 8-bit for Paula (dithered or not) or Paula's 14 bits (a high
+  byte and 6 more bits a channel), with each channel's peak and the
+  clipped counted on the way: no copying or converting after it. The
+  writers in 68k assembler (src/out_68k.s), about 43 68020 cycles a
+  sample, the same bytes as the host's C.
+- The synthesis window in 68k assembler (src/synth_68k.s), the same
+  samples as libmad's C.
+- Mono from stereo synthesised once (the channels averaged before the
+  synthesis); at 22 and 11 kHz Layer III's upper subbands left out.
+
 - First version: libmad 0.15.1b (with Debian's security fixes) behind
   mpega.library's seven functions, a 68020 build with each fixed-point
   multiply one MULS.L 32 x 32 -> 64. MPEG-1, 2 and 2.5, Layers I-III; Xing

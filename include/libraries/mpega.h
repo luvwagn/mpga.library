@@ -123,4 +123,39 @@ typedef struct {
 #define MPEGA_ERR_NO_SYNC  (MPEGA_ERR_BASE - 4)
 #define MPEGA_ERR_BADVALUE (MPEGA_ERR_BASE - 5)
 
+/*
+ * amcempega.library's own (V1), after mpega's functions: MPGA_decode_to,
+ * the next frame straight into the program's buffers in the format its
+ * output wants, so that it need not be copied and converted again.
+ * mo_Buffer[] are rings of mo_Mask + 1 samples (a power of two; ~0 for a
+ * plain buffer), written from mo_Index on (advanced by the samples
+ * written). The samples are those MPEGA_decode_frame would give, then:
+ *   MPGA_FMT_S16   WORD, mo_Buffer[0] left (or mono), [1] right
+ *   MPGA_FMT_S16I  WORD, left and right interleaved in mo_Buffer[0] (AHI's
+ *                  AHIST_S16S; mono: AHIST_M16S), mo_Index and mo_Mask in
+ *                  WORDs, mo_Index advanced by the sample frames
+ *   MPGA_FMT_S8    BYTE (Paula), the high byte: [0] left, [1] right
+ *   MPGA_FMT_S8D   BYTE, rounded with triangular dither of one step
+ *   MPGA_FMT_S14   Paula's 14 bits: [0] and [1] each channel's high byte
+ *                  (signed, played at volume 64), [2] and [3] its next 6
+ *                  bits (0 to 63, played at volume 1 on a channel of its
+ *                  own: four channels for stereo)
+ * mo_Peak is each channel's largest size this frame (0 to 32767, of the
+ * 16-bit samples); mo_Clipped counts the samples clipped (added to).
+ */
+#define MPGA_FMT_S16    0
+#define MPGA_FMT_S16I   1
+#define MPGA_FMT_S8     2
+#define MPGA_FMT_S8D    3
+#define MPGA_FMT_S14    4
+
+struct MpgaOut {
+    ULONG mo_Format;                /* MPGA_FMT_ */
+    APTR mo_Buffer[4];
+    ULONG mo_Mask;                  /* each ring's samples - 1 */
+    ULONG mo_Index;                 /* in: where to write; out: after the frame */
+    UWORD mo_Peak[2];               /* out */
+    ULONG mo_Clipped;               /* in and out */
+};
+
 #endif /* LIBRARIES_MPEGA_H */

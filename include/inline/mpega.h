@@ -48,4 +48,8 @@ typedef ULONG _sfdc_vararg;
       LP2(0x42, LONG, MPEGA_scale , MPEGA_STREAM *, ___mpega_stream, a0, LONG, ___scale_percent, d0,\
       , MPEGA_BASE_NAME)
 
+#define MPGA_decode_to(___mpega_stream, ___out) \
+      LP2(0x48, LONG, MPGA_decode_to , MPEGA_STREAM *, ___mpega_stream, a0, struct MpgaOut *, ___out, a1,\
+      , MPEGA_BASE_NAME)
+
 #endif /* !_INLINE_MPEGA_H */

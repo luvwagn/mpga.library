@@ -118,7 +118,9 @@ struct Mpga {
     struct mad_synth sy;
     /* a call's arguments, for the function run on the stream's own stack */
     WORD **pcm;
+    struct MpgaOut *out;            /* MPGA_decode_to's, else MPEGA_decode_frame's pcm */
     ULONG arg;
+    ULONG rng;                      /* the dither's noise */
 };
 
 /* ---- the stream's bytes: the program's hook, or the file */
@@ -456,45 +458,203 @@ static LONG open_work(APTR arg)
 
 /* ---- the samples */
 
-static inline WORD to16(mad_fixed_t s)
+/* The synthesised frame at the rate asked for (a half-rate synthesis
+ * halved again for freq_div 4) and its loudness, in place: n samples a
+ * channel. */
+static ULONG prepare(struct Mpga *m)
 {
-    s += 1L << (MAD_F_FRACBITS - 16);           /* rounded */
-    if (s >= MAD_F_ONE)
-        s = MAD_F_ONE - 1;
-    else if (s < -MAD_F_ONE)
-        s = -MAD_F_ONE;
-    return (WORD)(s >> (MAD_F_FRACBITS + 1 - 16));
+    struct mad_pcm *p = &m->sy.pcm;
+    ULONG n = p->length, i, ch, nch = p->channels;
+    mad_fixed_t g = m->gain;
+    for (ch = 0; ch < nch; ch++) {
+        mad_fixed_t *x = p->samples[ch];
+        if (m->div == 4) {
+            for (i = 0; i < n / 2; i++)
+                x[i] = (x[2 * i] >> 1) + (x[2 * i + 1] >> 1);
+        }
+        if (g != MAD_F_ONE)
+            for (i = 0; i < (m->div == 4 ? n / 2 : n); i++)
+                x[i] = mad_f_mul(x[i], g);
+    }
+    return m->div == 4 ? n / 2 : n;
 }
 
-/* the synthesised frame as the program wants it: its channels, its rate
- * (a half-rate synthesis halved again for freq_div 4), its loudness */
+/* ---- the writers: n samples rounded to 16 bits and clipped (counted),
+ * their range followed for the peak, then written. In 68k assembler
+ * (src/out_68k.s) on the Amiga, the same bytes. */
+struct MpgaRange {
+    LONG max, min;                  /* the rounded samples', libmad's scale */
+    ULONG clipped;
+};
+
+#ifdef MPGA_OUT_ASM
+void mpga_put16(const mad_fixed_t *x, WORD *d, ULONG n, ULONG step, struct MpgaRange *r);
+void mpga_put8(const mad_fixed_t *x, BYTE *d, ULONG n, struct MpgaRange *r);
+void mpga_put14(const mad_fixed_t *x, BYTE *hi, UBYTE *lo, ULONG n, struct MpgaRange *r);
+#else
+static inline mad_fixed_t rounded(mad_fixed_t x, struct MpgaRange *r)
+{
+    x += 1L << (MAD_F_FRACBITS - 16);
+    if (x > MAD_F_ONE - 1) {
+        x = MAD_F_ONE - 1;
+        r->clipped++;
+    } else if (x < -MAD_F_ONE) {
+        x = -MAD_F_ONE;
+        r->clipped++;
+    }
+    if (x > r->max)
+        r->max = x;
+    if (x < r->min)
+        r->min = x;
+    return x;
+}
+
+static void mpga_put16(const mad_fixed_t *x, WORD *d, ULONG n, ULONG step, struct MpgaRange *r)
+{
+    while (n--) {
+        *d = (WORD)(rounded(*x++, r) >> (MAD_F_FRACBITS + 1 - 16));
+        d = (WORD *)((UBYTE *)d + step);
+    }
+}
+
+static void mpga_put8(const mad_fixed_t *x, BYTE *d, ULONG n, struct MpgaRange *r)
+{
+    while (n--)
+        *d++ = (BYTE)(rounded(*x++, r) >> (MAD_F_FRACBITS + 1 - 8));
+}
+
+static void mpga_put14(const mad_fixed_t *x, BYTE *hi, UBYTE *lo, ULONG n, struct MpgaRange *r)
+{
+    while (n--) {
+        mad_fixed_t v = rounded(*x++, r);
+        *hi++ = (BYTE)(v >> (MAD_F_FRACBITS + 1 - 8));
+        *lo++ = (UBYTE)((v >> (MAD_F_FRACBITS + 1 - 14)) & 0x3f);
+    }
+}
+#endif
+
+static void range_init(struct MpgaRange *r)
+{
+    r->max = -MAD_F_ONE;
+    r->min = MAD_F_ONE - 1;
+    r->clipped = 0;
+}
+
+/* the range's peak: the largest size of a 16-bit sample in it */
+static UWORD range_peak(const struct MpgaRange *r)
+{
+    LONG hi = r->max >> (MAD_F_FRACBITS + 1 - 16), lo = r->min >> (MAD_F_FRACBITS + 1 - 16);
+    LONG p = hi > -lo ? hi : -lo;
+    if (p < 0)
+        p = 0;
+    return (UWORD)(p > 32767 ? 32767 : p);
+}
+
+/* the frame as mpega.library gives it: a WORD buffer each channel */
 static LONG output(struct Mpga *m, WORD **pcm)
 {
     const struct mad_pcm *p = &m->sy.pcm;
-    ULONG n = p->length, i;
-    const mad_fixed_t *l = p->samples[0], *r = p->samples[p->channels > 1 ? 1 : 0];
-    WORD *o0 = pcm[0], *o1 = pcm[1];
-    mad_fixed_t g = m->gain;
-    BOOL quarter = m->div == 4;
-    if (quarter)
-        n >>= 1;
-    for (i = 0; i < n; i++) {
-        mad_fixed_t a, b;
-        if (quarter) {
-            a = (l[2 * i] >> 1) + (l[2 * i + 1] >> 1);
-            b = (r[2 * i] >> 1) + (r[2 * i + 1] >> 1);
-        } else {
-            a = l[i];
-            b = r[i];
+    ULONG n = prepare(m), ch;
+    struct MpgaRange r;
+    range_init(&r);
+    for (ch = 0; ch < m->out_ch; ch++)
+        mpga_put16(p->samples[p->channels > 1 ? ch : 0], pcm[ch], n, 2, &r);
+    m->out_samples += n;
+    return (LONG)n;
+}
+
+/* ---- MPGA_decode_to's formats: each written at its ring's index, in
+ * runs that do not wrap */
+
+/* the next of the stream's dither noise: a uniform 0 to 255 */
+static inline ULONG rnd8(struct Mpga *m)
+{
+    m->rng = m->rng * 1664525UL + 1013904223UL;
+    return m->rng >> 24;
+}
+
+static void put8d(struct Mpga *m, const mad_fixed_t *x, BYTE *d, ULONG n, struct MpgaRange *r)
+{
+    while (n--) {
+        mad_fixed_t v = *x++ + (1L << (MAD_F_FRACBITS - 16));
+        LONG w;
+        if (v > MAD_F_ONE - 1) {
+            v = MAD_F_ONE - 1;
+            r->clipped++;
+        } else if (v < -MAD_F_ONE) {
+            v = -MAD_F_ONE;
+            r->clipped++;
         }
-        if (g != MAD_F_ONE) {
-            a = mad_f_mul(a, g);
-            b = mad_f_mul(b, g);
-        }
-        o0[i] = to16(a);
-        if (m->out_ch > 1)
-            o1[i] = to16(b);
+        if (v > r->max)
+            r->max = v;
+        if (v < r->min)
+            r->min = v;
+        w = v >> (MAD_F_FRACBITS + 1 - 16);
+        w += (LONG)rnd8(m) - (LONG)rnd8(m) + 128;   /* triangular dither, an 8-bit step; rounded */
+        if (w > 32767)
+            w = 32767;
+        else if (w < -32768)
+            w = -32768;
+        *d++ = (BYTE)(w >> 8);
     }
+}
+
+static LONG output_to(struct Mpga *m, struct MpgaOut *o)
+{
+    const struct mad_pcm *p = &m->sy.pcm;
+    ULONG n = prepare(m), ch, mask = o->mo_Mask, size = mask + 1;
+    ULONG clip = 0;
+    for (ch = 0; ch < m->out_ch; ch++) {
+        const mad_fixed_t *x = p->samples[p->channels > 1 ? ch : 0];
+        ULONG left = n, at = o->mo_Index, k;
+        struct MpgaRange r;
+        range_init(&r);
+        if (o->mo_Format == MPGA_FMT_S16I) {
+            /* the index counts sample frames; the ring, WORDs */
+            ULONG step = m->out_ch, pos = (at * step + ch) & mask;
+            WORD *b = o->mo_Buffer[0];
+            while (left) {
+                k = size ? (mask - pos) / step + 1 : left;
+                if (k > left)
+                    k = left;
+                mpga_put16(x, b + pos, k, step * 2, &r);
+                x += k;
+                left -= k;
+                pos = (pos + k * step) & mask;
+            }
+        } else {
+            while (left) {
+                ULONG pos = at & mask;
+                k = size ? size - pos : left;
+                if (k > left)
+                    k = left;
+                switch (o->mo_Format) {
+                case MPGA_FMT_S16:
+                    mpga_put16(x, (WORD *)o->mo_Buffer[ch] + pos, k, 2, &r);
+                    break;
+                case MPGA_FMT_S8:
+                    mpga_put8(x, (BYTE *)o->mo_Buffer[ch] + pos, k, &r);
+                    break;
+                case MPGA_FMT_S8D:
+                    put8d(m, x, (BYTE *)o->mo_Buffer[ch] + pos, k, &r);
+                    break;
+                default:                    /* MPGA_FMT_S14 */
+                    mpga_put14(x, (BYTE *)o->mo_Buffer[ch] + pos, (UBYTE *)o->mo_Buffer[2 + ch] + pos,
+                               k, &r);
+                    break;
+                }
+                x += k;
+                at += k;
+                left -= k;
+            }
+        }
+        o->mo_Peak[ch] = range_peak(&r);
+        clip += r.clipped;
+    }
+    if (m->out_ch == 1)
+        o->mo_Peak[1] = o->mo_Peak[0];
+    o->mo_Index += n;
+    o->mo_Clipped += clip;
     m->out_samples += n;
     return (LONG)n;
 }
@@ -558,7 +718,7 @@ static LONG decode_work(APTR arg)
     }
     reduce(m);
     mad_synth_frame(&m->sy, &m->mf);
-    return output(m, m->pcm);
+    return m->out ? output_to(m, m->out) : output(m, m->pcm);
 }
 
 /* MPEGA_seek's work: libmad again from the frame at ms */
@@ -640,6 +800,7 @@ MPEGA_STREAM *MPEGA_open(char *name, MPEGA_CTRL *ctrl)
     m->bufsize = ctrl->stream_buffer_size >= 4096 ? (ULONG)ctrl->stream_buffer_size & ~3UL : DEF_BUFFER;
     m->scale = 100;
     m->gain = MAD_F_ONE;
+    m->rng = 0x2545F491UL;
     if (!(m->buf = ALLOC(m->bufsize + MAD_BUFFER_GUARD))) {
         freeit(m);
         return NULL;
@@ -681,6 +842,22 @@ LONG MPEGA_decode_frame(MPEGA_STREAM *s, WORD **pcm)
     if (!m || !pcm || !pcm[0] || (m->out_ch > 1 && !pcm[1]))
         return MPEGA_ERR_BADVALUE;
     m->pcm = pcm;
+    m->out = NULL;
+    return run(m, decode_work);
+}
+
+/* amcempega.library's own: the next frame straight into the program's
+ * buffers, in the format its output wants */
+LONG MPGA_decode_to(MPEGA_STREAM *s, struct MpgaOut *o)
+{
+    struct Mpga *m = (struct Mpga *)s;
+    if (!m || !o || o->mo_Format > MPGA_FMT_S14)
+        return MPEGA_ERR_BADVALUE;
+    /* the buffers the format writes: one a channel (S14: two), or one */
+    if (!o->mo_Buffer[0] || (o->mo_Format != MPGA_FMT_S16I && m->out_ch > 1 && !o->mo_Buffer[1]) ||
+        (o->mo_Format == MPGA_FMT_S14 && (!o->mo_Buffer[2] || (m->out_ch > 1 && !o->mo_Buffer[3]))))
+        return MPEGA_ERR_BADVALUE;
+    m->out = o;
     return run(m, decode_work);
 }
 
@@ -763,5 +940,6 @@ ADDTABL_2(MPEGA_seek, a0, d0);
 ADDTABL_2(MPEGA_time, a0, a1);
 ADDTABL_2(MPEGA_find_sync, a0, d0);
 ADDTABL_2(MPEGA_scale, a0, d0);
+ADDTABL_2(MPGA_decode_to, a0, a1);         /* (amcempega.library's own, after mpega's) */
 ADDTABL_END();
 #endif

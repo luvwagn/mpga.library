@@ -10,7 +10,8 @@
  *
  * Each file: as it is (the bitstream hook, from memory), 22 kHz, 11 kHz,
  * mono, mono at 22 kHz, at half loudness, through dos.library (the file's
- * name), and from a second in (MPEGA_seek, MPEGA_time). -w writes the
+ * name), from a second in (MPEGA_seek, MPEGA_time), and through
+ * MPGA_decode_to into small rings in each of its formats. -w writes the
  * first way's samples (for tools/snr.py); -n decodes only that many
  * frames each way; -way only the nth way (0 to 7: make prof).
  *
@@ -37,6 +38,7 @@ LONG MPEGA_seek(MPEGA_STREAM *, ULONG);
 LONG MPEGA_time(MPEGA_STREAM *, ULONG *);
 LONG MPEGA_find_sync(BYTE *, LONG);
 LONG MPEGA_scale(MPEGA_STREAM *, LONG);
+LONG MPGA_decode_to(MPEGA_STREAM *, struct MpgaOut *);
 #endif
 
 static UBYTE *data;
@@ -110,10 +112,70 @@ static const char *base(const char *p)
     return s ? s + 1 : p;
 }
 
-enum { AS_IS, HALF, QUARTER, MONO, MONO_HALF, LOUD50, BYNAME, SEEK, WAYS };
+enum { AS_IS, HALF, QUARTER, MONO, MONO_HALF, LOUD50, BYNAME, SEEK,
+       TO_S16, TO_S16I, TO_S8, TO_S8D, TO_S14, TO_S14_MONO, WAYS };
 static const char *const way_name[WAYS] = {
-    "as it is", "22 kHz", "11 kHz", "mono", "mono 22 kHz", "half loudness", "by name", "from 1 s"
+    "as it is", "22 kHz", "11 kHz", "mono", "mono 22 kHz", "half loudness", "by name", "from 1 s",
+    "to 16-bit rings", "to AHI's 16-bit stereo", "to Paula's 8 bits", "to 8 bits dithered, 3 times as loud",
+    "to Paula's 14 bits", "to 14 bits, mono"
 };
+
+#define RING 4096                   /* (MPGA_decode_to's rings: small, so they wrap) */
+
+static ULONG crc_bytes(ULONG c, const UBYTE *p, ULONG n)
+{
+    c = ~c;
+    while (n--)
+        c = crc_tab[(c ^ *p++) & 0xff] ^ (c >> 8);
+    return ~c;
+}
+
+/* The n samples a channel MPGA_decode_to wrote from at into its rings,
+ * into the CRC: each sample's bytes, channel after channel (S16, S16I as
+ * the words MPEGA_decode_frame gives, so the same CRC) */
+static ULONG ring_crc(ULONG c, const struct MpgaOut *o, ULONG at, ULONG n, int ch)
+{
+    ULONG i;
+    int k;
+    for (i = 0; i < n; i++, at++) {
+        UBYTE b[8];
+        int nb = 0;
+        for (k = 0; k < (o->mo_Format == MPGA_FMT_S16I ? 1 : 2); k++) {
+            int c2 = ch > 1 ? k : 0;
+            switch (o->mo_Format) {
+            case MPGA_FMT_S16: {
+                WORD v = ((WORD *)o->mo_Buffer[c2])[at & (RING - 1)];
+                b[nb++] = (UBYTE)((UWORD)v >> 8);
+                b[nb++] = (UBYTE)v;
+                break;
+            }
+            case MPGA_FMT_S16I: {
+                int j;
+                for (j = 0; j < ch; j++) {
+                    WORD v = ((WORD *)o->mo_Buffer[0])[(at * ch + j) & (2 * RING - 1)];
+                    b[nb++] = (UBYTE)((UWORD)v >> 8);
+                    b[nb++] = (UBYTE)v;
+                }
+                if (ch == 1) {
+                    b[nb] = b[nb - 2];
+                    b[nb + 1] = b[nb - 1];
+                    nb += 2;
+                }
+                break;
+            }
+            case MPGA_FMT_S14:
+                b[nb++] = ((UBYTE *)o->mo_Buffer[c2])[at & (RING - 1)];
+                b[nb++] = ((UBYTE *)o->mo_Buffer[2 + c2])[at & (RING - 1)];
+                break;
+            default:
+                b[nb++] = ((UBYTE *)o->mo_Buffer[c2])[at & (RING - 1)];
+                break;
+            }
+        }
+        c = crc_bytes(c, b, nb);
+    }
+    return c;
+}
 
 static int one(const char *file, int way, LONG frames, FILE *w)
 {
@@ -125,7 +187,11 @@ static int one(const char *file, int way, LONG frames, FILE *w)
     LONG n, i, nf = 0, err = 0;
     ULONG samples = 0, crc = 0, t = 0;
     WORD div = way == HALF || way == MONO_HALF ? 2 : way == QUARTER ? 4 : 1;
-    WORD mono = way == MONO || way == MONO_HALF;
+    WORD mono = way == MONO || way == MONO_HALF || way == TO_S14_MONO;
+    static WORD r16[2][RING], ri[2 * RING];
+    static UBYTE r8[4][RING];
+    struct MpgaOut o;
+    UWORD peak = 0;
 
     pcm[0] = l;
     pcm[1] = r;
@@ -149,10 +215,49 @@ static int one(const char *file, int way, LONG frames, FILE *w)
                (unsigned long)s->ms_duration);
     if (way == LOUD50)
         MPEGA_scale(s, 50);
+    if (way == TO_S8D)                  /* (clipped: counted, the dither kept in range) */
+        MPEGA_scale(s, 300);
     if (way == SEEK && (n = MPEGA_seek(s, 1000)) < 0)
         err = n;
+    memset(&o, 0, sizeof(o));
+    o.mo_Mask = RING - 1;
+    o.mo_Index = RING - 100;        /* (each ring wraps in the first frame) */
+    switch (way) {
+    case TO_S16:
+        o.mo_Format = MPGA_FMT_S16;
+        o.mo_Buffer[0] = r16[0];
+        o.mo_Buffer[1] = r16[1];
+        break;
+    case TO_S16I:
+        o.mo_Format = MPGA_FMT_S16I;
+        o.mo_Buffer[0] = ri;
+        o.mo_Mask = 2 * RING - 1;
+        break;
+    case TO_S8:
+    case TO_S8D:
+    case TO_S14:
+    case TO_S14_MONO:
+        o.mo_Format = way == TO_S8 ? MPGA_FMT_S8 : way == TO_S8D ? MPGA_FMT_S8D : MPGA_FMT_S14;
+        for (i = 0; i < 4; i++)
+            o.mo_Buffer[i] = r8[i];
+        break;
+    }
     while (!err && nf < frames) {
-        n = MPEGA_decode_frame(s, pcm);
+        if (way >= TO_S16) {
+            ULONG at = o.mo_Index;
+            n = MPGA_decode_to(s, &o);
+            if (n > 0) {
+                crc = ring_crc(crc, &o, at, (ULONG)n, s->dec_channels);
+                if (o.mo_Peak[0] > peak)
+                    peak = o.mo_Peak[0];
+                if (o.mo_Peak[1] > peak)
+                    peak = o.mo_Peak[1];
+                nf++;
+                samples += n;
+                continue;
+            }
+        } else
+            n = MPEGA_decode_frame(s, pcm);
         if (n == MPEGA_ERR_EOF)
             break;
         if (n < 0) {
@@ -176,9 +281,12 @@ static int one(const char *file, int way, LONG frames, FILE *w)
         samples += n;
     }
     MPEGA_time(s, &t);
-    printf("%s, %s: %ld Hz, %d channels: %ld frames, %lu samples, %lu ms, crc %08lx%s\n", base(file),
+    printf("%s, %s: %ld Hz, %d channels: %ld frames, %lu samples, %lu ms, crc %08lx%s", base(file),
            way_name[way], (long)s->dec_frequency, s->dec_channels, (long)nf, (unsigned long)samples,
            (unsigned long)t, (unsigned long)crc, err ? " (error)" : "");
+    if (way >= TO_S16)
+        printf(", peak %u, %lu clipped", (unsigned)peak, (unsigned long)o.mo_Clipped);
+    printf("\n");
     MPEGA_close(s);
     return 0;
 }

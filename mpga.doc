@@ -3,6 +3,7 @@ TABLE OF CONTENTS
 amcempega.library/--background--
 amcempega.library/MPEGA_close
 amcempega.library/MPEGA_decode_frame
+amcempega.library/MPGA_decode_to
 amcempega.library/MPEGA_find_sync
 amcempega.library/MPEGA_open
 amcempega.library/MPEGA_scale
@@ -70,6 +71,46 @@ amcempega.library/MPEGA_decode_frame     amcempega.library/MPEGA_decode_frame
         The samples a channel (up to MPEGA_PCM_SIZE); or MPEGA_ERR_EOF at
         the stream's end, MPEGA_ERR_BADFRAME if too many frames in a row
         would not decode, MPEGA_ERR_BADVALUE.
+
+amcempega.library/MPGA_decode_to             amcempega.library/MPGA_decode_to
+
+    NAME
+        MPGA_decode_to -- the next frame into the program's buffers (V1)
+
+    SYNOPSIS
+        samples = MPGA_decode_to(mpega_stream, out)
+        D0                       A0            A1
+        LONG MPGA_decode_to(MPEGA_STREAM *, struct MpgaOut *);
+
+    FUNCTION
+        amcempega.library's own, not mpega.library's (it is after mpega's
+        functions in the library's table): as MPEGA_decode_frame, but the
+        samples written straight into out's buffers in the format the
+        program's output wants, so that it need not copy or convert them
+        again, and their peak and the clipped ones counted on the way.
+        out->mo_Buffer[] are rings of out->mo_Mask + 1 samples each (a
+        power of two; ~0 for buffers that do not wrap), written from
+        out->mo_Index on; mo_Index is advanced by the samples written.
+            MPGA_FMT_S16   WORDs: [0] left (or mono), [1] right
+            MPGA_FMT_S16I  WORDs, left and right interleaved in [0], as
+                           AHI's AHIST_S16S (mono: AHIST_M16S); mo_Mask
+                           in WORDs, mo_Index in sample frames
+            MPGA_FMT_S8    signed bytes for Paula (the high byte):
+                           [0] left, [1] right
+            MPGA_FMT_S8D   the same, rounded with triangular dither of
+                           one 8-bit step
+            MPGA_FMT_S14   Paula's 14 bits: [0] and [1] each channel's
+                           high byte (signed; at volume 64), [2] and [3]
+                           its next 6 bits (0 to 63; at volume 1, each
+                           on a channel of its own)
+        out->mo_Peak[] is each channel's largest size this frame (0 to
+        32767, of the 16-bit sample); out->mo_Clipped is added the
+        samples clipped.
+
+    RESULT
+        As MPEGA_decode_frame's: the samples a channel, or an error
+        (MPEGA_ERR_BADVALUE also for an unknown format or a buffer
+        missing).
 
 amcempega.library/MPEGA_find_sync           amcempega.library/MPEGA_find_sync
 

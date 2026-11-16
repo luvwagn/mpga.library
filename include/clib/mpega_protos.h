@@ -31,6 +31,9 @@ LONG MPEGA_time(MPEGA_STREAM * mpega_stream, ULONG * ms_time_position);
 LONG MPEGA_find_sync(BYTE * buffer, LONG buffer_size);
 LONG MPEGA_scale(MPEGA_STREAM * mpega_stream, LONG scale_percent);
 
+/* amcempega.library's own, from V1 (not in mpega.library) */
+LONG MPGA_decode_to(MPEGA_STREAM * mpega_stream, struct MpgaOut * out);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

@@ -23,11 +23,14 @@ ZZ9000's, which decodes on the card).
   floating-point decoder (about 82 dB; Tavenard's mpega 2.4 is 34 dB).
 - Its working stack is the stream's own (16 KB): a program calling it from
   a task with a 4 KB stack is safe.
+- Its own `MPGA_decode_to` (after mpega's functions): each frame straight
+  into the program's ring buffers in the format its output wants: 16-bit,
+  16-bit interleaved for AHI, 8-bit for Paula (dithered or not), or
+  Paula's 14 bits, with each channel's peak and the samples clipped.
 
-Not yet: Layer III's work above the frequencies a halved rate keeps, and a
-mono stream's second channel, left out (so that 22 kHz and mono save as
-much as they do in mpega 2.4); the synthesis filter in 68k assembler; a
-68060 build without 64-bit multiplies.
+Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler; lower
+qualities with 16-bit multiplies for a 68020 or 68030; a 68060 build
+without 64-bit multiplies.
 
 ## Using it
 
@@ -84,7 +87,7 @@ Musashi core counts them, for 10 s of music at 128 kbit/s stereo:
 
 | | 44.1 kHz stereo | 22 kHz | 11 kHz | mono | mono 22 kHz |
 |---|---|---|---|---|---|
-| amcempega.library 1.0 | 5.07 M | 3.80 M | 3.72 M | 5.07 M | 3.81 M |
+| amcempega.library 1.0 | 4.95 M | 3.37 M | 2.93 M | 3.59 M | 2.51 M |
 | mpega.library 2.4 (Tavenard, integer) | 4.07 M | 2.37 M | 1.31 M | 2.36 M | 1.42 M |
 
 The synthesis filter (its window and 32-point DCT) is 58% of libmad's
