@@ -1,4 +1,4 @@
-| amcempega.library's stack switch: LONG mpga_onstack(LONG (*f)(APTR),
+| ambmpega.library's stack switch: LONG mpga_onstack(LONG (*f)(APTR),
 | APTR arg, struct StackSwapStruct *sss) calls f(arg) on the stack sss
 | describes, through exec's StackSwap (so the task's tc_SPLower and
 | tc_SPUpper say where it is), and swaps back after. libmad's Layer III

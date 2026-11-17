@@ -19,7 +19,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-/* mpega.library's functions (its .fd: bias 30), as amcempega.library offers */
+/* mpega.library's functions (its .fd: bias 30), as ambmpega.library offers */
 /* them: MPEG audio decoded to 16-bit PCM. The structures and constants are */
 /* in <libraries/mpega.h>. This file and the headers made from it: (c) 2026 */
 /* Brian King, MIT. The library itself is GPL-3.0-or-later (libmad inside). */
@@ -31,7 +31,7 @@ LONG MPEGA_time(MPEGA_STREAM * mpega_stream, ULONG * ms_time_position);
 LONG MPEGA_find_sync(BYTE * buffer, LONG buffer_size);
 LONG MPEGA_scale(MPEGA_STREAM * mpega_stream, LONG scale_percent);
 
-/* amcempega.library's own, from V1 (not in mpega.library) */
+/* ambmpega.library's own, from V1 (not in mpega.library) */
 LONG MPGA_decode_to(MPEGA_STREAM * mpega_stream, struct MpgaOut * out);
 
 #ifdef __cplusplus

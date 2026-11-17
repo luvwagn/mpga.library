@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# amcempega.library's tools (mpegv.library's): a 68k program's functions,
+# ambmpega.library's tools (mpegv.library's): a 68k program's functions,
 # static ones too, for tools/prof.py. The Amiga's linker keeps only the global symbols; each
 # object's own (nm) are placed by where the link map put its code.
 # GPL-3.0-or-later, (c) 2026 Brian King.

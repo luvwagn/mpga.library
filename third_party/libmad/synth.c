@@ -828,7 +828,7 @@ void synth_half(struct mad_synth *synth, struct mad_frame const *frame,
 }
 
 /*
- * amcempega.library (CHANGES.mpga): the window after the DCT, 32 samples
+ * ambmpega.library (CHANGES.mpga): the window after the DCT, 32 samples
  * a slot (or the even subbands' 16, at half the rate), in 68k assembler
  * (src/synth_68k.s; MPGA_WINDOW_ASM) or here in C: the 32-bit window the
  * same sums as synth_full's and synth_half's, the 16-bit one (medium and
@@ -951,7 +951,7 @@ void mad_synth_frame(struct mad_synth *synth, struct mad_frame const *frame)
     synth_frame = synth_half;
   }
 
-  /* amcempega.library: its windows (the 16-bit one at medium and low
+  /* ambmpega.library: its windows (the 16-bit one at medium and low
    * quality; the 68k's in assembler) */
   if (synth->mpga_window16)
     mpga_synth(synth, frame, nch, ns,

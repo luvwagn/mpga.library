@@ -1,5 +1,5 @@
-/* libnix's shared library start-up (public domain), as AmigaMCE's libraries
- * use it: amcempega.library's ROMTag, init, open, close and expunge. */
+/* libnix's shared library start-up (public domain), as Ambiance's libraries
+ * use it: ambmpega.library's ROMTag, init, open, close and expunge. */
 
 /******************************************************************************/
 /*                                                                            */

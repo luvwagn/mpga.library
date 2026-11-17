@@ -1,9 +1,9 @@
 /*
- * libmad's config.h for amcempega.library (HAVE_CONFIG_H: global.h
+ * libmad's config.h for ambmpega.library (HAVE_CONFIG_H: global.h
  * includes it first): the sizes of the 68k's types, its fixed-point
  * multiply (FPM_*, from the Makefile), and its memory from exec on the
  * Amiga (asked for only when a stream is opened and closed).
- * Part of amcempega.library, GPL-3.0-or-later.
+ * Part of ambmpega.library, GPL-3.0-or-later.
  */
 #ifndef MPGA_CONFIG_H
 #define MPGA_CONFIG_H

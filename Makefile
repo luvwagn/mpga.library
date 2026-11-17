@@ -1,10 +1,10 @@
-# amcempega.library: MPEG audio (MPEG-1, 2 and 2.5; Layers I, II and III)
+# ambmpega.library: MPEG audio (MPEG-1, 2 and 2.5; Layers I, II and III)
 # decoded to 16-bit PCM by libmad 0.15.1b (third_party/libmad,
 # GPL-2.0-or-later) behind mpega.library's functions, for any Amiga
 # program. GPL-3.0-or-later, (c) 2026 Brian King; the interface
 # (include/, mpga_lib.sfd, mpga.doc) is MIT.
 #
-#   make            build/amcempega.library (68020 and up, no FPU: each
+#   make            build/ambmpega.library (68020 and up, no FPU: each
 #                   fixed-point multiply one MULS.L 32 x 32 -> 64)
 #   make test       the fixtures decoded in several ways (22 and 11 kHz,
 #                   mono, half loudness, by name, from a second in) on this
@@ -25,8 +25,8 @@ AS      = m68k-amigaos-as -m68020
 STRIP   = m68k-amigaos-strip
 HOSTCC ?= cc
 PYTHON ?= python3
-LIBNAME = amcempega.library
-LIBID   = $(LIBNAME) 1.0 (15.11.2026) libmad 0.15.1b, 68020+
+LIBNAME = ambmpega.library
+LIBID   = $(LIBNAME) 1.1 (17.11.2026) libmad 0.15.1b, 68020+
 MAD     = third_party/libmad
 LIB     = build/$(LIBNAME)
 MAD_SRC = $(addprefix $(MAD)/,bit.c fixed.c frame.c huffman.c layer12.c layer3.c stream.c synth.c timer.c)

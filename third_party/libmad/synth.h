@@ -40,7 +40,7 @@ struct mad_synth {
 
   struct mad_pcm pcm;			/* PCM output */
 
-  int mpga_window16;			/* amcempega.library: the 16-bit
+  int mpga_window16;			/* ambmpega.library: the 16-bit
 					   window (CHANGES.mpga) */
 };
 

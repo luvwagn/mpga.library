@@ -2552,7 +2552,7 @@ enum mad_error III_decode(struct mad_bitptr *ptr, struct mad_frame *frame,
 
       sblimit = 32 - (576 - i) / 18;
 
-      /* amcempega.library (CHANGES.mpga): at half the sample rate only the
+      /* ambmpega.library (CHANGES.mpga): at half the sample rate only the
        * lower 16 subbands are heard (at a quarter, 8), so the upper ones
        * are left out here (and are zero, so the half-rate synthesis has
        * nothing to alias) */

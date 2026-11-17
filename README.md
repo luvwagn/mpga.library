@@ -1,9 +1,9 @@
-# amcempega.library
+# ambmpega.library
 
 MPEG audio decoded to 16-bit PCM for any Amiga program (68020 or better,
 no FPU needed), behind **mpega.library's functions**: a program written for
 mpega.library works unchanged; only the name it opens differs
-(`AMCEMPEGANAME`, "amcempega.library"). Made for AmigaMCE, a media centre
+(`AMBMPEGANAME`, "ambmpega.library"). Made for Ambiance, a media centre
 for the Amiga, which keeps it in its own `Libs` and can use it or whichever
 `mpega.library` is in `LIBS:` (Stéphane Tavenard's, a libmad clone, or the
 ZZ9000's, which decodes on the card).
@@ -37,7 +37,7 @@ build without 64-bit multiplies.
 
 ```c
 #include <proto/mpega.h>
-struct Library *MPEGABase = OpenLibrary(AMCEMPEGANAME, AMCEMPEGAVERSION);
+struct Library *MPEGABase = OpenLibrary(AMBMPEGANAME, AMBMPEGAVERSION);
 
 MPEGA_CTRL ctrl = { 0 };            /* NULL bs_access: the file, by name */
 ctrl.layer_1_2.stereo.freq_div = ctrl.layer_3.stereo.freq_div = 1;
@@ -66,7 +66,7 @@ library at run time is not bound by its licence.
 ## Building
 
 ```
-make            build/amcempega.library
+make            build/ambmpega.library
 make test       the fixtures (tests/mkfixtures.sh made them from synthetic
                 sound) decoded eight ways each on this computer and through
                 the library on a 68020 under vamos with an 8 KB stack: the
@@ -89,8 +89,8 @@ Musashi core counts them, for 10 s of music at 128 kbit/s stereo MP3
 
 | | 44.1 kHz stereo | 22 kHz | mono 22 kHz |
 |---|---|---|---|
-| amcempega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M |
-| amcempega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M |
+| ambmpega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M |
+| ambmpega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M |
 | mpega.library 2.4 (Tavenard, integer) | 4.07 / 2.92 M | 2.37 M | 1.42 M |
 
 At medium quality the synthesis window is still 42% of the time (its

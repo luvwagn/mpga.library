@@ -1,23 +1,23 @@
 TABLE OF CONTENTS
 
-amcempega.library/--background--
-amcempega.library/MPEGA_close
-amcempega.library/MPEGA_decode_frame
-amcempega.library/MPGA_decode_to
-amcempega.library/MPEGA_find_sync
-amcempega.library/MPEGA_open
-amcempega.library/MPEGA_scale
-amcempega.library/MPEGA_seek
-amcempega.library/MPEGA_time
+ambmpega.library/--background--
+ambmpega.library/MPEGA_close
+ambmpega.library/MPEGA_decode_frame
+ambmpega.library/MPGA_decode_to
+ambmpega.library/MPEGA_find_sync
+ambmpega.library/MPEGA_open
+ambmpega.library/MPEGA_scale
+ambmpega.library/MPEGA_seek
+ambmpega.library/MPEGA_time
 
-amcempega.library/--background--             amcempega.library/--background--
+ambmpega.library/--background--             ambmpega.library/--background--
 
     PURPOSE
         Decodes MPEG audio (MPEG-1, MPEG-2 and MPEG-2.5; Layers I, II and
         III) to 16-bit signed PCM, one buffer for each channel. Its
         functions, structures and constants are mpega.library's (version
         2), so a program written for mpega.library works with it: open
-        AMCEMPEGANAME instead of "mpega.library".
+        AMBMPEGANAME instead of "mpega.library".
 
     USE
         MPEGA_open a stream (a file by name, or through your bitstream
@@ -36,7 +36,7 @@ amcempega.library/--background--             amcempega.library/--background--
         its source: https://github.com/luvwagn/mpga.library. This
         interface (the headers, the .sfd, this document): MIT.
 
-amcempega.library/MPEGA_close                   amcempega.library/MPEGA_close
+ambmpega.library/MPEGA_close                   ambmpega.library/MPEGA_close
 
     NAME
         MPEGA_close -- a stream closed (V1)
@@ -50,7 +50,7 @@ amcempega.library/MPEGA_close                   amcempega.library/MPEGA_close
         Closes the stream (its hook's MPEGA_BSFUNC_CLOSE, or the file) and
         frees it. NULL is ignored.
 
-amcempega.library/MPEGA_decode_frame     amcempega.library/MPEGA_decode_frame
+ambmpega.library/MPEGA_decode_frame     ambmpega.library/MPEGA_decode_frame
 
     NAME
         MPEGA_decode_frame -- the next frame decoded (V1)
@@ -72,7 +72,7 @@ amcempega.library/MPEGA_decode_frame     amcempega.library/MPEGA_decode_frame
         the stream's end, MPEGA_ERR_BADFRAME if too many frames in a row
         would not decode, MPEGA_ERR_BADVALUE.
 
-amcempega.library/MPGA_decode_to             amcempega.library/MPGA_decode_to
+ambmpega.library/MPGA_decode_to             ambmpega.library/MPGA_decode_to
 
     NAME
         MPGA_decode_to -- the next frame into the program's buffers (V1)
@@ -83,7 +83,7 @@ amcempega.library/MPGA_decode_to             amcempega.library/MPGA_decode_to
         LONG MPGA_decode_to(MPEGA_STREAM *, struct MpgaOut *);
 
     FUNCTION
-        amcempega.library's own, not mpega.library's (it is after mpega's
+        ambmpega.library's own, not mpega.library's (it is after mpega's
         functions in the library's table): as MPEGA_decode_frame, but the
         samples written straight into out's buffers in the format the
         program's output wants, so that it need not copy or convert them
@@ -112,7 +112,7 @@ amcempega.library/MPGA_decode_to             amcempega.library/MPGA_decode_to
         (MPEGA_ERR_BADVALUE also for an unknown format or a buffer
         missing).
 
-amcempega.library/MPEGA_find_sync           amcempega.library/MPEGA_find_sync
+ambmpega.library/MPEGA_find_sync           ambmpega.library/MPEGA_find_sync
 
     NAME
         MPEGA_find_sync -- an MPEG audio frame header found (V1)
@@ -128,7 +128,7 @@ amcempega.library/MPEGA_find_sync           amcempega.library/MPEGA_find_sync
     RESULT
         Its offset; or MPEGA_ERR_NO_SYNC.
 
-amcempega.library/MPEGA_open                     amcempega.library/MPEGA_open
+ambmpega.library/MPEGA_open                     ambmpega.library/MPEGA_open
 
     NAME
         MPEGA_open -- a stream opened (V1)
@@ -163,7 +163,7 @@ amcempega.library/MPEGA_open                     amcempega.library/MPEGA_open
         16-bit products, about a tenth faster on a 68020 or 68030 (about
         70 dB).
 
-amcempega.library/MPEGA_scale                   amcempega.library/MPEGA_scale
+ambmpega.library/MPEGA_scale                   ambmpega.library/MPEGA_scale
 
     NAME
         MPEGA_scale -- the loudness set (V1)
@@ -180,7 +180,7 @@ amcempega.library/MPEGA_scale                   amcempega.library/MPEGA_scale
     RESULT
         0; or MPEGA_ERR_BADVALUE.
 
-amcempega.library/MPEGA_seek                     amcempega.library/MPEGA_seek
+ambmpega.library/MPEGA_seek                     ambmpega.library/MPEGA_seek
 
     NAME
         MPEGA_seek -- to a time in the stream (V1)
@@ -201,7 +201,7 @@ amcempega.library/MPEGA_seek                     amcempega.library/MPEGA_seek
         0; or MPEGA_ERR_EOF (past the end), MPEGA_ERR_BADVALUE (the stream
         cannot seek).
 
-amcempega.library/MPEGA_time                     amcempega.library/MPEGA_time
+ambmpega.library/MPEGA_time                     ambmpega.library/MPEGA_time
 
     NAME
         MPEGA_time -- where the decoding is (V1)

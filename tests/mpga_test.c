@@ -1,5 +1,5 @@
 /*
- * amcempega.library's test: each file named decoded through mpega's
+ * ambmpega.library's test: each file named decoded through mpega's
  * functions (on the host: src/mpga.c built in; on the 68k: the library
  * opened from PROGDIR:Libs), in several ways, and the samples' CRC-32
  * printed (big-endian words, left and right interleaved) with the
@@ -28,7 +28,7 @@
 #include <proto/mpega.h>
 struct Library *MPEGABase;
 #ifndef MPGA_TEST_LIB
-#define MPGA_TEST_LIB AMCEMPEGANAME
+#define MPGA_TEST_LIB AMBMPEGANAME
 #endif
 #else
 MPEGA_STREAM *MPEGA_open(char *, MPEGA_CTRL *);
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
     }
 #endif
 #if defined(__amigaos__) && !defined(MPGA_STATIC)
-    if (!(MPEGABase = OpenLibrary((CONST_STRPTR)"PROGDIR:Libs/" MPGA_TEST_LIB, AMCEMPEGAVERSION))) {
+    if (!(MPEGABase = OpenLibrary((CONST_STRPTR)"PROGDIR:Libs/" MPGA_TEST_LIB, AMBMPEGAVERSION))) {
         printf("no %s\n", MPGA_TEST_LIB);
         return 20;
     }

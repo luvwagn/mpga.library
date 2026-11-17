@@ -1,5 +1,12 @@
-amcempega.library: changes
-==========================
+ambmpega.library: changes
+=========================
+
+1.1 (17 November 2026)
+----------------------
+
+- Renamed ambmpega.library (was amcempega.library), as AmigaMCE became
+  Ambiance: AMBMPEGANAME and AMBMPEGAVERSION in libraries/mpega.h. The
+  functions are unchanged.
 
 1.0 (15 November 2026)
 ----------------------

@@ -1,4 +1,4 @@
-| amcempega.library's output for the 68020 and later, written by hand:
+| ambmpega.library's output for the 68020 and later, written by hand:
 | the synthesised samples (libmad's fixed point, 28 fractional bits) to
 | what the program's output wants, as src/mpga.c's C does it (the same
 | bytes: make test compares them with the host's). Each sample rounded to

@@ -1,9 +1,9 @@
 /*
- * amcempega.library: MPEG audio (MPEG-1, MPEG-2 and MPEG-2.5; Layers I,
+ * ambmpega.library: MPEG audio (MPEG-1, MPEG-2 and MPEG-2.5; Layers I,
  * II and III) decoded to 16-bit PCM by libmad (third_party/libmad),
  * behind mpega.library's functions (include/libraries/mpega.h): a program
  * written for mpega.library works unchanged, only the name it opens
- * differs. Made for AmigaMCE, which can choose it or LIBS:mpega.library.
+ * differs. Made for Ambiance, which can choose it or LIBS:mpega.library.
  *
  * A stream: MPEGA_open (the file named, or a program's bitstream hook),
  * MPEGA_decode_frame for each frame's samples, MPEGA_seek and MPEGA_time
@@ -12,7 +12,7 @@
  * (16 KB: its Layer III decoding has 9 KB of arrays on the stack), so a
  * caller with a small stack is safe.
  *
- * (c) 2026 Brian King. amcempega.library is free software under the GNU
+ * (c) 2026 Brian King. ambmpega.library is free software under the GNU
  * General Public License, version 3 or (at your option) any later version
  * (LICENSE); libmad inside is GPL-2.0-or-later
  * (third_party/libmad/COPYING).
@@ -37,7 +37,7 @@ const char LibName[] = MPGA_LIBNAME;
 const char LibIdString[] = MPGA_LIBID;
 static const char __attribute__((used)) LibVerTag[] = "$VER: " MPGA_LIBID;
 const UWORD LibVersion = 1;
-const UWORD LibRevision = 0;
+const UWORD LibRevision = 1;
 
 struct ExecBase *SysBase;
 struct DosLibrary *DOSBase;
@@ -848,7 +848,7 @@ LONG MPEGA_decode_frame(MPEGA_STREAM *s, WORD **pcm)
     return run(m, decode_work);
 }
 
-/* amcempega.library's own: the next frame straight into the program's
+/* ambmpega.library's own: the next frame straight into the program's
  * buffers, in the format its output wants */
 LONG MPGA_decode_to(MPEGA_STREAM *s, struct MpgaOut *o)
 {
@@ -942,6 +942,6 @@ ADDTABL_2(MPEGA_seek, a0, d0);
 ADDTABL_2(MPEGA_time, a0, a1);
 ADDTABL_2(MPEGA_find_sync, a0, d0);
 ADDTABL_2(MPEGA_scale, a0, d0);
-ADDTABL_2(MPGA_decode_to, a0, a1);         /* (amcempega.library's own, after mpega's) */
+ADDTABL_2(MPGA_decode_to, a0, a1);         /* (ambmpega.library's own, after mpega's) */
 ADDTABL_END();
 #endif

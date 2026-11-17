@@ -1,4 +1,4 @@
-| amcempega.library's synthesis window for the 68020 and later, written
+| ambmpega.library's synthesis window for the 68020 and later, written
 | by hand: libmad's synth_full and synth_half (third_party/libmad/synth.c,
 | built with OPT_SSO) after their 32-point DCT. Each filter value is read
 | once for the two samples it is in.

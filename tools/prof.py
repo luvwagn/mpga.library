@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# amcempega.library's tools (mpegv.library's): where a 68k program's time
+# ambmpega.library's tools (mpegv.library's): where a 68k program's time
 # goes, under vamos (68020 cycle counts, from Musashi): its PC sampled every SLICE cycles, each sample
 # given to the function it falls in by the program's symbols (nm).
 # GPL-3.0-or-later, (c) 2026 Brian King.

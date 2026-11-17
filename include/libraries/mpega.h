@@ -1,12 +1,12 @@
 /*
- * mpega.library's interface, as amcempega.library offers it: MPEG audio
+ * mpega.library's interface, as ambmpega.library offers it: MPEG audio
  * (MPEG-1, MPEG-2 and MPEG-2.5; Layers I, II and III) decoded to 16-bit
  * PCM. The same functions, structures and constants as Stephane Tavenard's
  * mpega.library 2 (its documentation, mpega.doc), so a program written for
  * it works unchanged with either library: only the name it opens differs.
  *
  * This header, mpga_lib.sfd and the clib, inline and proto headers made
- * from it are MIT: (c) 2026 Brian King. amcempega.library itself is
+ * from it are MIT: (c) 2026 Brian King. ambmpega.library itself is
  * GPL-3.0-or-later (libmad inside): see README.md.
  */
 #ifndef LIBRARIES_MPEGA_H
@@ -19,8 +19,8 @@
 #include <utility/hooks.h>
 #endif
 
-#define AMCEMPEGANAME       "amcempega.library"
-#define AMCEMPEGAVERSION    1
+#define AMBMPEGANAME       "ambmpega.library"
+#define AMBMPEGAVERSION    1
 #define MPEGA_VERSION       2       /* mpega.library's own, for its programs */
 
 /* Decoding qualities (MPEGA_OUTPUT's quality) */
@@ -124,7 +124,7 @@ typedef struct {
 #define MPEGA_ERR_BADVALUE (MPEGA_ERR_BASE - 5)
 
 /*
- * amcempega.library's own (V1), after mpega's functions: MPGA_decode_to,
+ * ambmpega.library's own (V1), after mpega's functions: MPGA_decode_to,
  * the next frame straight into the program's buffers in the format its
  * output wants, so that it need not be copied and converted again.
  * mo_Buffer[] are rings of mo_Mask + 1 samples (a power of two; ~0 for a
