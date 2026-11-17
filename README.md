@@ -3,10 +3,10 @@
 MPEG audio decoded to 16-bit PCM for any Amiga program (68020 or better,
 no FPU needed), behind **mpega.library's functions**: a program written for
 mpega.library works unchanged; only the name it opens differs
-(`AMBMPEGANAME`, "ambmpega.library"). Made for Ambiance, a media centre
-for the Amiga, which keeps it in its own `Libs` and can use it or whichever
-`mpega.library` is in `LIBS:` (Stéphane Tavenard's, a libmad clone, or the
-ZZ9000's, which decodes on the card).
+(`AMBMPEGANAME`, "ambmpega.library"). Made for Ambiance, an Amiga Media
+Center application, which keeps it in its own `Libs` and can use it or
+whichever `mpega.library` is in `LIBS:` (Stéphane Tavenard's, a libmad
+clone, or the ZZ9000's, which decodes on the card).
 
 - MPEG-1, MPEG-2 (16, 22.05, 24 kHz) and MPEG-2.5 (8, 11.025, 12 kHz);
   Layers I, II and III; stereo, joint stereo, dual channel and mono;
