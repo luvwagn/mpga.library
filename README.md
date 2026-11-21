@@ -33,6 +33,31 @@ clone, or the ZZ9000's, which decodes on the card).
 Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler; a 68060
 build without 64-bit multiplies.
 
+## Why not mpega.library?
+
+It is not for speed: Stéphane Tavenard's mpega.library 2.4 (1999) is
+still the faster decoder in every mode measured (see Speed). It is fast
+because its arithmetic is rough:
+
+- **Accuracy.** mpega 2.4 is 34 dB from a floating-point decoder on MP3
+  at its best quality (56 dB on Layer II), and 12 dB with stereo decoded
+  as mono. ambmpega.library is 83 dB at high quality, 70 dB at medium.
+- **A name of its own.** The ZZ9000's driver installer (2.9.1) copies its
+  own mpega.library over `LIBS:mpega.library` with no backup, so a program
+  that needs a particular decoder cannot count on that name.
+- **No copy afterwards.** `MPGA_decode_to` writes each frame straight into
+  the program's ring buffers in its output's format, counting peaks and
+  clipping as it goes; with mpega's functions each frame is decoded into
+  mpega's buffers, then copied and converted.
+- **Source and tests.** libmad with Debian's security fixes, its own
+  16 KB stack, a test suite that runs the 68k build against the host build,
+  and a licence that lets it be published and maintained in the open.
+
+Against the other libmad-based mpega.library clones, which are as
+accurate, it is the faster at 22 kHz and in mono: they decode every
+subband and channel and throw the extra away, so their 22 kHz and mono
+save almost nothing, while ambmpega.library leaves that work out.
+
 ## Using it
 
 ```c
@@ -87,11 +112,30 @@ A 68020's cycles a frame (26.12 ms of sound at 44.1 kHz), as vamos's
 Musashi core counts them, for 10 s of music at 128 kbit/s stereo MP3
 (and, after the slash, Layer II at 224 kbit/s):
 
-| | 44.1 kHz stereo | 22 kHz | mono 22 kHz |
-|---|---|---|---|
-| ambmpega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M |
-| ambmpega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M |
-| mpega.library 2.4 (Tavenard, integer) | 4.07 / 2.92 M | 2.37 M | 1.42 M |
+| | 44.1 kHz stereo | 22 kHz | mono 22 kHz | SNR (MP3) |
+|---|---|---|---|---|
+| ambmpega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M | 83 dB |
+| ambmpega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M | 70 dB |
+| mpega.library 2.4 (Tavenard, integer) | **4.07 / 2.92 M** | **2.37 M** | **1.42 M** | 34 dB |
+| mpega080 2.6.3 (libmad), 68020 build | 4.23 / 3.97 M | 4.24 M | 4.07 M | 80 dB |
+| AmiKit mpega.library 3.1 (libmad), `-hifi` | 5.91 / 5.38 M | 5.71 M | 5.56 M | 80 dB |
+
+SNR is against ffmpeg's floating-point decoder (`make snr`; ffmpeg's own
+fixed-point decoder scores 86 dB). mpega 2.4's 020, 040 and 060 integer
+builds are the same code; its FPU builds cannot run under vamos.
+
+What these figures are not:
+
+- **Real hardware.** Musashi models no caches or wait states; a real
+  68030 or 68060, or an emulator's JIT, will give other times, though
+  probably the same order.
+- **Real time on a 68020/030.** A frame lasts 26.12 ms, so 4.46 M cycles
+  a frame is about 170 M 68020 cycles a second: full-rate stereo MP3 is
+  beyond a 68020 or 68030 with any of these decoders, and at 22 kHz mono
+  mpega 2.4 (about 54 M a second) has the real edge on those machines.
+- **A 68060.** Both qualities use `MULS.L` 32 x 32 -> 64, which a 68060
+  lacks; 68060.library emulates each one, so on a 68060 this build is
+  slow. A build without them is still to be done.
 
 At medium quality the synthesis window is still 42% of the time (its
 36,288 products a frame), the 32-point DCT 17%: where the work goes next.
