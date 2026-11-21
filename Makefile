@@ -6,15 +6,17 @@
 #
 #   make            build/ambmpega.library (68020 and up, no FPU: each
 #                   fixed-point multiply one MULS.L 32 x 32 -> 64) and
-#                   build/ambmpega060.library (68060: the same products
+#                   build/ambmpega060.library (68060: libmad's products
 #                   from 32-bit multiplies, which a 68060 does itself, where
 #                   it has no MULS.L 32 x 32 -> 64 and 68060.library would
-#                   emulate each; the same samples to the bit)
+#                   emulate each; 2^-24 of full scale from them at most,
+#                   the same SNR)
 #   make test       the fixtures decoded in several ways (22 and 11 kHz,
 #                   mono, half loudness, by name, from a second in) on this
 #                   computer and through each library under vamos: the
-#                   samples' CRCs alike, and as tests/expected.txt; and no
-#                   64-bit multiply or divide in the 68060's
+#                   samples' CRCs alike, and as tests/expected.txt (the
+#                   68060's: tests/expected060.txt); and no 64-bit multiply
+#                   or divide in the 68060's
 #   make snr        each fixture against ffmpeg's floating-point decoder
 #                   (the signal-to-noise ratio; needs ffmpeg)
 #
@@ -44,6 +46,7 @@ OBJ     = build/060
 CPU     = -m68060
 FPM     = -DFPM_68060 -DOPT_SPEED
 VCPU    = 68040
+EXPECT  = tests/expected060.txt
 else
 LIBNAME = ambmpega.library
 LIBID   = $(LIBNAME) $(LIBDATE), 68020+
@@ -51,6 +54,7 @@ OBJ     = build/68k
 CPU     = -m68020
 FPM     = -DFPM_64BIT -DOPT_SPEED
 VCPU    = 68020
+EXPECT  = tests/expected.txt
 endif
 AS      = m68k-amigaos-as $(CPU)
 LIB     = build/$(LIBNAME)
@@ -70,6 +74,13 @@ build/ambmpega060.library: FORCE
 	@$(MAKE) --no-print-directory VARIANT=060 $@
 test: test-one
 	@$(MAKE) --no-print-directory VARIANT=060 test
+	@mkdir -p build/close
+	@for f in $(FIX); do b=$$(basename $$f); \
+		build/host/mpga_test -w build/close/$$b.a $$f > /dev/null; \
+		build/host060/mpga_test -w build/close/$$b.b $$f > /dev/null; \
+		$(PYTHON) tools/maxdiff.py build/close/$$b.a build/close/$$b.b 1 > build/close/$$b.txt \
+		|| { echo "$$b: the 68060's build is further off: $$(cat build/close/$$b.txt)"; exit 1; }; done
+	@echo "  CHECK the 68060's samples within a step of the 68020's, every fixture"
 endif
 
 # the 68k's objects (libmad's own quietly; timer.c's sprintf, which only
@@ -138,14 +149,14 @@ test-one: $(HOSTOBJ)/mpga_test $(OBJ)/mpga_test $(LIB) $(FIX)
 		sys.exit(0 if i >= 0 and d[i+11] == $(LIBVER) else 'its Resident says version %d, not $(LIBVER)' % d[i+11])" \
 		&& echo "  CHECK the library's Resident: version $(LIBVER), as LibVersion (ramlib turns an older one away)"
 	@cd tests/fixtures && ../../$(HOSTOBJ)/mpga_test $(notdir $(FIX)) > ../../$(HOSTOBJ)/crc.txt
-	@cmp -s $(HOSTOBJ)/crc.txt tests/expected.txt \
-		&& echo "  CHECK MPEG audio decoding (host) ok" || { diff $(HOSTOBJ)/crc.txt tests/expected.txt; exit 1; }
+	@cmp -s $(HOSTOBJ)/crc.txt $(EXPECT) \
+		&& echo "  CHECK MPEG audio decoding (host, $(EXPECT)) ok" || { diff $(HOSTOBJ)/crc.txt $(EXPECT); exit 1; }
 	@cp $(FIX) $(OBJ)/prog/
 	@rm -rf $(OBJ)/vols; cd $(OBJ)/prog && vamos -C $(VCPU) -m 8192 -s 8 --vols-base-dir $(abspath $(OBJ)/vols) \
 		-V prog:$(abspath $(OBJ)/prog) -- prog:mpga_test $(notdir $(FIX)) > ../out.txt 2> ../err.txt; \
-		cmp -s ../out.txt ../../../tests/expected.txt \
+		cmp -s ../out.txt ../../../$(EXPECT) \
 		&& echo "  CHECK the same through $(LIBNAME) on a $(VCPU) (vamos, an 8 KB stack) ok" \
-		|| { diff ../out.txt ../../../tests/expected.txt | head; tail -5 ../err.txt; exit 1; }
+		|| { diff ../out.txt ../../../$(EXPECT) | head; tail -5 ../err.txt; exit 1; }
 
 # a 68060 has no MULS.L or DIVS.L with a 64-bit product or dividend (in
 # objdump's syntax: mulsl, mulul, divsl and divul with three operands)

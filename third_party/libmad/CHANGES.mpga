@@ -42,8 +42,10 @@ Changes:
    low word, one MULS.W each (ambmpega.library's medium and low quality);
    in C on the host (mpga_window16), in assembler on the 68k, the same.
 
-5. (21 November 2026) fixed.h: FPM_68060, for ambmpega060.library: the
-   same mad_f_mul as FPM_64BIT (without OPT_ACCURACY), to the bit, from
-   32-bit multiplies alone (a 68060 has no 32 x 32 -> 64), the 64-bit
-   product's parts added as two 32-bit halves. Checked against the 64-bit
-   product on 200 million pairs; without FPM_68060 nothing changes.
+5. (21 November 2026) fixed.h: FPM_68060, for ambmpega060.library:
+   mad_f_mul from 32-bit multiplies alone (a 68060 has no 32 x 32 -> 64):
+   x y >> 28 as (xh yh << 4) + (xh yl >> 12) + (xl yh >> 12), the 16-bit
+   halves' low product and carries left out. Up to 17 steps of 2^-28
+   below FPM_64BIT's product (200 million random pairs): the same SNR to
+   0.1 dB, the samples within a step of FPM_64BIT's. Without FPM_68060
+   nothing changes.

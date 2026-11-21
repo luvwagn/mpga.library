@@ -1,0 +1,108 @@
+l2_44_192.mp2: find_sync 0
+l2_44_192.mp2: MPEG-1 layer 2, mode 0, 44100 Hz, 192 kbit/s, 2 channels, 3004 ms
+l2_44_192.mp2, as it is: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 1132c34b
+l2_44_192.mp2, 22 kHz: 22050 Hz, 2 channels: 115 frames, 66240 samples, 3004 ms, crc 1edb8b99
+l2_44_192.mp2, 11 kHz: 11025 Hz, 2 channels: 115 frames, 33120 samples, 3004 ms, crc 728202a7
+l2_44_192.mp2, mono: 44100 Hz, 1 channels: 115 frames, 132480 samples, 3004 ms, crc a9c14e52
+l2_44_192.mp2, mono 22 kHz: 22050 Hz, 1 channels: 115 frames, 66240 samples, 3004 ms, crc dfdaab75
+l2_44_192.mp2, half loudness: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 754f69e8
+l2_44_192.mp2, by name: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 1132c34b
+l2_44_192.mp2, from 1 s: 44100 Hz, 2 channels: 76 frames, 87552 samples, 2985 ms, crc a4d81f13
+l2_44_192.mp2, to 16-bit rings: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 1132c34b, peak 23168, 0 clipped
+l2_44_192.mp2, to AHI's 16-bit stereo: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 1132c34b, peak 23168, 0 clipped
+l2_44_192.mp2, to Paula's 8 bits: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc fbd16c85, peak 23168, 0 clipped
+l2_44_192.mp2, to 8 bits dithered, 3 times as loud: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 5bc79ec2, peak 32767, 50153 clipped
+l2_44_192.mp2, to Paula's 14 bits: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc fbed4934, peak 23168, 0 clipped
+l2_44_192.mp2, to 14 bits, mono: 44100 Hz, 1 channels: 115 frames, 132480 samples, 3004 ms, crc 1cd20b03, peak 18124, 0 clipped
+l2_44_192.mp2, medium quality: 44100 Hz, 2 channels: 115 frames, 132480 samples, 3004 ms, crc 4c0f59d8
+l2_44_192.mp2, medium quality, 22 kHz: 22050 Hz, 2 channels: 115 frames, 66240 samples, 3004 ms, crc f20b5ea9
+l2_48_mono.mp2: find_sync 0
+l2_48_mono.mp2: MPEG-1 layer 2, mode 3, 48000 Hz, 96 kbit/s, 1 channels, 3000 ms
+l2_48_mono.mp2, as it is: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc e1b49ecf
+l2_48_mono.mp2, 22 kHz: 24000 Hz, 1 channels: 125 frames, 72000 samples, 3000 ms, crc 887bb9eb
+l2_48_mono.mp2, 11 kHz: 12000 Hz, 1 channels: 125 frames, 36000 samples, 3000 ms, crc 57838069
+l2_48_mono.mp2, mono: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc e1b49ecf
+l2_48_mono.mp2, mono 22 kHz: 24000 Hz, 1 channels: 125 frames, 72000 samples, 3000 ms, crc 887bb9eb
+l2_48_mono.mp2, half loudness: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 24ece66c
+l2_48_mono.mp2, by name: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc e1b49ecf
+l2_48_mono.mp2, from 1 s: 48000 Hz, 1 channels: 83 frames, 95616 samples, 2992 ms, crc d4fcec0c
+l2_48_mono.mp2, to 16-bit rings: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc e1b49ecf, peak 17557, 0 clipped
+l2_48_mono.mp2, to AHI's 16-bit stereo: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc e1b49ecf, peak 17557, 0 clipped
+l2_48_mono.mp2, to Paula's 8 bits: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc f124a3cc, peak 17557, 0 clipped
+l2_48_mono.mp2, to 8 bits dithered, 3 times as loud: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 78039b58, peak 32767, 7208 clipped
+l2_48_mono.mp2, to Paula's 14 bits: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 0ee06218, peak 17557, 0 clipped
+l2_48_mono.mp2, to 14 bits, mono: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 0ee06218, peak 17557, 0 clipped
+l2_48_mono.mp2, medium quality: 48000 Hz, 1 channels: 125 frames, 144000 samples, 3000 ms, crc 99e9de34
+l2_48_mono.mp2, medium quality, 22 kHz: 24000 Hz, 1 channels: 125 frames, 72000 samples, 3000 ms, crc 3abf0924
+l3_11_mpeg25.mp3: find_sync 45
+l3_11_mpeg25.mp3: MPEG-2 layer 3, mode 1, 11025 Hz, 24 kbit/s, 2 channels, 3134 ms
+l3_11_mpeg25.mp3, as it is: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 02546ddd
+l3_11_mpeg25.mp3, 22 kHz: 5512 Hz, 2 channels: 60 frames, 17280 samples, 3134 ms, crc c78bc831
+l3_11_mpeg25.mp3, 11 kHz: 2756 Hz, 2 channels: 60 frames, 8640 samples, 3134 ms, crc 2b47c7ba
+l3_11_mpeg25.mp3, mono: 11025 Hz, 1 channels: 60 frames, 34560 samples, 3134 ms, crc 98b3672c
+l3_11_mpeg25.mp3, mono 22 kHz: 5512 Hz, 1 channels: 60 frames, 17280 samples, 3134 ms, crc 8abf3d19
+l3_11_mpeg25.mp3, half loudness: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 7a203a9d
+l3_11_mpeg25.mp3, by name: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 02546ddd
+l3_11_mpeg25.mp3, from 1 s: 11025 Hz, 2 channels: 38 frames, 21888 samples, 2985 ms, crc 2d65e1b8
+l3_11_mpeg25.mp3, to 16-bit rings: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 02546ddd, peak 18866, 0 clipped
+l3_11_mpeg25.mp3, to AHI's 16-bit stereo: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 02546ddd, peak 18866, 0 clipped
+l3_11_mpeg25.mp3, to Paula's 8 bits: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 833f52d4, peak 18866, 0 clipped
+l3_11_mpeg25.mp3, to 8 bits dithered, 3 times as loud: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 50439ed4, peak 32767, 3238 clipped
+l3_11_mpeg25.mp3, to Paula's 14 bits: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 88cc6c18, peak 18866, 0 clipped
+l3_11_mpeg25.mp3, to 14 bits, mono: 11025 Hz, 1 channels: 60 frames, 34560 samples, 3134 ms, crc c9b2981a, peak 10179, 0 clipped
+l3_11_mpeg25.mp3, medium quality: 11025 Hz, 2 channels: 60 frames, 34560 samples, 3134 ms, crc 39fb99db
+l3_11_mpeg25.mp3, medium quality, 22 kHz: 5512 Hz, 2 channels: 60 frames, 17280 samples, 3134 ms, crc fa76d37e
+l3_22_mono.mp3: find_sync 45
+l3_22_mono.mp3: MPEG-2 layer 3, mode 3, 22050 Hz, 40 kbit/s, 1 channels, 3056 ms
+l3_22_mono.mp3, as it is: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 819fe015
+l3_22_mono.mp3, 22 kHz: 11025 Hz, 1 channels: 117 frames, 33696 samples, 3056 ms, crc 7e26177a
+l3_22_mono.mp3, 11 kHz: 5512 Hz, 1 channels: 117 frames, 16848 samples, 3056 ms, crc b01c5be9
+l3_22_mono.mp3, mono: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 819fe015
+l3_22_mono.mp3, mono 22 kHz: 11025 Hz, 1 channels: 117 frames, 33696 samples, 3056 ms, crc 7e26177a
+l3_22_mono.mp3, half loudness: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 58c799f7
+l3_22_mono.mp3, by name: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 819fe015
+l3_22_mono.mp3, from 1 s: 22050 Hz, 1 channels: 76 frames, 43776 samples, 2985 ms, crc 58098a85
+l3_22_mono.mp3, to 16-bit rings: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 819fe015, peak 23045, 0 clipped
+l3_22_mono.mp3, to AHI's 16-bit stereo: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 819fe015, peak 23045, 0 clipped
+l3_22_mono.mp3, to Paula's 8 bits: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc ad432142, peak 23045, 0 clipped
+l3_22_mono.mp3, to 8 bits dithered, 3 times as loud: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 200aa725, peak 32767, 7465 clipped
+l3_22_mono.mp3, to Paula's 14 bits: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 93ae22b3, peak 23045, 0 clipped
+l3_22_mono.mp3, to 14 bits, mono: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc 93ae22b3, peak 23045, 0 clipped
+l3_22_mono.mp3, medium quality: 22050 Hz, 1 channels: 117 frames, 67392 samples, 3056 ms, crc b7c1d4c5
+l3_22_mono.mp3, medium quality, 22 kHz: 11025 Hz, 1 channels: 117 frames, 33696 samples, 3056 ms, crc 063b9aaf
+l3_44_js128.mp3: find_sync 71
+l3_44_js128.mp3: MPEG-1 layer 3, mode 1, 44100 Hz, 128 kbit/s, 2 channels, 3030 ms
+l3_44_js128.mp3, as it is: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a8ff6982
+l3_44_js128.mp3, 22 kHz: 22050 Hz, 2 channels: 116 frames, 66816 samples, 3030 ms, crc 62cc3ed8
+l3_44_js128.mp3, 11 kHz: 11025 Hz, 2 channels: 116 frames, 33408 samples, 3030 ms, crc ee69b7ca
+l3_44_js128.mp3, mono: 44100 Hz, 1 channels: 116 frames, 133632 samples, 3030 ms, crc 04ddeb36
+l3_44_js128.mp3, mono 22 kHz: 22050 Hz, 1 channels: 116 frames, 66816 samples, 3030 ms, crc 76efc717
+l3_44_js128.mp3, half loudness: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc 5fdbc9df
+l3_44_js128.mp3, by name: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a8ff6982
+l3_44_js128.mp3, from 1 s: 44100 Hz, 2 channels: 75 frames, 86400 samples, 2959 ms, crc 9f22c7f0
+l3_44_js128.mp3, to 16-bit rings: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a8ff6982, peak 18102, 0 clipped
+l3_44_js128.mp3, to AHI's 16-bit stereo: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc a8ff6982, peak 18102, 0 clipped
+l3_44_js128.mp3, to Paula's 8 bits: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc cdfdc884, peak 18102, 0 clipped
+l3_44_js128.mp3, to 8 bits dithered, 3 times as loud: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc 5c601f89, peak 32767, 50537 clipped
+l3_44_js128.mp3, to Paula's 14 bits: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc 090a7f9b, peak 18102, 0 clipped
+l3_44_js128.mp3, to 14 bits, mono: 44100 Hz, 1 channels: 116 frames, 133632 samples, 3030 ms, crc b4f3f534, peak 16566, 0 clipped
+l3_44_js128.mp3, medium quality: 44100 Hz, 2 channels: 116 frames, 133632 samples, 3030 ms, crc de2c7f18
+l3_44_js128.mp3, medium quality, 22 kHz: 22050 Hz, 2 channels: 116 frames, 66816 samples, 3030 ms, crc e5f74bc7
+l3_48_vbr.mp3: find_sync 45
+l3_48_vbr.mp3: MPEG-1 layer 3, mode 1, 48000 Hz, 320 kbit/s, 2 channels, 3024 ms
+l3_48_vbr.mp3, as it is: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c5f6a44f
+l3_48_vbr.mp3, 22 kHz: 24000 Hz, 2 channels: 126 frames, 72576 samples, 3024 ms, crc 1286bdec
+l3_48_vbr.mp3, 11 kHz: 12000 Hz, 2 channels: 126 frames, 36288 samples, 3024 ms, crc a6ebde7a
+l3_48_vbr.mp3, mono: 48000 Hz, 1 channels: 126 frames, 145152 samples, 3024 ms, crc a5343783
+l3_48_vbr.mp3, mono 22 kHz: 24000 Hz, 1 channels: 126 frames, 72576 samples, 3024 ms, crc 0d25a32d
+l3_48_vbr.mp3, half loudness: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc d3824357
+l3_48_vbr.mp3, by name: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c5f6a44f
+l3_48_vbr.mp3, from 1 s: 48000 Hz, 2 channels: 82 frames, 94464 samples, 2968 ms, crc 1c314402
+l3_48_vbr.mp3, to 16-bit rings: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c5f6a44f, peak 18489, 0 clipped
+l3_48_vbr.mp3, to AHI's 16-bit stereo: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c5f6a44f, peak 18489, 0 clipped
+l3_48_vbr.mp3, to Paula's 8 bits: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc 2ae835e5, peak 18489, 0 clipped
+l3_48_vbr.mp3, to 8 bits dithered, 3 times as loud: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc 9d08e97d, peak 32767, 65947 clipped
+l3_48_vbr.mp3, to Paula's 14 bits: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc f4d720c8, peak 18489, 0 clipped
+l3_48_vbr.mp3, to 14 bits, mono: 48000 Hz, 1 channels: 126 frames, 145152 samples, 3024 ms, crc 56d74370, peak 17013, 0 clipped
+l3_48_vbr.mp3, medium quality: 48000 Hz, 2 channels: 126 frames, 145152 samples, 3024 ms, crc c630343a
+l3_48_vbr.mp3, medium quality, 22 kHz: 24000 Hz, 2 channels: 126 frames, 72576 samples, 3024 ms, crc 5ae3a0e9
