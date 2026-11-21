@@ -41,7 +41,9 @@ because its arithmetic is rough:
 
 - **Accuracy.** mpega 2.4 is 34 dB from a floating-point decoder on MP3
   at its best quality (56 dB on Layer II), and 12 dB with stereo decoded
-  as mono. ambmpega.library is 83 dB at high quality, 70 dB at medium.
+  as mono. ambmpega.library is 83 dB at high quality, in stereo or mono
+  alike (its mono against the float decoder's left and right averaged),
+  70 dB at medium.
 - **A name of its own.** The ZZ9000's driver installer (2.9.1) copies its
   own mpega.library over `LIBS:mpega.library` with no backup, so a program
   that needs a particular decoder cannot count on that name.
