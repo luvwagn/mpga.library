@@ -49,3 +49,8 @@ Changes:
    below FPM_64BIT's product (200 million random pairs): the same SNR to
    0.1 dB, the samples within a step of FPM_64BIT's. Without FPM_68060
    nothing changes.
+
+6. (21 November 2026) synth.c: with MPGA_DCT_ASM (the 68k's builds)
+   dct32 is ambmpega.library's src/dct32_68k.s, which tools/gen_dct32.py
+   writes from this file's dct32: the same operations, so the same
+   samples; the host builds the C as it was.

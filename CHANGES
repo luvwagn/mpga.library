@@ -1,6 +1,18 @@
 ambmpega.library: changes
 =========================
 
+1.3 (21 November 2026)
+----------------------
+
+- dct32 in 68k assembler (src/dct32_68k.s), both builds, written from
+  libmad's C by tools/gen_dct32.py: the same samples. ambmpega.library's
+  products are one MULS.L 32 x 32 -> 64 each by the constant shifted so
+  that the high register is the result. A frame of 128 kbit/s MP3: 4.94 M
+  68020 cycles -> 4.82 M; Layer II 4.07 M -> 3.94 M. ambmpega060.library:
+  850 k instructions a frame -> 788 k (MP3), 587 k -> 526 k (Layer II).
+- make prof INSTR=1: instructions by function (tools/prof_instr.py), and
+  VARIANT=060 profiles the 68060's build.
+
 1.2 (21 November 2026)
 ----------------------
 

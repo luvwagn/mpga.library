@@ -36,7 +36,7 @@ MAD     = third_party/libmad
 MAD_SRC = $(addprefix $(MAD)/,bit.c fixed.c frame.c huffman.c layer12.c layer3.c stream.c synth.c timer.c)
 SRC     = src/mpga.c $(MAD_SRC)
 HDR     = $(wildcard $(MAD)/*.h $(MAD)/*.dat src/port/*.h include/*/*.h)
-LIBDATE = 1.2 (21.11.2026) libmad 0.15.1b
+LIBDATE = 1.3 (21.11.2026) libmad 0.15.1b
 # VARIANT 060 (make's own recursion: make build/ambmpega060.library) is
 # the 68060's build; otherwise the 68020's
 ifeq ($(VARIANT),060)
@@ -116,10 +116,18 @@ $(OBJ)/synth_68k.o: src/synth_68k.s
 	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) -o $@ $<
-# the 68k's synthesis window in assembler (the host builds libmad's C)
-$(OBJ)/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM
+# the 68k's synthesis window and dct32 in assembler (the host builds
+# libmad's C); dct32 written from the C by tools/gen_dct32.py, both builds'
+$(OBJ)/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM -DMPGA_DCT_ASM
+src/dct32_68k.s: tools/gen_dct32.py $(MAD)/synth.c
+	@echo "  GEN   $@"
+	@$(PYTHON) tools/gen_dct32.py $(MAD)/synth.c > $@
+$(OBJ)/dct32_68k.o: src/dct32_68k.s
+	@mkdir -p $(OBJ)
+	@echo "  AS    $<"
+	@$(AS) --defsym MPGA060=$(if $(filter 060,$(VARIANT)),1,0) -o $@ $<
 
-$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/out_68k.o
+$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/out_68k.o
 	@echo "  LD    $@"
 	@$(LIBCC) -o $@.dbg $^ -lamiga
 	@$(STRIP) -o $@ $@.dbg
@@ -181,30 +189,35 @@ snr: $(HOSTOBJ)/mpga_test $(FIX)
 # their static functions can be placed (tools/syms.py)
 #   make prof MP3=file [N=300] [WAY=0]
 N   ?= 300
-PROFOBJ = build/prof/mpga_test.o $(patsubst %.c,build/prof/%.o,$(notdir $(SRC))) $(OBJ)/stack.o \
-          $(OBJ)/synth_68k.o $(OBJ)/out_68k.o
-build/prof/mpga_test.o: tests/mpga_test.c $(HDR)
-	@mkdir -p build/prof
+PROFDIR = build/prof$(VARIANT)
+PROFOBJ = $(PROFDIR)/mpga_test.o $(patsubst %.c,$(PROFDIR)/%.o,$(notdir $(SRC))) $(OBJ)/stack.o \
+          $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/out_68k.o
+$(PROFDIR)/mpga_test.o: tests/mpga_test.c $(HDR)
+	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<
-build/prof/mpga.o: src/mpga.c $(HDR)
-	@mkdir -p build/prof
+$(PROFDIR)/mpga.o: src/mpga.c $(HDR)
+	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w -DMPGA_STATIC -DMPGA_OUT_ASM $(FLAGS) -c -o $@ $<
-build/prof/synth.o: $(MAD)/synth.c $(HDR)
-	@mkdir -p build/prof
-	@$(LIBCC) -w -DMPGA_WINDOW_ASM $(FLAGS) -c -o $@ $<
-build/prof/timer.o: $(MAD)/timer.c $(HDR)
-	@mkdir -p build/prof
+$(PROFDIR)/synth.o: $(MAD)/synth.c $(HDR)
+	@mkdir -p $(PROFDIR)
+	@$(LIBCC) -w -DMPGA_WINDOW_ASM -DMPGA_DCT_ASM $(FLAGS) -c -o $@ $<
+$(PROFDIR)/timer.o: $(MAD)/timer.c $(HDR)
+	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
-build/prof/%.o: $(MAD)/%.c $(HDR)
-	@mkdir -p build/prof
+$(PROFDIR)/%.o: $(MAD)/%.c $(HDR)
+	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
-build/prof/mpga_prof: $(PROFOBJ)
+$(PROFDIR)/mpga_prof: $(PROFOBJ)
 	@echo "  LD    $@"
 	@$(CC) $(CPU) -noixemul -Wl,-Map=$@.map -o $@ $^
 	@$(PYTHON) tools/syms.py $@.map $^ > $@.syms
-prof: build/prof/mpga_prof
-	@rm -rf build/prof/run && mkdir -p build/prof/run && cp build/prof/mpga_prof $(MP3) build/prof/run/
-	@cd build/prof/run && $$(dirname $$(command -v vamos))/python ../../../tools/prof.py ../mpga_prof.syms -- \
+# vamos's own Python: a python beside vamos (a venv), or the one its
+# wrapper script runs, with its PYTHONPATH
+VAMOS_PY ?= $(shell v=$$(command -v vamos); d=$$(dirname $$v); if [ -x $$d/python ]; then echo $$d/python; \
+	else sed -n 's/^PYTHONPATH=\([^ ]*\) exec \([^ ]*\) .*/env PYTHONPATH=\1 \2/p' $$v; fi)
+prof: $(PROFDIR)/mpga_prof
+	@rm -rf $(PROFDIR)/run && mkdir -p $(PROFDIR)/run && cp $(PROFDIR)/mpga_prof $(MP3) $(PROFDIR)/run/
+	@cd $(PROFDIR)/run && $(VAMOS_PY) ../../../tools/$(if $(INSTR),prof_instr.py,prof.py) ../mpga_prof.syms -- \
 		-C 68020 -m 8192 -s 64 --vols-base-dir vols -V prog:. -- prog:mpga_prof -n $(N) -way $(or $(WAY),0) \
 		prog:$(notdir $(MP3)) 2>&1 | grep -v "WARN\|INFO\|orphan" | head -30
 

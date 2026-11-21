@@ -118,6 +118,16 @@ void mad_synth_mute(struct mad_synth *synth)
 # endif
 
 /*
+ * ambmpega.library (CHANGES.mpga): with MPGA_DCT_ASM (the 68k's builds)
+ * dct32 is src/dct32_68k.s, written from this C by tools/gen_dct32.py:
+ * the same sums and products, so the same samples.
+ */
+# if defined(MPGA_DCT_ASM)
+void mpga_dct32(mad_fixed_t const [32], unsigned int,
+		mad_fixed_t [16][8], mad_fixed_t [16][8]);
+#  define dct32 mpga_dct32
+# else
+/*
  * NAME:	dct32()
  * DESCRIPTION:	perform fast in[32]->out[32] DCT
  */
@@ -512,6 +522,7 @@ void dct32(mad_fixed_t const in[32], unsigned int slot,
    *  49 shifts (not counting SSO)
    */
 }
+# endif
 
 # undef MUL
 # undef SHIFT
