@@ -37,7 +37,7 @@ const char LibName[] = MPGA_LIBNAME;
 const char LibIdString[] = MPGA_LIBID;
 static const char __attribute__((used)) LibVerTag[] = "$VER: " MPGA_LIBID;
 const UWORD LibVersion = 1;
-const UWORD LibRevision = 1;
+const UWORD LibRevision = 2;
 
 struct ExecBase *SysBase;
 struct DosLibrary *DOSBase;

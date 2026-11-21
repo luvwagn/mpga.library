@@ -41,3 +41,9 @@ Changes:
    filter value's 16 fractional bits shifted to 13, each window value's
    low word, one MULS.W each (ambmpega.library's medium and low quality);
    in C on the host (mpga_window16), in assembler on the 68k, the same.
+
+5. (21 November 2026) fixed.h: FPM_68060, for ambmpega060.library: the
+   same mad_f_mul as FPM_64BIT (without OPT_ACCURACY), to the bit, from
+   32-bit multiplies alone (a 68060 has no 32 x 32 -> 64), the 64-bit
+   product's parts added as two 32-bit halves. Checked against the 64-bit
+   product on 200 million pairs; without FPM_68060 nothing changes.

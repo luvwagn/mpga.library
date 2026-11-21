@@ -1,6 +1,17 @@
 ambmpega.library: changes
 =========================
 
+1.2 (21 November 2026)
+----------------------
+
+- ambmpega060.library, the 68060's build: libmad's fixed-point products
+  made from 32-bit multiplies (FPM_68060, third_party/libmad/fixed.h),
+  exact to the bit, as a 68060 has no MULS.L 32 x 32 -> 64 and
+  68060.library emulates each one. The same samples as ambmpega.library
+  (make test decodes the fixtures through both, and checks the 68060's
+  build has no 64-bit multiply or divide). ambmpega.library itself is
+  unchanged but for its version.
+
 1.1 (17 November 2026)
 ----------------------
 

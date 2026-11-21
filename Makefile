@@ -5,11 +5,16 @@
 # (include/, mpga_lib.sfd, mpga.doc) is MIT.
 #
 #   make            build/ambmpega.library (68020 and up, no FPU: each
-#                   fixed-point multiply one MULS.L 32 x 32 -> 64)
+#                   fixed-point multiply one MULS.L 32 x 32 -> 64) and
+#                   build/ambmpega060.library (68060: the same products
+#                   from 32-bit multiplies, which a 68060 does itself, where
+#                   it has no MULS.L 32 x 32 -> 64 and 68060.library would
+#                   emulate each; the same samples to the bit)
 #   make test       the fixtures decoded in several ways (22 and 11 kHz,
 #                   mono, half loudness, by name, from a second in) on this
-#                   computer and through the library on a 68020 under
-#                   vamos: the samples' CRCs alike, and as tests/expected.txt
+#                   computer and through each library under vamos: the
+#                   samples' CRCs alike, and as tests/expected.txt; and no
+#                   64-bit multiply or divide in the 68060's
 #   make snr        each fixture against ffmpeg's floating-point decoder
 #                   (the signal-to-noise ratio; needs ffmpeg)
 #
@@ -21,37 +26,62 @@
 # computer, and for the tests amitools' vamos.
 
 CC      = m68k-amigaos-gcc
-AS      = m68k-amigaos-as -m68020
 STRIP   = m68k-amigaos-strip
+OBJDUMP = m68k-amigaos-objdump
 HOSTCC ?= cc
 PYTHON ?= python3
-LIBNAME = ambmpega.library
-LIBID   = $(LIBNAME) 1.1 (17.11.2026) libmad 0.15.1b, 68020+
 MAD     = third_party/libmad
-LIB     = build/$(LIBNAME)
 MAD_SRC = $(addprefix $(MAD)/,bit.c fixed.c frame.c huffman.c layer12.c layer3.c stream.c synth.c timer.c)
 SRC     = src/mpga.c $(MAD_SRC)
 HDR     = $(wildcard $(MAD)/*.h $(MAD)/*.dat src/port/*.h include/*/*.h)
-FPM     = -DFPM_64BIT -DOPT_SPEED
-FLAGS   = -DHAVE_CONFIG_H $(FPM) -Isrc/port -I$(MAD) -Iinclude
+LIBDATE = 1.2 (21.11.2026) libmad 0.15.1b
+# VARIANT 060 (make's own recursion: make build/ambmpega060.library) is
+# the 68060's build; otherwise the 68020's
+ifeq ($(VARIANT),060)
+LIBNAME = ambmpega060.library
+LIBID   = $(LIBNAME) $(LIBDATE), 68060
+OBJ     = build/060
+CPU     = -m68060
+FPM     = -DFPM_68060 -DOPT_SPEED
+VCPU    = 68040
+else
+LIBNAME = ambmpega.library
+LIBID   = $(LIBNAME) $(LIBDATE), 68020+
+OBJ     = build/68k
 CPU     = -m68020
+FPM     = -DFPM_64BIT -DOPT_SPEED
+VCPU    = 68020
+endif
+AS      = m68k-amigaos-as $(CPU)
+LIB     = build/$(LIBNAME)
+HOSTOBJ = build/host$(VARIANT)
+FLAGS   = -DHAVE_CONFIG_H $(FPM) -Isrc/port -I$(MAD) -Iinclude
 LIBCC   = $(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -fno-strict-aliasing
 FIX     = $(sort $(wildcard tests/fixtures/*.mp3 tests/fixtures/*.mp2))
 
-.PHONY: all test snr prof clean
+.PHONY: all test test-one snr prof clean FORCE
 
+ifeq ($(VARIANT),060)
 all: $(LIB)
+test: test-one check-060
+else
+all: $(LIB) build/ambmpega060.library
+build/ambmpega060.library: FORCE
+	@$(MAKE) --no-print-directory VARIANT=060 $@
+test: test-one
+	@$(MAKE) --no-print-directory VARIANT=060 test
+endif
 
 # the 68k's objects (libmad's own quietly; timer.c's sprintf, which only
 # mad_timer_string wants, a stub: no stdio in the library)
-build/68k/$(MAD)/%.o: UPSTREAM = -w
-build/68k/$(MAD)/timer.o: UPSTREAM = -w -Dsprintf=mpga_nosprintf
-build/68k/%.o: %.c $(HDR)
+$(OBJ)/$(MAD)/%.o: UPSTREAM = -w
+$(OBJ)/$(MAD)/timer.o: UPSTREAM = -w -Dsprintf=mpga_nosprintf
+$(OBJ)/%.o: %.c $(HDR)
 	@mkdir -p $(dir $@)
 	@echo "  CC    $<"
 	@$(LIBCC) -Wall $(FLAGS) '-DMPGA_LIBNAME="$(LIBNAME)"' '-DMPGA_LIBID="$(LIBID)"' $(UPSTREAM) -c -o $@ $<
-build/68k/stack.o: src/stack.s
-	@mkdir -p build/68k
+$(OBJ)/stack.o: src/stack.s
+	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) -o $@ $<
 
@@ -59,42 +89,42 @@ build/68k/stack.o: src/stack.s
 # differ: ramlib turns a library away whose Resident is older than the
 # version asked for, whatever its lib_Version (make test checks it)
 LIBVER = $(shell sed -n 's/^const UWORD LibVersion = \([0-9]*\);.*/\1/p' src/mpga.c)
-build/68k/libinit.o: src/libinit.c src/libinit.h src/mpga.c Makefile
-	@mkdir -p build/68k
+$(OBJ)/libinit.o: src/libinit.c src/libinit.h src/mpga.c Makefile
+	@mkdir -p $(OBJ)
 	@echo "  CC    $<"
 	@$(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -Wall -Wno-array-bounds \
 		-Isrc -DLIB_RT_VERSION=$(LIBVER) -c -o $@ $<
 
-build/68k/out_68k.o: src/out_68k.s
-	@mkdir -p build/68k
+$(OBJ)/out_68k.o: src/out_68k.s
+	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) -o $@ $<
 # the 68k's output writers in assembler (the host builds src/mpga.c's C)
-build/68k/src/mpga.o: UPSTREAM = -DMPGA_OUT_ASM
-build/68k/synth_68k.o: src/synth_68k.s
-	@mkdir -p build/68k
+$(OBJ)/src/mpga.o: UPSTREAM = -DMPGA_OUT_ASM
+$(OBJ)/synth_68k.o: src/synth_68k.s
+	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) -o $@ $<
 # the 68k's synthesis window in assembler (the host builds libmad's C)
-build/68k/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM
+$(OBJ)/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM
 
-$(LIB): build/68k/libinit.o $(patsubst %.c,build/68k/%.o,$(SRC)) build/68k/stack.o build/68k/synth_68k.o build/68k/out_68k.o
+$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/out_68k.o
 	@echo "  LD    $@"
 	@$(LIBCC) -o $@.dbg $^ -lamiga
 	@$(STRIP) -o $@ $@.dbg
 
 # ---- the test: the same lines on the host and through the library on a
 # 68020 (the 68k's multiplies are the same 64-bit products as the host's)
-build/host/mpga_test: tests/mpga_test.c $(SRC) $(HDR) tests/host/exec/types.h tests/host/utility/hooks.h
-	@mkdir -p build/host
+$(HOSTOBJ)/mpga_test: tests/mpga_test.c $(SRC) $(HDR) tests/host/exec/types.h tests/host/utility/hooks.h
+	@mkdir -p $(HOSTOBJ)
 	@echo "  CC    $@"
 	@$(HOSTCC) -O2 -w $(FLAGS) -Itests/host -o $@ tests/mpga_test.c $(SRC)
-build/68k/mpga_test: tests/mpga_test.c include/libraries/mpega.h include/inline/mpega.h $(LIB)
-	@mkdir -p build/68k/prog/Libs
+$(OBJ)/mpga_test: tests/mpga_test.c include/libraries/mpega.h include/inline/mpega.h $(LIB)
+	@mkdir -p $(OBJ)/prog/Libs
 	@echo "  CC    $@"
 	@$(CC) -O2 $(CPU) -noixemul -Wall -Iinclude '-DMPGA_TEST_LIB="$(LIBNAME)"' -o $@ tests/mpga_test.c
-	@cp $(LIB) build/68k/prog/Libs/
-	@cp $@ build/68k/prog/
+	@cp $(LIB) $(OBJ)/prog/Libs/
+	@cp $@ $(OBJ)/prog/
 
 # the headers programs compile with, from mpga_lib.sfd (sfdc)
 include/inline/mpega.h include/clib/mpega_protos.h include/proto/mpega.h: mpga_lib.sfd
@@ -103,25 +133,32 @@ include/inline/mpega.h include/clib/mpega_protos.h include/proto/mpega.h: mpga_l
 	@sfdc --quiet --mode=clib --target=m68k-amigaos -o include/clib/mpega_protos.h $<
 	@sfdc --quiet --mode=proto --target=m68k-amigaos -o include/proto/mpega.h $<
 
-test: build/host/mpga_test build/68k/mpga_test $(LIB) $(FIX)
+test-one: $(HOSTOBJ)/mpga_test $(OBJ)/mpga_test $(LIB) $(FIX)
 	@python3 -c "import sys; d=open('$(LIB)','rb').read(); i=d.find(bytes([0x4a,0xfc])); \
 		sys.exit(0 if i >= 0 and d[i+11] == $(LIBVER) else 'its Resident says version %d, not $(LIBVER)' % d[i+11])" \
 		&& echo "  CHECK the library's Resident: version $(LIBVER), as LibVersion (ramlib turns an older one away)"
-	@cd tests/fixtures && ../../build/host/mpga_test $(notdir $(FIX)) > ../../build/host/crc.txt
-	@cmp -s build/host/crc.txt tests/expected.txt \
-		&& echo "  CHECK MPEG audio decoding (host) ok" || { diff build/host/crc.txt tests/expected.txt; exit 1; }
-	@cp $(FIX) build/68k/prog/
-	@rm -rf build/68k/vols; cd build/68k/prog && vamos -C 68020 -m 8192 -s 8 --vols-base-dir $(abspath build/68k/vols) \
-		-V prog:$(abspath build/68k/prog) -- prog:mpga_test $(notdir $(FIX)) > ../out.txt 2> ../err.txt; \
+	@cd tests/fixtures && ../../$(HOSTOBJ)/mpga_test $(notdir $(FIX)) > ../../$(HOSTOBJ)/crc.txt
+	@cmp -s $(HOSTOBJ)/crc.txt tests/expected.txt \
+		&& echo "  CHECK MPEG audio decoding (host) ok" || { diff $(HOSTOBJ)/crc.txt tests/expected.txt; exit 1; }
+	@cp $(FIX) $(OBJ)/prog/
+	@rm -rf $(OBJ)/vols; cd $(OBJ)/prog && vamos -C $(VCPU) -m 8192 -s 8 --vols-base-dir $(abspath $(OBJ)/vols) \
+		-V prog:$(abspath $(OBJ)/prog) -- prog:mpga_test $(notdir $(FIX)) > ../out.txt 2> ../err.txt; \
 		cmp -s ../out.txt ../../../tests/expected.txt \
-		&& echo "  CHECK the same through $(LIBNAME) on a 68020 (vamos, an 8 KB stack) ok" \
+		&& echo "  CHECK the same through $(LIBNAME) on a $(VCPU) (vamos, an 8 KB stack) ok" \
 		|| { diff ../out.txt ../../../tests/expected.txt | head; tail -5 ../err.txt; exit 1; }
 
+# a 68060 has no MULS.L or DIVS.L with a 64-bit product or dividend (in
+# objdump's syntax: mulsl, mulul, divsl and divul with three operands)
+check-060: $(LIB)
+	@n=$$($(OBJDUMP) -m m68k:68060 -d $(LIB).dbg | awk -F'\t' '$$3 ~ /^(mul[su]l|div[su]l) / { split($$3, w, " "); if (split(w[2], o, ",") == 3) print }' | wc -l); \
+		[ $$n = 0 ] && echo "  CHECK $(LIBNAME): no 64-bit multiply or divide (a 68060's are emulated)" \
+		|| { echo "$(LIBNAME): $$n 64-bit multiplies or divides"; exit 1; }
+
 # ---- accuracy: each fixture's samples against ffmpeg's float decoder
-snr: build/host/mpga_test $(FIX)
+snr: $(HOSTOBJ)/mpga_test $(FIX)
 	@mkdir -p build/snr
 	@for f in $(FIX); do b=$$(basename $$f); \
-		build/host/mpga_test -w build/snr/$$b.raw $$f > /dev/null; \
+		$(HOSTOBJ)/mpga_test -w build/snr/$$b.raw $$f > /dev/null; \
 		case $$b in *.mp2) d=mp2float;; *) d=mp3float;; esac; \
 		ch=$$(ffprobe -v error -show_entries stream=channels -of csv=p=0 $$f); \
 		if [ "$$ch" = 1 ]; then p='pan=stereo|c0=c0|c1=c0'; else p='pan=stereo|c0=c0|c1=c1'; fi; \
@@ -133,8 +170,8 @@ snr: build/host/mpga_test $(FIX)
 # their static functions can be placed (tools/syms.py)
 #   make prof MP3=file [N=300] [WAY=0]
 N   ?= 300
-PROFOBJ = build/prof/mpga_test.o $(patsubst %.c,build/prof/%.o,$(notdir $(SRC))) build/68k/stack.o \
-          build/68k/synth_68k.o build/68k/out_68k.o
+PROFOBJ = build/prof/mpga_test.o $(patsubst %.c,build/prof/%.o,$(notdir $(SRC))) $(OBJ)/stack.o \
+          $(OBJ)/synth_68k.o $(OBJ)/out_68k.o
 build/prof/mpga_test.o: tests/mpga_test.c $(HDR)
 	@mkdir -p build/prof
 	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<

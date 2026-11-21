@@ -30,8 +30,15 @@ clone, or the ZZ9000's, which decodes on the card).
   16-bit interleaved for AHI, 8-bit for Paula (dithered or not), or
   Paula's 14 bits, with each channel's peak and the samples clipped.
 
-Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler; a 68060
-build without 64-bit multiplies.
+- **Two builds:** `ambmpega.library` for any 68020 or later, and
+  `ambmpega060.library` for a 68060, which has no `MULS.L` 32 x 32 -> 64
+  (68060.library would emulate each one): there each product is made from
+  32-bit multiplies, exact to the bit, so both builds give the same
+  samples. A program can ship both and open the 68060's only where
+  `AttnFlags` says 68060, or time both there, as Ambiance does: an
+  emulator set to a 68060 may do the 64-bit multiply itself.
+
+Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler.
 
 ## Why not mpega.library?
 
@@ -93,11 +100,13 @@ library at run time is not bound by its licence.
 ## Building
 
 ```
-make            build/ambmpega.library
+make            build/ambmpega.library and build/ambmpega060.library
 make test       the fixtures (tests/mkfixtures.sh made them from synthetic
                 sound) decoded eight ways each on this computer and through
                 the library on a 68020 under vamos with an 8 KB stack: the
-                samples' CRCs alike, and as tests/expected.txt
+                samples' CRCs alike, and as tests/expected.txt; the
+                same for the 68060's build (on a 68040 under vamos), with
+                no 64-bit multiply or divide in it
 make snr        each fixture against ffmpeg's floating-point decoder
 make LIBNAME=mpega.library
                 the same library under mpega.library's own name
@@ -135,9 +144,10 @@ What these figures are not:
   a frame is about 170 M 68020 cycles a second: full-rate stereo MP3 is
   beyond a 68020 or 68030 with any of these decoders, and at 22 kHz mono
   mpega 2.4 (about 54 M a second) has the real edge on those machines.
-- **A 68060.** Both qualities use `MULS.L` 32 x 32 -> 64, which a 68060
-  lacks; 68060.library emulates each one, so on a 68060 this build is
-  slow. A build without them is still to be done.
+- **A 68060.** `ambmpega.library` uses `MULS.L` 32 x 32 -> 64 at both
+  qualities, which a 68060 lacks; 68060.library emulates each one, so on
+  a 68060 it is slow. `ambmpega060.library` is the one for it; vamos's
+  Musashi has no 68060, so its speed there is still to be measured.
 
 At medium quality the synthesis window is still 42% of the time (its
 36,288 products a frame), the 32-point DCT 17%: where the work goes next.
