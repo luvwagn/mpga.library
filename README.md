@@ -164,21 +164,24 @@ fixed-point decoder scores 86 dB). mpega 2.4's 020, 040 and 060 integer
 builds are the same code; its FPU builds cannot run under vamos.
 
 On a real 68060 at 50 MHz (68060.library 46.4; `mptime`, the same MP3,
-120 frames, with 1.2):
+120 frames):
 
 | | high, 44.1 kHz stereo | medium | high, 22 kHz mono |
 |---|---|---|---|
 | ambmpega060.library 1.2 | 20.3 ms | 19.7 ms | 12.1 ms |
+| ambmpega060.library 1.4 | **15.7 ms** | **15.4 ms** | **9.9 ms** |
 | ambmpega.library 1.2 (its 64-bit multiplies trapped) | 336.4 ms | 336.6 ms | 216.0 ms |
+| ambmpega.library 1.4 | 277.2 ms | 278.0 ms | 178.9 ms |
 
 A frame lasts 26.12 ms, so the 68060 build plays 44.1 kHz stereo in real
-time there with a fifth to spare; the 68020 build is 16 times slower, a
-trapped `MULS.L` 32 x 32 -> 64 costing about 545 clocks. That 68060 does
-about an instruction a clock and a fifth, so the 68060 build's speed
-follows its instruction count (vamos counts them): 850 k a frame of this
-MP3 in 1.2, about 750 k in 1.3 and 665 k in 1.4, which should be about
-15.9 ms there (about 61% of real time). In 1.4, as `mptime` decodes the
-first 20 frames: high 759 k -> 665 k, medium 778 k -> 684 k, 22 kHz mono
+time there in 60% of the CPU (1.2: 78%); the 68020 build is about 18
+times slower, a trapped `MULS.L` 32 x 32 -> 64 costing about 545 clocks.
+Each build gave the same CRCs in 1.4 as in 1.2: the same samples. That
+68060 does about an instruction a clock and a fifth, so the 68060 build's
+speed follows its instruction count (vamos counts them): 850 k a frame of
+this MP3 in 1.2, about 750 k in 1.3 and 665 k in 1.4, which predicted
+15.9 ms; it measured 15.7. In 1.4, as `mptime` decodes the first 20
+frames: high 759 k -> 665 k, medium 778 k -> 684 k, 22 kHz mono
 458 k -> 402 k, Layer II at 224 kbit/s 594 k -> 575 k.
 
 What these figures are not:
