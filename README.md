@@ -47,8 +47,14 @@ clone, or the ZZ9000's, which decodes on the card).
   libmad's C by `tools/gen_dct32.py` and `tools/gen_layer3.py` for both
   builds: the same operations, so the same samples as the C.
 
-Not yet: Layer III's Huffman decoding (`III_decode`, now the largest part
-after the window) and short blocks' IMDCT in assembler.
+- **Zeros left out** (1.4): mid/side stereo's lines that are zero in both
+  channels, and alias reduction's butterflies on two zero lines (libmad's
+  own `ASO_ZEROCHECK`), are left as they are: over half of each at 128
+  kbit/s, the same samples.
+
+Tried and not kept: Layer III's Huffman decoding in assembler (no faster
+than gcc's code; on the branch `huff-asm`) and the short-block IMDCT
+(short blocks are 1-3% of real music's granules).
 
 ## Why not mpega.library?
 
@@ -143,6 +149,8 @@ Musashi core counts them, for 10 s of music at 128 kbit/s stereo MP3
 
 | | 44.1 kHz stereo | 22 kHz | mono 22 kHz | SNR (MP3) |
 |---|---|---|---|---|
+| ambmpega.library 1.4, high | 4.39 / 4.23 M | 2.90 / 3.03 M | 2.13 / 2.25 M | 83 dB |
+| ambmpega.library 1.4, medium | 3.93 / 3.78 M | 2.68 / 2.81 M | 2.02 / 2.14 M | 70 dB |
 | ambmpega.library 1.3, high | 4.58 / 4.24 M | 3.01 / 3.04 M | 2.24 / 2.26 M | 83 dB |
 | ambmpega.library 1.3, medium | 4.12 / 3.78 M | 2.79 / 2.81 M | 2.13 / 2.14 M | 70 dB |
 | ambmpega.library 1.2, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M | 83 dB |
@@ -168,24 +176,28 @@ time there with a fifth to spare; the 68020 build is 16 times slower, a
 trapped `MULS.L` 32 x 32 -> 64 costing about 545 clocks. That 68060 does
 about an instruction a clock and a fifth, so the 68060 build's speed
 follows its instruction count (vamos counts them): 850 k a frame of this
-MP3 in 1.2, 749 k in 1.3 (medium 869 k -> 768 k), which should be about
-17.9 ms there.
+MP3 in 1.2, about 750 k in 1.3 and 665 k in 1.4, which should be about
+15.9 ms there (about 61% of real time). In 1.4, as `mptime` decodes the
+first 20 frames: high 759 k -> 665 k, medium 778 k -> 684 k, 22 kHz mono
+458 k -> 402 k, Layer II at 224 kbit/s 594 k -> 575 k.
 
 What these figures are not:
 
 - **Real hardware, for the 68020's.** Musashi models no caches or wait
   states; a real 68030, or an emulator's JIT, will give other times,
   though probably the same order.
-- **Real time on a 68020/030.** A frame lasts 26.12 ms, so 4.12 M cycles
-  a frame is about 158 M 68020 cycles a second: full-rate stereo MP3 is
+- **Real time on a 68020/030.** A frame lasts 26.12 ms, so 3.93 M cycles
+  a frame is about 150 M 68020 cycles a second: full-rate stereo MP3 is
   beyond a 68020 or 68030 with any of these decoders, and at 22 kHz mono
   mpega 2.4 (about 54 M a second) has the real edge on those machines.
 - **An emulated 68060.** Amiberry set to a 68060 does the 64-bit
   multiply itself, even with unimplemented instructions trapping, so there
   `ambmpega.library` is the faster; only a real 68060 traps it.
 
-Where a 68020's cycles go now (MP3, medium): the 16-bit synthesis window
-40%, Huffman decoding (`III_decode`) 16%, the IMDCT 13%, the DCT 12%, the
-alias reduction 6%. The 68060 build's instructions (MP3, high): the IMDCT
-18%, Huffman decoding 18%, the DCT 18%, the window 17%, the alias
-reduction 10% (assembler there gained under 2%, so it stays C).
+Where a 68020's cycles go now (MP3, medium, 1.4): the 16-bit synthesis
+window 42%, `III_decode` (Huffman decoding, stereo, the overlap) 15%, the
+IMDCT 13%, the DCT 13%, the alias reduction 4%, the output 3%. The 68060
+build's instructions (MP3, high): the window 19%, the IMDCT 19%, the DCT
+18%, `III_decode` 16%, the alias reduction 8%, the output 5%. The window,
+IMDCT and DCT are at about their floor for this method (a few
+instructions a product); what is left is a different method.
