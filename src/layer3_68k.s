@@ -678,23 +678,21 @@ _mpga_imdct36:
 	.endif
 	.if	MPGA060 == 1
 	movem.l	d2-d7/a2-a6,-(sp)
-	lea	-96(sp),sp
-	move.l	144(sp),a0		| X
-	move.l	148(sp),a1		| z
+	lea	-100(sp),sp
+	move.l	148(sp),a0		| X
+	move.l	152(sp),a1		| z
+	moveq	#12,d7
 	move.l	0(a0),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#8184,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#13306,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#8184,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#130944,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	4(a0),d0
@@ -703,14 +701,11 @@ _mpga_imdct36:
 	ext.l	d2
 	and.l	#65535,d0
 	mulu.w	#8121,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d2,d3
 	muls.l	#60051,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#8121,d2
-	lsl.l	#4,d2
+	asr.l	d7,d3
+	muls.l	#129936,d2
 	add.l	d3,d2
 	add.l	d0,d2
 	move.l	8(a0),d0
@@ -719,14 +714,11 @@ _mpga_imdct36:
 	ext.l	d3
 	and.l	#65535,d0
 	mulu.w	#7997,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d3,d4
 	muls.l	#53536,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#7997,d3
-	lsl.l	#4,d3
+	asr.l	d7,d4
+	muls.l	#127952,d3
 	add.l	d4,d3
 	add.l	d0,d3
 	move.l	12(a0),d0
@@ -735,14 +727,11 @@ _mpga_imdct36:
 	ext.l	d4
 	and.l	#65535,d0
 	mulu.w	#7812,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d4,d5
 	muls.l	#55657,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#7812,d4
-	lsl.l	#4,d4
+	asr.l	d7,d5
+	muls.l	#124992,d4
 	add.l	d5,d4
 	add.l	d0,d4
 	move.l	16(a0),d0
@@ -751,1060 +740,957 @@ _mpga_imdct36:
 	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#7568,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d5,d6
 	muls.w	#27599,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#7568,d5
-	lsl.l	#4,d5
+	asr.l	d7,d6
+	muls.l	#121088,d5
 	add.l	d6,d5
 	add.l	d0,d5
 	move.l	20(a0),d0
+	move.l	d5,a2
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#7266,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#25739,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#7266,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#25739,d5
+	asr.l	d7,d5
+	muls.l	#116256,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	24(a0),d0
-	move.l	d6,a2
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,a3
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#6909,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.w	#4111,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6909,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#110544,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	28(a0),d0
-	move.l	d7,a3
+	move.l	d5,a4
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#6499,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#9867,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#6499,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#9867,d5
+	asr.l	d7,d5
+	muls.l	#103984,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	32(a0),d0
-	move.l	d6,a4
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,a5
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#6039,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#50852,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6039,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#96624,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	36(a0),d0
-	move.l	d7,a5
+	move.l	d5,a6
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#5534,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#28507,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#5534,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#28507,d5
+	asr.l	d7,d5
+	muls.l	#88544,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	40(a0),d0
-	move.l	d6,a6
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,0(sp)
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#4986,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#63808,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#4986,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#79776,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	44(a0),d0
-	move.l	d7,0(sp)
+	move.l	d5,4(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#4401,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.l	#36595,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#4401,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.l	#36595,d5
+	asr.l	d7,d5
+	muls.l	#70416,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	48(a0),d0
-	move.l	d6,4(sp)
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,8(sp)
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#3782,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#42247,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#3782,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#60512,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	52(a0),d0
-	move.l	d7,8(sp)
+	move.l	d5,12(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#3134,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.l	#61779,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#3134,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.l	#61779,d5
+	asr.l	d7,d5
+	muls.l	#50144,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	56(a0),d0
-	move.l	d5,12(sp)
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d0
-	mulu.w	#2463,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d5
-	muls.w	#25029,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#2463,d7
-	lsl.l	#4,d7
-	add.l	d5,d7
-	add.l	d0,d7
-	move.l	60(a0),d0
 	move.l	d6,16(sp)
 	move.l	d0,d5
 	swap	d5
 	ext.l	d5
 	and.l	#65535,d0
-	mulu.w	#1773,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#2463,d0
+	asr.l	d7,d0
 	move.l	d5,d6
-	muls.w	#4805,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#1773,d5
-	lsl.l	#4,d5
+	muls.w	#25029,d6
+	asr.l	d7,d6
+	muls.l	#39408,d5
 	add.l	d6,d5
 	add.l	d0,d5
-	move.l	64(a0),d0
+	move.l	60(a0),d0
 	move.l	d4,20(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
-	mulu.w	#1069,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#1773,d0
+	asr.l	d7,d0
 	move.l	d6,d4
-	muls.w	#17732,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#1069,d6
-	lsl.l	#4,d6
+	muls.w	#4805,d4
+	asr.l	d7,d4
+	muls.w	#28368,d6
 	add.l	d4,d6
 	add.l	d0,d6
-	move.l	68(a0),d0
-	move.l	d7,24(sp)
+	move.l	64(a0),d0
+	move.l	d5,24(sp)
 	move.l	d0,d4
 	swap	d4
 	ext.l	d4
 	and.l	#65535,d0
-	mulu.w	#357,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d7
-	muls.w	#21628,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#357,d4
-	lsl.l	#4,d4
-	add.l	d7,d4
+	mulu.w	#1069,d0
+	asr.l	d7,d0
+	move.l	d4,d5
+	muls.w	#17732,d5
+	asr.l	d7,d5
+	muls.w	#17104,d4
+	add.l	d5,d4
 	add.l	d0,d4
-	move.l	d1,d0
-	add.l	d4,d0
-	move.l	d2,d7
-	add.l	d6,d7
+	move.l	68(a0),d0
 	move.l	d3,28(sp)
-	move.l	28(sp),d3
-	add.l	d5,d3
-	move.l	d5,32(sp)
-	move.l	20(sp),d5
-	add.l	24(sp),d5
-	move.l	d2,36(sp)
-	move.l	12(sp),d2
-	add.l	16(sp),d2
-	move.l	d6,40(sp)
-	move.l	a2,d6
-	add.l	8(sp),d6
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
+	and.l	#65535,d0
+	mulu.w	#357,d0
+	asr.l	d7,d0
+	move.l	d5,d3
+	muls.w	#21628,d3
+	asr.l	d7,d3
+	muls.w	#5712,d5
+	add.l	d3,d5
+	add.l	d0,d5
+	move.l	d1,d0
+	add.l	d5,d0
+	move.l	d2,d3
+	add.l	d4,d3
+	move.l	d2,32(sp)
+	move.l	28(sp),d2
+	add.l	d6,d2
+	move.l	d6,36(sp)
+	move.l	20(sp),d6
+	add.l	24(sp),d6
+	move.l	d4,40(sp)
+	move.l	a2,d4
+	add.l	16(sp),d4
 	move.l	d1,44(sp)
 	move.l	a3,d1
-	add.l	4(sp),d1
-	move.l	d4,48(sp)
-	move.l	a4,d4
-	add.l	0(sp),d4
-	move.l	d2,52(sp)
-	move.l	a5,d2
-	add.l	a6,d2
+	add.l	12(sp),d1
+	move.l	d5,48(sp)
+	move.l	a4,d5
+	add.l	8(sp),d5
+	move.l	d4,52(sp)
+	move.l	a5,d4
+	add.l	4(sp),d4
 	move.l	d0,56(sp)
-	move.l	d5,d0
-	add.l	d6,d0
-	sub.l	d6,d5
-	move.l	d1,d6
-	add.l	d3,d6
-	sub.l	d3,d1
-	move.l	d7,d3
-	add.l	d4,d3
-	sub.l	d4,d7
-	move.l	d2,d4
+	move.l	a6,d0
+	add.l	0(sp),d0
+	move.l	d0,60(sp)
+	move.l	d6,d0
+	add.l	d1,d0
+	sub.l	d1,d6
+	move.l	d5,d1
+	add.l	d2,d1
+	sub.l	d2,d5
+	move.l	d3,d2
+	add.l	d4,d2
+	sub.l	d4,d3
+	move.l	60(sp),d4
 	add.l	56(sp),d4
+	move.l	d2,64(sp)
+	move.l	60(sp),d2
 	sub.l	56(sp),d2
 	move.l	d3,56(sp)
 	move.l	d0,d3
-	add.l	d6,d3
-	move.l	d7,60(sp)
-	move.l	d0,d7
-	sub.l	d6,d7
+	add.l	d1,d3
+	move.l	d2,60(sp)
+	move.l	d0,d2
+	sub.l	d1,d2
 	sub.l	d4,d0
-	sub.l	d4,d6
+	sub.l	d4,d1
 	add.l	d4,d3
-	move.l	d5,d4
-	sub.l	d1,d4
-	add.l	d2,d4
-	move.l	d3,64(sp)
-	move.l	d1,d3
-	add.l	d2,d3
-	move.l	d7,68(sp)
-	move.l	d5,d7
-	sub.l	d2,d7
-	add.l	d1,d5
-	move.l	d5,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d5
-	muls.l	#-5266,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	move.l	d1,d2
-	muls.w	#18606,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#-5266,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d5,d1
-	move.l	d7,d2
-	swap	d2
-	ext.l	d2
-	and.l	#65535,d7
-	muls.l	#-8068,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	move.l	d2,d5
-	muls.w	#29811,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-8068,d2
-	lsl.l	#4,d2
-	add.l	d5,d2
-	add.l	d7,d2
-	move.l	d3,d5
+	move.l	d6,d4
+	sub.l	d5,d4
+	add.l	60(sp),d4
+	move.l	d3,68(sp)
+	move.l	d5,d3
+	add.l	60(sp),d3
+	move.l	d2,72(sp)
+	move.l	d6,d2
+	sub.l	60(sp),d2
+	add.l	d5,d6
+	move.l	d0,60(sp)
+	move.l	d6,d5
 	swap	d5
 	ext.l	d5
+	and.l	#65535,d6
+	muls.l	#-5266,d6
+	asr.l	d7,d6
+	move.l	d5,d0
+	muls.w	#18606,d0
+	asr.l	d7,d0
+	muls.l	#-84256,d5
+	add.l	d0,d5
+	add.l	d6,d5
+	move.l	d2,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d2
+	muls.l	#-8068,d2
+	asr.l	d7,d2
+	move.l	d0,d6
+	muls.w	#29811,d6
+	asr.l	d7,d6
+	muls.l	#-129088,d0
+	add.l	d6,d0
+	add.l	d2,d0
+	move.l	d3,d2
+	swap	d2
+	ext.l	d2
 	and.l	#65535,d3
 	muls.l	#-2802,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d5,d7
-	muls.w	#11206,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-2802,d5
-	lsl.l	#4,d5
-	add.l	d7,d5
-	add.l	d3,d5
+	asr.l	d7,d3
+	move.l	d2,d6
+	muls.w	#11206,d6
+	asr.l	d7,d6
+	muls.l	#-44832,d2
+	add.l	d6,d2
+	add.l	d3,d2
 	move.l	d4,d3
 	swap	d3
 	ext.l	d3
 	and.l	#65535,d4
 	muls.l	#-7095,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d3,d7
-	muls.l	#34072,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-7095,d3
-	lsl.l	#4,d3
-	add.l	d7,d3
+	asr.l	d7,d4
+	move.l	d3,d6
+	muls.l	#34072,d6
+	asr.l	d7,d6
+	muls.l	#-113520,d3
+	add.l	d6,d3
 	add.l	d4,d3
-	move.l	60(sp),d4
-	move.l	d3,72(sp)
-	move.l	d4,d7
-	swap	d7
-	ext.l	d7
+	move.l	56(sp),d4
+	move.l	d3,76(sp)
+	move.l	d4,d6
+	swap	d6
+	ext.l	d6
 	and.l	#65535,d4
 	muls.l	#-7095,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d7,d3
-	muls.l	#34072,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#-7095,d7
-	lsl.l	#4,d7
-	add.l	d3,d7
-	add.l	d4,d7
+	asr.l	d7,d4
 	move.l	d6,d3
+	muls.l	#34072,d3
+	asr.l	d7,d3
+	muls.l	#-113520,d6
+	add.l	d3,d6
+	add.l	d4,d6
+	move.l	d1,d3
 	swap	d3
 	ext.l	d3
-	and.l	#65535,d6
-	mulu.w	#7697,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
+	and.l	#65535,d1
+	mulu.w	#7697,d1
+	asr.l	d7,d1
 	move.l	d3,d4
 	muls.l	#63042,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#7697,d3
-	lsl.l	#4,d3
+	asr.l	d7,d4
+	muls.l	#123152,d3
 	add.l	d4,d3
-	add.l	d6,d3
-	move.l	d0,d4
-	swap	d4
-	ext.l	d4
-	and.l	#65535,d0
-	muls.l	#-1423,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d6
-	muls.w	#31072,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#-1423,d4
-	lsl.l	#4,d4
-	add.l	d6,d4
-	add.l	d0,d4
-	move.l	68(sp),d0
-	move.l	d1,60(sp)
-	move.l	d0,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d0
-	muls.l	#-6276,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d1
-	muls.l	#36957,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#-6276,d6
-	lsl.l	#4,d6
-	add.l	d1,d6
-	add.l	d0,d6
-	move.l	52(sp),d0
-	add.l	56(sp),d0
-	move.l	52(sp),d1
-	add.l	d1,d1
-	sub.l	56(sp),d1
-	move.l	d6,56(sp)
-	move.l	d1,d6
-	add.l	d3,d6
-	move.l	d6,52(sp)
-	move.l	d1,d6
-	sub.l	d3,d6
-	add.l	d4,d1
-	move.l	d7,d3
-	add.l	d5,d3
-	move.l	d1,68(sp)
-	move.l	d7,d1
-	sub.l	d5,d1
-	add.l	d2,d7
-	move.l	d0,d5
-	add.l	64(sp),d5
-	move.l	d5,76(sp)
-	move.l	60(sp),d5
-	sub.l	d7,d5
-	move.l	56(sp),d7
-	sub.l	52(sp),d7
-	sub.l	d4,d6
-	sub.l	d2,d1
-	add.l	d0,d0
-	move.l	64(sp),d2
-	sub.l	d0,d2
-	add.l	60(sp),d3
-	move.l	68(sp),d0
-	add.l	56(sp),d0
-	move.l	44(sp),d4
-	sub.l	48(sp),d4
-	move.l	d0,48(sp)
-	move.l	d3,44(sp)
-	move.l	d4,d0
-	swap	d0
-	ext.l	d0
-	and.l	#65535,d4
-	mulu.w	#8160,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d0,d3
-	muls.l	#54196,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#8160,d0
-	lsl.l	#4,d0
-	add.l	d3,d0
-	add.l	d4,d0
-	move.l	36(sp),d3
-	sub.l	40(sp),d3
-	move.l	d2,40(sp)
-	move.l	d3,d4
-	swap	d4
-	ext.l	d4
-	and.l	#65535,d3
-	mulu.w	#7912,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d4,d2
-	muls.l	#56647,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#7912,d4
-	lsl.l	#4,d4
-	add.l	d2,d4
-	add.l	d3,d4
-	move.l	28(sp),d2
-	sub.l	32(sp),d2
-	move.l	d1,32(sp)
-	move.l	d2,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d2
-	mulu.w	#7424,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	move.l	d3,d1
-	muls.w	#31024,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#7424,d3
-	lsl.l	#4,d3
 	add.l	d1,d3
-	add.l	d2,d3
-	move.l	20(sp),d1
-	sub.l	24(sp),d1
-	move.l	d6,24(sp)
-	move.l	d1,d2
-	swap	d2
-	ext.l	d2
+	move.l	60(sp),d1
+	move.l	d5,56(sp)
+	move.l	d1,d4
+	swap	d4
+	ext.l	d4
 	and.l	#65535,d1
-	mulu.w	#6710,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d2,d6
-	muls.w	#32345,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6710,d2
-	lsl.l	#4,d2
-	add.l	d6,d2
-	add.l	d1,d2
-	move.l	12(sp),d1
-	sub.l	16(sp),d1
-	move.l	d7,16(sp)
-	move.l	d1,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d1
-	mulu.w	#5792,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d6,d7
-	muls.l	#40550,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#5792,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
-	add.l	d1,d6
-	move.l	a2,d1
-	sub.l	8(sp),d1
-	move.l	d5,a2
-	move.l	d1,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d1
-	mulu.w	#4698,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d7,d5
-	muls.l	#48376,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#4698,d7
-	lsl.l	#4,d7
-	add.l	d5,d7
-	add.l	d1,d7
-	move.l	a3,d1
-	sub.l	4(sp),d1
-	move.l	d6,a3
+	muls.l	#-1423,d1
+	asr.l	d7,d1
+	move.l	d4,d5
+	muls.w	#31072,d5
+	asr.l	d7,d5
+	muls.w	#-22768,d4
+	add.l	d5,d4
+	add.l	d1,d4
+	move.l	72(sp),d1
+	move.l	d0,60(sp)
 	move.l	d1,d5
 	swap	d5
 	ext.l	d5
 	and.l	#65535,d1
-	mulu.w	#3462,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d5,d6
-	muls.w	#5820,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#3462,d5
-	lsl.l	#4,d5
-	add.l	d6,d5
+	muls.l	#-6276,d1
+	asr.l	d7,d1
+	move.l	d5,d0
+	muls.l	#36957,d0
+	asr.l	d7,d0
+	muls.l	#-100416,d5
+	add.l	d0,d5
 	add.l	d1,d5
-	move.l	a4,d1
-	sub.l	0(sp),d1
-	move.l	d0,a4
-	move.l	d1,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d1
-	mulu.w	#2120,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d6,d0
-	muls.w	#16097,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	muls.w	#2120,d6
-	lsl.l	#4,d6
-	add.l	d0,d6
-	add.l	d1,d6
-	move.l	a5,d0
-	sub.l	a6,d0
-	move.l	d4,a5
+	move.l	52(sp),d0
+	add.l	64(sp),d0
+	move.l	52(sp),d1
+	add.l	d1,d1
+	sub.l	64(sp),d1
+	move.l	d5,64(sp)
+	move.l	d1,d5
+	add.l	d3,d5
+	move.l	d5,52(sp)
+	move.l	d1,d5
+	sub.l	d3,d5
+	add.l	d4,d1
+	move.l	d6,d3
+	add.l	d2,d3
+	move.l	d1,72(sp)
+	move.l	d6,d1
+	sub.l	d2,d1
+	add.l	60(sp),d6
+	move.l	d0,d2
+	add.l	68(sp),d2
+	move.l	d2,80(sp)
+	move.l	56(sp),d2
+	sub.l	d6,d2
+	move.l	64(sp),d6
+	sub.l	52(sp),d6
+	sub.l	d4,d5
+	sub.l	60(sp),d1
+	add.l	d0,d0
+	move.l	68(sp),d4
+	sub.l	d0,d4
+	add.l	56(sp),d3
+	move.l	72(sp),d0
+	add.l	64(sp),d0
+	move.l	d0,64(sp)
+	move.l	44(sp),d0
+	sub.l	48(sp),d0
+	move.l	d3,48(sp)
+	move.l	d4,44(sp)
+	move.l	d0,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d0
+	mulu.w	#8160,d0
+	asr.l	d7,d0
+	move.l	d3,d4
+	muls.l	#54196,d4
+	asr.l	d7,d4
+	muls.l	#130560,d3
+	add.l	d4,d3
+	add.l	d0,d3
+	move.l	32(sp),d0
+	sub.l	40(sp),d0
+	move.l	d1,40(sp)
+	move.l	d0,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d0
+	mulu.w	#7912,d0
+	asr.l	d7,d0
+	move.l	d4,d1
+	muls.l	#56647,d1
+	asr.l	d7,d1
+	muls.l	#126592,d4
+	add.l	d1,d4
+	add.l	d0,d4
+	move.l	28(sp),d0
+	sub.l	36(sp),d0
+	move.l	d5,36(sp)
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#713,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d4
-	muls.l	#64215,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#713,d1
-	lsl.l	#4,d1
-	add.l	d4,d1
-	add.l	d0,d1
-	move.l	d2,d0
-	add.l	d7,d0
-	sub.l	d7,d2
-	move.l	d5,d4
-	add.l	d3,d4
-	sub.l	d3,d5
-	move.l	a5,d3
-	add.l	d6,d3
-	move.l	a5,d7
-	sub.l	d6,d7
-	move.l	d1,d6
-	add.l	a4,d6
-	sub.l	a4,d1
-	move.l	d3,a4
-	move.l	d0,d3
-	add.l	d4,d3
-	move.l	d7,a5
-	move.l	d0,d7
-	sub.l	d4,d7
-	sub.l	d6,d0
-	sub.l	d6,d4
-	add.l	d6,d3
-	move.l	d2,d6
-	sub.l	d5,d6
-	add.l	d1,d6
-	move.l	d3,a6
-	move.l	d5,d3
-	add.l	d1,d3
-	move.l	d7,0(sp)
-	move.l	d2,d7
-	sub.l	d1,d7
-	add.l	d5,d2
-	move.l	d2,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d2
-	muls.l	#-5266,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
+	mulu.w	#7424,d0
+	asr.l	d7,d0
 	move.l	d1,d5
-	muls.w	#18606,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-5266,d1
-	lsl.l	#4,d1
+	muls.w	#31024,d5
+	asr.l	d7,d5
+	muls.l	#118784,d1
 	add.l	d5,d1
-	add.l	d2,d1
-	move.l	d7,d2
-	swap	d2
-	ext.l	d2
-	and.l	#65535,d7
-	muls.l	#-8068,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	move.l	d2,d5
-	muls.w	#29811,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-8068,d2
-	lsl.l	#4,d2
-	add.l	d5,d2
-	add.l	d7,d2
-	move.l	d3,d5
+	add.l	d0,d1
+	move.l	20(sp),d0
+	sub.l	24(sp),d0
+	move.l	d6,24(sp)
+	move.l	d0,d5
 	swap	d5
 	ext.l	d5
-	and.l	#65535,d3
-	muls.l	#-2802,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d5,d7
-	muls.w	#11206,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-2802,d5
-	lsl.l	#4,d5
-	add.l	d7,d5
-	add.l	d3,d5
-	move.l	d6,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d6
-	muls.l	#-7095,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	move.l	d3,d7
-	muls.l	#34072,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-7095,d3
-	lsl.l	#4,d3
-	add.l	d7,d3
-	add.l	d6,d3
-	move.l	a5,d6
-	move.l	d3,4(sp)
-	move.l	d6,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d6
-	muls.l	#-7095,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	move.l	d7,d3
-	muls.l	#34072,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#-7095,d7
-	lsl.l	#4,d7
-	add.l	d3,d7
-	add.l	d6,d7
-	move.l	d4,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d4
-	mulu.w	#7697,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d3,d6
-	muls.l	#63042,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#7697,d3
-	lsl.l	#4,d3
-	add.l	d6,d3
-	add.l	d4,d3
-	move.l	d0,d4
-	swap	d4
-	ext.l	d4
 	and.l	#65535,d0
-	muls.l	#-1423,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d6
-	muls.w	#31072,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#-1423,d4
-	lsl.l	#4,d4
-	add.l	d6,d4
-	add.l	d0,d4
-	move.l	0(sp),d0
-	move.l	d1,a5
+	mulu.w	#6710,d0
+	asr.l	d7,d0
+	move.l	d5,d6
+	muls.w	#32345,d6
+	asr.l	d7,d6
+	muls.l	#107360,d5
+	add.l	d6,d5
+	add.l	d0,d5
+	move.l	a2,d0
+	sub.l	16(sp),d0
+	move.l	d2,a2
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
-	muls.l	#-6276,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d1
-	muls.l	#36957,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#-6276,d6
-	lsl.l	#4,d6
-	add.l	d1,d6
+	mulu.w	#5792,d0
+	asr.l	d7,d0
+	move.l	d6,d2
+	muls.l	#40550,d2
+	asr.l	d7,d2
+	muls.l	#92672,d6
+	add.l	d2,d6
 	add.l	d0,d6
 	move.l	a3,d0
-	add.l	a4,d0
-	move.l	a3,d1
-	add.l	d1,d1
-	sub.l	a4,d1
+	sub.l	12(sp),d0
 	move.l	d6,a3
-	move.l	d1,d6
+	move.l	d0,d2
+	swap	d2
+	ext.l	d2
+	and.l	#65535,d0
+	mulu.w	#4698,d0
+	asr.l	d7,d0
+	move.l	d2,d6
+	muls.l	#48376,d6
+	asr.l	d7,d6
+	muls.l	#75168,d2
+	add.l	d6,d2
+	add.l	d0,d2
+	move.l	a4,d0
+	sub.l	8(sp),d0
+	move.l	d3,a4
+	move.l	d0,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d0
+	mulu.w	#3462,d0
+	asr.l	d7,d0
+	move.l	d6,d3
+	muls.w	#5820,d3
+	asr.l	d7,d3
+	muls.l	#55392,d6
 	add.l	d3,d6
-	move.l	d6,a4
-	move.l	d1,d6
-	sub.l	d3,d6
-	add.l	d4,d1
-	move.l	d7,d3
-	add.l	d5,d3
-	move.l	d1,0(sp)
-	move.l	d7,d1
-	sub.l	d5,d1
-	add.l	d2,d7
-	move.l	d0,d5
-	add.l	a6,d5
-	move.l	d5,8(sp)
-	move.l	a5,d5
-	sub.l	d7,d5
-	move.l	a3,d7
-	sub.l	a4,d7
-	sub.l	d4,d6
-	sub.l	d2,d1
-	add.l	d0,d0
-	move.l	a6,d2
-	sub.l	d0,d2
-	add.l	a5,d3
-	move.l	0(sp),d0
-	add.l	a3,d0
-	sub.l	8(sp),d5
-	sub.l	d5,d7
-	move.l	4(sp),d4
-	sub.l	d7,d4
-	sub.l	d4,d6
-	sub.l	d6,d1
+	add.l	d0,d6
+	move.l	a5,d0
+	sub.l	4(sp),d0
+	move.l	d4,a5
+	move.l	d0,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d0
+	mulu.w	#2120,d0
+	asr.l	d7,d0
+	move.l	d3,d4
+	muls.w	#16097,d4
+	asr.l	d7,d4
+	muls.l	#33920,d3
+	add.l	d4,d3
+	add.l	d0,d3
+	move.l	a6,d0
+	sub.l	0(sp),d0
+	move.l	d3,a6
+	move.l	d0,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d0
+	mulu.w	#713,d0
+	asr.l	d7,d0
+	move.l	d4,d3
+	muls.l	#64215,d3
+	asr.l	d7,d3
+	muls.w	#11408,d4
+	add.l	d3,d4
+	add.l	d0,d4
+	move.l	d5,d0
+	add.l	d2,d0
+	sub.l	d2,d5
+	move.l	d6,d2
+	add.l	d1,d2
+	sub.l	d1,d6
+	move.l	a5,d1
+	add.l	a6,d1
+	move.l	a5,d3
+	sub.l	a6,d3
+	move.l	d1,a5
+	move.l	d4,d1
+	add.l	a4,d1
+	sub.l	a4,d4
+	move.l	d3,a4
+	move.l	d0,d3
+	add.l	d2,d3
+	move.l	d4,a6
+	move.l	d0,d4
+	sub.l	d2,d4
+	sub.l	d1,d0
 	sub.l	d1,d2
+	add.l	d1,d3
+	move.l	d5,d1
+	sub.l	d6,d1
+	add.l	a6,d1
+	move.l	d3,0(sp)
+	move.l	d6,d3
+	add.l	a6,d3
+	move.l	d4,4(sp)
+	move.l	d5,d4
+	sub.l	a6,d4
+	add.l	d6,d5
+	move.l	d0,a6
+	move.l	d5,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d5
+	muls.l	#-5266,d5
+	asr.l	d7,d5
+	move.l	d6,d0
+	muls.w	#18606,d0
+	asr.l	d7,d0
+	muls.l	#-84256,d6
+	add.l	d0,d6
+	add.l	d5,d6
+	move.l	d4,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d4
+	muls.l	#-8068,d4
+	asr.l	d7,d4
+	move.l	d0,d5
+	muls.w	#29811,d5
+	asr.l	d7,d5
+	muls.l	#-129088,d0
+	add.l	d5,d0
+	add.l	d4,d0
+	move.l	d3,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d3
+	muls.l	#-2802,d3
+	asr.l	d7,d3
+	move.l	d4,d5
+	muls.w	#11206,d5
+	asr.l	d7,d5
+	muls.l	#-44832,d4
+	add.l	d5,d4
+	add.l	d3,d4
+	move.l	d1,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d1
+	muls.l	#-7095,d1
+	asr.l	d7,d1
+	move.l	d3,d5
+	muls.l	#34072,d5
+	asr.l	d7,d5
+	muls.l	#-113520,d3
+	add.l	d5,d3
+	add.l	d1,d3
+	move.l	a4,d1
+	move.l	d3,8(sp)
+	move.l	d1,d5
+	swap	d5
+	ext.l	d5
+	and.l	#65535,d1
+	muls.l	#-7095,d1
+	asr.l	d7,d1
+	move.l	d5,d3
+	muls.l	#34072,d3
+	asr.l	d7,d3
+	muls.l	#-113520,d5
+	add.l	d3,d5
+	add.l	d1,d5
+	move.l	d2,d1
+	swap	d1
+	ext.l	d1
+	and.l	#65535,d2
+	mulu.w	#7697,d2
+	asr.l	d7,d2
+	move.l	d1,d3
+	muls.l	#63042,d3
+	asr.l	d7,d3
+	muls.l	#123152,d1
+	add.l	d3,d1
+	add.l	d2,d1
+	move.l	a6,d2
+	move.l	d6,a4
+	move.l	d2,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d2
+	muls.l	#-1423,d2
+	asr.l	d7,d2
+	move.l	d3,d6
+	muls.w	#31072,d6
+	asr.l	d7,d6
+	muls.w	#-22768,d3
+	add.l	d6,d3
+	add.l	d2,d3
+	move.l	4(sp),d2
+	move.l	d0,a6
+	move.l	d2,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d2
+	muls.l	#-6276,d2
+	asr.l	d7,d2
+	move.l	d6,d0
+	muls.l	#36957,d0
+	asr.l	d7,d0
+	muls.l	#-100416,d6
+	add.l	d0,d6
+	add.l	d2,d6
+	move.l	a3,d0
+	add.l	a5,d0
+	move.l	a3,d2
+	add.l	d2,d2
+	sub.l	a5,d2
+	move.l	d6,a3
+	move.l	d2,d6
+	add.l	d1,d6
+	move.l	d6,a5
+	move.l	d2,d6
+	sub.l	d1,d6
+	add.l	d3,d2
+	move.l	d5,d1
+	add.l	d4,d1
+	move.l	d2,4(sp)
+	move.l	d5,d2
+	sub.l	d4,d2
+	add.l	a6,d5
+	move.l	d0,d4
+	add.l	0(sp),d4
+	move.l	d4,12(sp)
+	move.l	a4,d4
+	sub.l	d5,d4
+	move.l	a3,d5
+	sub.l	a5,d5
+	sub.l	d3,d6
+	sub.l	a6,d2
+	add.l	d0,d0
+	move.l	0(sp),d3
+	sub.l	d0,d3
+	add.l	a4,d1
+	move.l	4(sp),d0
+	add.l	a3,d0
+	sub.l	12(sp),d4
+	sub.l	d4,d5
+	move.l	d4,a3
+	move.l	8(sp),d4
+	sub.l	d5,d4
+	sub.l	d4,d6
+	sub.l	d6,d2
 	sub.l	d2,d3
-	sub.l	d3,d0
-	move.l	d0,a3
-	move.l	76(sp),d0
+	sub.l	d3,d1
+	sub.l	d1,d0
+	move.l	d0,a4
+	move.l	80(sp),d0
 	tst.l	d0
 	bpl.s	1f
 	addq.l	#1,d0
 1:
 	asr.l	#1,d0
-	move.l	d3,a4
-	move.l	8(sp),d3
-	tst.l	d3
+	move.l	d1,a5
+	move.l	12(sp),d1
+	tst.l	d1
 	bpl.s	1f
-	addq.l	#1,d3
+	addq.l	#1,d1
 1:
-	asr.l	#1,d3
-	sub.l	d0,d3
-	move.l	d0,a5
+	asr.l	#1,d1
+	sub.l	d0,d1
+	move.l	d0,a6
 	move.l	a2,d0
 	tst.l	d0
 	bpl.s	1f
 	addq.l	#1,d0
 1:
 	asr.l	#1,d0
-	sub.l	d3,d0
+	sub.l	d1,d0
+	move.l	d1,a2
+	move.l	a3,d1
+	tst.l	d1
+	bpl.s	1f
+	addq.l	#1,d1
+1:
+	asr.l	#1,d1
+	sub.l	d0,d1
+	move.l	d0,a3
+	move.l	24(sp),d0
+	tst.l	d0
+	bpl.s	1f
+	addq.l	#1,d0
+1:
+	asr.l	#1,d0
+	sub.l	d1,d0
 	tst.l	d5
 	bpl.s	1f
 	addq.l	#1,d5
 1:
 	asr.l	#1,d5
 	sub.l	d0,d5
-	move.l	d3,a2
-	move.l	16(sp),d3
-	tst.l	d3
-	bpl.s	1f
-	addq.l	#1,d3
-1:
-	asr.l	#1,d3
-	sub.l	d5,d3
-	tst.l	d7
-	bpl.s	1f
-	addq.l	#1,d7
-1:
-	asr.l	#1,d7
-	sub.l	d3,d7
-	move.l	d0,a6
-	move.l	72(sp),d0
-	tst.l	d0
-	bpl.s	1f
-	addq.l	#1,d0
-1:
-	asr.l	#1,d0
-	sub.l	d7,d0
-	tst.l	d4
-	bpl.s	1f
-	addq.l	#1,d4
-1:
-	asr.l	#1,d4
-	sub.l	d0,d4
-	move.l	d5,72(sp)
-	move.l	24(sp),d5
-	tst.l	d5
-	bpl.s	1f
-	addq.l	#1,d5
-1:
-	asr.l	#1,d5
-	sub.l	d4,d5
-	tst.l	d6
-	bpl.s	1f
-	addq.l	#1,d6
-1:
-	asr.l	#1,d6
-	sub.l	d5,d6
-	move.l	d3,24(sp)
-	move.l	32(sp),d3
-	tst.l	d3
-	bpl.s	1f
-	addq.l	#1,d3
-1:
-	asr.l	#1,d3
-	sub.l	d6,d3
+	move.l	d1,24(sp)
+	move.l	76(sp),d1
 	tst.l	d1
 	bpl.s	1f
 	addq.l	#1,d1
 1:
 	asr.l	#1,d1
-	sub.l	d3,d1
-	move.l	d7,32(sp)
-	move.l	40(sp),d7
-	tst.l	d7
-	bpl.s	1f
-	addq.l	#1,d7
-1:
-	asr.l	#1,d7
-	sub.l	d1,d7
-	tst.l	d2
-	bpl.s	1f
-	addq.l	#1,d2
-1:
-	asr.l	#1,d2
-	sub.l	d7,d2
-	move.l	d0,40(sp)
-	move.l	44(sp),d0
-	tst.l	d0
-	bpl.s	1f
-	addq.l	#1,d0
-1:
-	asr.l	#1,d0
-	sub.l	d2,d0
-	move.l	d4,44(sp)
-	move.l	a4,d4
+	sub.l	d5,d1
 	tst.l	d4
 	bpl.s	1f
 	addq.l	#1,d4
 1:
 	asr.l	#1,d4
-	sub.l	d0,d4
-	move.l	d5,a4
-	move.l	48(sp),d5
-	tst.l	d5
+	sub.l	d1,d4
+	move.l	d0,76(sp)
+	move.l	36(sp),d0
+	tst.l	d0
 	bpl.s	1f
-	addq.l	#1,d5
+	addq.l	#1,d0
 1:
-	asr.l	#1,d5
-	sub.l	d4,d5
-	move.l	d6,48(sp)
-	move.l	a3,d6
+	asr.l	#1,d0
+	sub.l	d4,d0
 	tst.l	d6
 	bpl.s	1f
 	addq.l	#1,d6
 1:
 	asr.l	#1,d6
-	sub.l	d5,d6
-	move.l	d6,a3
-	move.l	a3,d6
-	neg.l	d6
-	move.l	d6,16(sp)
-	move.l	d5,d6
-	neg.l	d6
-	move.l	d6,8(sp)
-	move.l	d4,d6
-	neg.l	d6
-	move.l	d6,76(sp)
-	move.l	d0,d6
-	neg.l	d6
-	move.l	d6,4(sp)
-	move.l	d2,d6
-	neg.l	d6
-	move.l	d6,0(sp)
-	move.l	d7,d6
-	neg.l	d6
-	move.l	d6,12(sp)
-	move.l	d1,d6
-	neg.l	d6
-	move.l	d6,20(sp)
-	move.l	d3,d6
-	neg.l	d6
-	move.l	d6,28(sp)
-	move.l	48(sp),d6
-	neg.l	d6
-	move.l	d6,36(sp)
-	move.l	a4,d6
-	neg.l	d6
-	move.l	d6,56(sp)
-	move.l	44(sp),d6
-	neg.l	d6
-	move.l	d6,68(sp)
-	move.l	40(sp),d6
-	neg.l	d6
-	move.l	d6,60(sp)
-	move.l	32(sp),d6
-	neg.l	d6
-	move.l	d6,64(sp)
-	move.l	24(sp),d6
-	neg.l	d6
-	move.l	d6,52(sp)
-	move.l	72(sp),d6
-	neg.l	d6
-	move.l	d6,80(sp)
-	move.l	a6,d6
-	neg.l	d6
-	move.l	d6,84(sp)
-	move.l	a2,d6
-	neg.l	d6
-	move.l	d6,88(sp)
-	move.l	a5,d6
-	neg.l	d6
-	move.l	d6,92(sp)
-	move.l	a5,d6
-	neg.l	d6
+	sub.l	d0,d6
+	move.l	d5,36(sp)
+	move.l	40(sp),d5
+	tst.l	d5
+	bpl.s	1f
+	addq.l	#1,d5
+1:
+	asr.l	#1,d5
+	sub.l	d6,d5
+	tst.l	d2
+	bpl.s	1f
+	addq.l	#1,d2
+1:
+	asr.l	#1,d2
+	sub.l	d5,d2
+	move.l	d1,40(sp)
+	move.l	44(sp),d1
+	tst.l	d1
+	bpl.s	1f
+	addq.l	#1,d1
+1:
+	asr.l	#1,d1
+	sub.l	d2,d1
+	tst.l	d3
+	bpl.s	1f
+	addq.l	#1,d3
+1:
+	asr.l	#1,d3
+	sub.l	d1,d3
+	move.l	d4,44(sp)
+	move.l	48(sp),d4
+	tst.l	d4
+	bpl.s	1f
+	addq.l	#1,d4
+1:
+	asr.l	#1,d4
+	sub.l	d3,d4
+	move.l	d0,48(sp)
+	move.l	a5,d0
+	tst.l	d0
+	bpl.s	1f
+	addq.l	#1,d0
+1:
+	asr.l	#1,d0
+	sub.l	d4,d0
 	move.l	d6,a5
-	move.l	a2,d6
-	neg.l	d6
-	move.l	d6,a2
-	move.l	a6,d6
-	neg.l	d6
-	move.l	d6,a6
-	move.l	72(sp),d6
-	neg.l	d6
-	move.l	d6,72(sp)
-	move.l	24(sp),d6
-	neg.l	d6
-	move.l	d6,24(sp)
-	move.l	32(sp),d6
-	neg.l	d6
-	move.l	d6,32(sp)
-	move.l	40(sp),d6
-	neg.l	d6
-	move.l	d6,40(sp)
-	move.l	44(sp),d6
-	neg.l	d6
-	move.l	d6,44(sp)
-	move.l	a4,d6
-	neg.l	d6
-	move.l	48(sp),0(a1)
-	move.l	d3,4(a1)
-	move.l	d1,8(a1)
-	move.l	d7,12(a1)
-	move.l	d2,16(a1)
-	move.l	d0,20(a1)
-	move.l	d4,24(a1)
-	move.l	d5,28(a1)
-	move.l	a3,32(a1)
-	move.l	16(sp),36(a1)
-	move.l	8(sp),40(a1)
-	move.l	76(sp),44(a1)
+	move.l	64(sp),d6
+	tst.l	d6
+	bpl.s	1f
+	addq.l	#1,d6
+1:
+	asr.l	#1,d6
+	sub.l	d0,d6
+	move.l	d5,64(sp)
+	move.l	a4,d5
+	tst.l	d5
+	bpl.s	1f
+	addq.l	#1,d5
+1:
+	asr.l	#1,d5
+	sub.l	d6,d5
+	move.l	d5,a4
+	move.l	a4,d5
+	neg.l	d5
+	move.l	d5,12(sp)
+	move.l	d6,d5
+	neg.l	d5
+	move.l	d5,80(sp)
+	move.l	d0,d5
+	neg.l	d5
+	move.l	d5,8(sp)
+	move.l	d4,d5
+	neg.l	d5
+	move.l	d5,4(sp)
+	move.l	d3,d5
+	neg.l	d5
+	move.l	d5,0(sp)
+	move.l	d1,d5
+	neg.l	d5
+	move.l	d5,16(sp)
+	move.l	d2,d5
+	neg.l	d5
+	move.l	d5,20(sp)
+	move.l	64(sp),d5
+	neg.l	d5
+	move.l	d5,28(sp)
+	move.l	a5,d5
+	neg.l	d5
+	move.l	d5,32(sp)
+	move.l	48(sp),d5
+	neg.l	d5
+	move.l	d5,72(sp)
+	move.l	44(sp),d5
+	neg.l	d5
+	move.l	d5,56(sp)
+	move.l	40(sp),d5
+	neg.l	d5
+	move.l	d5,68(sp)
+	move.l	36(sp),d5
+	neg.l	d5
+	move.l	d5,60(sp)
+	move.l	76(sp),d5
+	neg.l	d5
+	move.l	d5,52(sp)
+	move.l	24(sp),d5
+	neg.l	d5
+	move.l	d5,84(sp)
+	move.l	a3,d5
+	neg.l	d5
+	move.l	d5,88(sp)
+	move.l	a2,d5
+	neg.l	d5
+	move.l	d5,92(sp)
+	move.l	a6,d5
+	neg.l	d5
+	move.l	d5,96(sp)
+	move.l	a6,d5
+	neg.l	d5
+	move.l	d5,a6
+	move.l	a2,d5
+	neg.l	d5
+	move.l	d5,a2
+	move.l	a3,d5
+	neg.l	d5
+	move.l	d5,a3
+	move.l	24(sp),d5
+	neg.l	d5
+	move.l	d5,24(sp)
+	move.l	76(sp),d5
+	neg.l	d5
+	move.l	d5,76(sp)
+	move.l	36(sp),d5
+	neg.l	d5
+	move.l	d5,36(sp)
+	move.l	40(sp),d5
+	neg.l	d5
+	move.l	d5,40(sp)
+	move.l	44(sp),d5
+	neg.l	d5
+	move.l	d5,44(sp)
+	move.l	48(sp),d5
+	neg.l	d5
+	move.l	a5,0(a1)
+	move.l	64(sp),4(a1)
+	move.l	d2,8(a1)
+	move.l	d1,12(a1)
+	move.l	d3,16(a1)
+	move.l	d4,20(a1)
+	move.l	d0,24(a1)
+	move.l	d6,28(a1)
+	move.l	a4,32(a1)
+	move.l	12(sp),36(a1)
+	move.l	80(sp),40(a1)
+	move.l	8(sp),44(a1)
 	move.l	4(sp),48(a1)
 	move.l	0(sp),52(a1)
-	move.l	12(sp),56(a1)
+	move.l	16(sp),56(a1)
 	move.l	20(sp),60(a1)
 	move.l	28(sp),64(a1)
-	move.l	36(sp),68(a1)
-	move.l	56(sp),72(a1)
-	move.l	68(sp),76(a1)
-	move.l	60(sp),80(a1)
-	move.l	64(sp),84(a1)
+	move.l	32(sp),68(a1)
+	move.l	72(sp),72(a1)
+	move.l	56(sp),76(a1)
+	move.l	68(sp),80(a1)
+	move.l	60(sp),84(a1)
 	move.l	52(sp),88(a1)
-	move.l	80(sp),92(a1)
-	move.l	84(sp),96(a1)
-	move.l	88(sp),100(a1)
-	move.l	92(sp),104(a1)
-	move.l	a5,108(a1)
+	move.l	84(sp),92(a1)
+	move.l	88(sp),96(a1)
+	move.l	92(sp),100(a1)
+	move.l	96(sp),104(a1)
+	move.l	a6,108(a1)
 	move.l	a2,112(a1)
-	move.l	a6,116(a1)
-	move.l	72(sp),120(a1)
-	move.l	24(sp),124(a1)
-	move.l	32(sp),128(a1)
+	move.l	a3,116(a1)
+	move.l	24(sp),120(a1)
+	move.l	76(sp),124(a1)
+	move.l	36(sp),128(a1)
 	move.l	40(sp),132(a1)
 	move.l	44(sp),136(a1)
-	move.l	d6,140(a1)
-	lea	96(sp),sp
+	move.l	d5,140(a1)
+	lea	100(sp),sp
 	movem.l	(sp)+,d2-d7/a2-a6
 	rts
 	.endif
@@ -2591,23 +2477,21 @@ _mpga_imdct_l0:
 	.endif
 	.if	MPGA060 == 1
 	movem.l	d2-d7/a2-a6,-(sp)
-	lea	-104(sp),sp
-	move.l	152(sp),a0		| X
-	move.l	156(sp),a1		| z
+	lea	-108(sp),sp
+	move.l	156(sp),a0		| X
+	move.l	160(sp),a1		| z
+	moveq	#12,d7
 	move.l	0(a0),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#8184,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#13306,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#8184,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#130944,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	4(a0),d0
@@ -2616,14 +2500,11 @@ _mpga_imdct_l0:
 	ext.l	d2
 	and.l	#65535,d0
 	mulu.w	#8121,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d2,d3
 	muls.l	#60051,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#8121,d2
-	lsl.l	#4,d2
+	asr.l	d7,d3
+	muls.l	#129936,d2
 	add.l	d3,d2
 	add.l	d0,d2
 	move.l	8(a0),d0
@@ -2632,14 +2513,11 @@ _mpga_imdct_l0:
 	ext.l	d3
 	and.l	#65535,d0
 	mulu.w	#7997,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d3,d4
 	muls.l	#53536,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#7997,d3
-	lsl.l	#4,d3
+	asr.l	d7,d4
+	muls.l	#127952,d3
 	add.l	d4,d3
 	add.l	d0,d3
 	move.l	12(a0),d0
@@ -2648,14 +2526,11 @@ _mpga_imdct_l0:
 	ext.l	d4
 	and.l	#65535,d0
 	mulu.w	#7812,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d4,d5
 	muls.l	#55657,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#7812,d4
-	lsl.l	#4,d4
+	asr.l	d7,d5
+	muls.l	#124992,d4
 	add.l	d5,d4
 	add.l	d0,d4
 	move.l	16(a0),d0
@@ -2664,1222 +2539,1084 @@ _mpga_imdct_l0:
 	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#7568,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d5,d6
 	muls.w	#27599,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#7568,d5
-	lsl.l	#4,d5
+	asr.l	d7,d6
+	muls.l	#121088,d5
 	add.l	d6,d5
 	add.l	d0,d5
 	move.l	20(a0),d0
+	move.l	d5,a2
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#7266,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#25739,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#7266,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#25739,d5
+	asr.l	d7,d5
+	muls.l	#116256,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	24(a0),d0
-	move.l	d6,a2
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,a3
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#6909,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.w	#4111,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6909,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#110544,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	28(a0),d0
-	move.l	d7,a3
+	move.l	d5,a4
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#6499,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#9867,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#6499,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#9867,d5
+	asr.l	d7,d5
+	muls.l	#103984,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	32(a0),d0
-	move.l	d6,a4
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,a5
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#6039,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#50852,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6039,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#96624,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	36(a0),d0
-	move.l	d7,a5
+	move.l	d5,a6
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#5534,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.w	#28507,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#5534,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.w	#28507,d5
+	asr.l	d7,d5
+	muls.l	#88544,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	40(a0),d0
-	move.l	d6,a6
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,0(sp)
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#4986,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#63808,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#4986,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#79776,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	44(a0),d0
-	move.l	d7,0(sp)
+	move.l	d5,4(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#4401,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.l	#36595,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#4401,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.l	#36595,d5
+	asr.l	d7,d5
+	muls.l	#70416,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	48(a0),d0
-	move.l	d6,4(sp)
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
+	move.l	d6,8(sp)
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
 	and.l	#65535,d0
 	mulu.w	#3782,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d6
+	asr.l	d7,d0
+	move.l	d5,d6
 	muls.l	#42247,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#3782,d7
-	lsl.l	#4,d7
-	add.l	d6,d7
-	add.l	d0,d7
+	asr.l	d7,d6
+	muls.l	#60512,d5
+	add.l	d6,d5
+	add.l	d0,d5
 	move.l	52(a0),d0
-	move.l	d7,8(sp)
+	move.l	d5,12(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
 	mulu.w	#3134,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d7
-	muls.l	#61779,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#3134,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
+	asr.l	d7,d0
+	move.l	d6,d5
+	muls.l	#61779,d5
+	asr.l	d7,d5
+	muls.l	#50144,d6
+	add.l	d5,d6
 	add.l	d0,d6
 	move.l	56(a0),d0
-	move.l	d5,12(sp)
-	move.l	d0,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d0
-	mulu.w	#2463,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d7,d5
-	muls.w	#25029,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#2463,d7
-	lsl.l	#4,d7
-	add.l	d5,d7
-	add.l	d0,d7
-	move.l	60(a0),d0
 	move.l	d6,16(sp)
 	move.l	d0,d5
 	swap	d5
 	ext.l	d5
 	and.l	#65535,d0
-	mulu.w	#1773,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#2463,d0
+	asr.l	d7,d0
 	move.l	d5,d6
-	muls.w	#4805,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#1773,d5
-	lsl.l	#4,d5
+	muls.w	#25029,d6
+	asr.l	d7,d6
+	muls.l	#39408,d5
 	add.l	d6,d5
 	add.l	d0,d5
-	move.l	64(a0),d0
+	move.l	60(a0),d0
 	move.l	d4,20(sp)
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
-	mulu.w	#1069,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#1773,d0
+	asr.l	d7,d0
 	move.l	d6,d4
-	muls.w	#17732,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#1069,d6
-	lsl.l	#4,d6
+	muls.w	#4805,d4
+	asr.l	d7,d4
+	muls.w	#28368,d6
 	add.l	d4,d6
 	add.l	d0,d6
-	move.l	68(a0),d0
-	move.l	d7,24(sp)
+	move.l	64(a0),d0
+	move.l	d5,24(sp)
 	move.l	d0,d4
 	swap	d4
 	ext.l	d4
 	and.l	#65535,d0
-	mulu.w	#357,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d7
-	muls.w	#21628,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#357,d4
-	lsl.l	#4,d4
-	add.l	d7,d4
+	mulu.w	#1069,d0
+	asr.l	d7,d0
+	move.l	d4,d5
+	muls.w	#17732,d5
+	asr.l	d7,d5
+	muls.w	#17104,d4
+	add.l	d5,d4
 	add.l	d0,d4
-	move.l	d1,d0
-	add.l	d4,d0
-	move.l	d2,d7
-	add.l	d6,d7
+	move.l	68(a0),d0
 	move.l	d3,28(sp)
-	move.l	28(sp),d3
-	add.l	d5,d3
-	move.l	d5,32(sp)
-	move.l	20(sp),d5
-	add.l	24(sp),d5
-	move.l	d2,36(sp)
-	move.l	12(sp),d2
-	add.l	16(sp),d2
-	move.l	d6,40(sp)
-	move.l	a2,d6
-	add.l	8(sp),d6
+	move.l	d0,d5
+	swap	d5
+	ext.l	d5
+	and.l	#65535,d0
+	mulu.w	#357,d0
+	asr.l	d7,d0
+	move.l	d5,d3
+	muls.w	#21628,d3
+	asr.l	d7,d3
+	muls.w	#5712,d5
+	add.l	d3,d5
+	add.l	d0,d5
+	move.l	d1,d0
+	add.l	d5,d0
+	move.l	d2,d3
+	add.l	d4,d3
+	move.l	d2,32(sp)
+	move.l	28(sp),d2
+	add.l	d6,d2
+	move.l	d6,36(sp)
+	move.l	20(sp),d6
+	add.l	24(sp),d6
+	move.l	d4,40(sp)
+	move.l	a2,d4
+	add.l	16(sp),d4
 	move.l	d1,44(sp)
 	move.l	a3,d1
-	add.l	4(sp),d1
-	move.l	d4,48(sp)
-	move.l	a4,d4
-	add.l	0(sp),d4
-	move.l	d2,52(sp)
-	move.l	a5,d2
-	add.l	a6,d2
+	add.l	12(sp),d1
+	move.l	d5,48(sp)
+	move.l	a4,d5
+	add.l	8(sp),d5
+	move.l	d4,52(sp)
+	move.l	a5,d4
+	add.l	4(sp),d4
 	move.l	d0,56(sp)
-	move.l	d5,d0
-	add.l	d6,d0
-	sub.l	d6,d5
-	move.l	d1,d6
-	add.l	d3,d6
-	sub.l	d3,d1
-	move.l	d7,d3
-	add.l	d4,d3
-	sub.l	d4,d7
-	move.l	d2,d4
+	move.l	a6,d0
+	add.l	0(sp),d0
+	move.l	d0,60(sp)
+	move.l	d6,d0
+	add.l	d1,d0
+	sub.l	d1,d6
+	move.l	d5,d1
+	add.l	d2,d1
+	sub.l	d2,d5
+	move.l	d3,d2
+	add.l	d4,d2
+	sub.l	d4,d3
+	move.l	60(sp),d4
 	add.l	56(sp),d4
+	move.l	d2,64(sp)
+	move.l	60(sp),d2
 	sub.l	56(sp),d2
 	move.l	d3,56(sp)
 	move.l	d0,d3
-	add.l	d6,d3
-	move.l	d7,60(sp)
-	move.l	d0,d7
-	sub.l	d6,d7
+	add.l	d1,d3
+	move.l	d2,60(sp)
+	move.l	d0,d2
+	sub.l	d1,d2
 	sub.l	d4,d0
-	sub.l	d4,d6
+	sub.l	d4,d1
 	add.l	d4,d3
-	move.l	d5,d4
-	sub.l	d1,d4
-	add.l	d2,d4
-	move.l	d3,64(sp)
-	move.l	d1,d3
-	add.l	d2,d3
-	move.l	d7,68(sp)
-	move.l	d5,d7
-	sub.l	d2,d7
-	add.l	d1,d5
-	move.l	d5,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d5
-	muls.l	#-5266,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	move.l	d1,d2
-	muls.w	#18606,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#-5266,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d5,d1
-	move.l	d7,d2
-	swap	d2
-	ext.l	d2
-	and.l	#65535,d7
-	muls.l	#-8068,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	move.l	d2,d5
-	muls.w	#29811,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-8068,d2
-	lsl.l	#4,d2
-	add.l	d5,d2
-	add.l	d7,d2
-	move.l	d3,d5
+	move.l	d6,d4
+	sub.l	d5,d4
+	add.l	60(sp),d4
+	move.l	d3,68(sp)
+	move.l	d5,d3
+	add.l	60(sp),d3
+	move.l	d2,72(sp)
+	move.l	d6,d2
+	sub.l	60(sp),d2
+	add.l	d5,d6
+	move.l	d0,60(sp)
+	move.l	d6,d5
 	swap	d5
 	ext.l	d5
+	and.l	#65535,d6
+	muls.l	#-5266,d6
+	asr.l	d7,d6
+	move.l	d5,d0
+	muls.w	#18606,d0
+	asr.l	d7,d0
+	muls.l	#-84256,d5
+	add.l	d0,d5
+	add.l	d6,d5
+	move.l	d2,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d2
+	muls.l	#-8068,d2
+	asr.l	d7,d2
+	move.l	d0,d6
+	muls.w	#29811,d6
+	asr.l	d7,d6
+	muls.l	#-129088,d0
+	add.l	d6,d0
+	add.l	d2,d0
+	move.l	d3,d2
+	swap	d2
+	ext.l	d2
 	and.l	#65535,d3
 	muls.l	#-2802,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d5,d7
-	muls.w	#11206,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-2802,d5
-	lsl.l	#4,d5
-	add.l	d7,d5
-	add.l	d3,d5
+	asr.l	d7,d3
+	move.l	d2,d6
+	muls.w	#11206,d6
+	asr.l	d7,d6
+	muls.l	#-44832,d2
+	add.l	d6,d2
+	add.l	d3,d2
 	move.l	d4,d3
 	swap	d3
 	ext.l	d3
 	and.l	#65535,d4
 	muls.l	#-7095,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d3,d7
-	muls.l	#34072,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-7095,d3
-	lsl.l	#4,d3
-	add.l	d7,d3
+	asr.l	d7,d4
+	move.l	d3,d6
+	muls.l	#34072,d6
+	asr.l	d7,d6
+	muls.l	#-113520,d3
+	add.l	d6,d3
 	add.l	d4,d3
-	move.l	60(sp),d4
-	move.l	d3,72(sp)
-	move.l	d4,d7
-	swap	d7
-	ext.l	d7
+	move.l	56(sp),d4
+	move.l	d3,76(sp)
+	move.l	d4,d6
+	swap	d6
+	ext.l	d6
 	and.l	#65535,d4
 	muls.l	#-7095,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d7,d3
-	muls.l	#34072,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#-7095,d7
-	lsl.l	#4,d7
-	add.l	d3,d7
-	add.l	d4,d7
+	asr.l	d7,d4
 	move.l	d6,d3
+	muls.l	#34072,d3
+	asr.l	d7,d3
+	muls.l	#-113520,d6
+	add.l	d3,d6
+	add.l	d4,d6
+	move.l	d1,d3
 	swap	d3
 	ext.l	d3
-	and.l	#65535,d6
-	mulu.w	#7697,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
+	and.l	#65535,d1
+	mulu.w	#7697,d1
+	asr.l	d7,d1
 	move.l	d3,d4
 	muls.l	#63042,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#7697,d3
-	lsl.l	#4,d3
+	asr.l	d7,d4
+	muls.l	#123152,d3
 	add.l	d4,d3
-	add.l	d6,d3
-	move.l	d0,d4
-	swap	d4
-	ext.l	d4
-	and.l	#65535,d0
-	muls.l	#-1423,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d6
-	muls.w	#31072,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#-1423,d4
-	lsl.l	#4,d4
-	add.l	d6,d4
-	add.l	d0,d4
-	move.l	68(sp),d0
-	move.l	d1,60(sp)
-	move.l	d0,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d0
-	muls.l	#-6276,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d1
-	muls.l	#36957,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#-6276,d6
-	lsl.l	#4,d6
-	add.l	d1,d6
-	add.l	d0,d6
-	move.l	52(sp),d0
-	add.l	56(sp),d0
-	move.l	52(sp),d1
-	add.l	d1,d1
-	sub.l	56(sp),d1
-	move.l	d6,56(sp)
-	move.l	d1,d6
-	add.l	d3,d6
-	move.l	d6,52(sp)
-	move.l	d1,d6
-	sub.l	d3,d6
-	add.l	d4,d1
-	move.l	d7,d3
-	add.l	d5,d3
-	move.l	d1,68(sp)
-	move.l	d7,d1
-	sub.l	d5,d1
-	add.l	d2,d7
-	move.l	d0,d5
-	add.l	64(sp),d5
-	move.l	d5,76(sp)
-	move.l	60(sp),d5
-	sub.l	d7,d5
-	move.l	56(sp),d7
-	sub.l	52(sp),d7
-	sub.l	d4,d6
-	sub.l	d2,d1
-	add.l	d0,d0
-	move.l	64(sp),d2
-	sub.l	d0,d2
-	add.l	60(sp),d3
-	move.l	68(sp),d0
-	add.l	56(sp),d0
-	move.l	44(sp),d4
-	sub.l	48(sp),d4
-	move.l	d0,48(sp)
-	move.l	d3,44(sp)
-	move.l	d4,d0
-	swap	d0
-	ext.l	d0
-	and.l	#65535,d4
-	mulu.w	#8160,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d0,d3
-	muls.l	#54196,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#8160,d0
-	lsl.l	#4,d0
-	add.l	d3,d0
-	add.l	d4,d0
-	move.l	36(sp),d3
-	sub.l	40(sp),d3
-	move.l	d2,40(sp)
-	move.l	d3,d4
-	swap	d4
-	ext.l	d4
-	and.l	#65535,d3
-	mulu.w	#7912,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d4,d2
-	muls.l	#56647,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#7912,d4
-	lsl.l	#4,d4
-	add.l	d2,d4
-	add.l	d3,d4
-	move.l	28(sp),d2
-	sub.l	32(sp),d2
-	move.l	d1,32(sp)
-	move.l	d2,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d2
-	mulu.w	#7424,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	move.l	d3,d1
-	muls.w	#31024,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#7424,d3
-	lsl.l	#4,d3
 	add.l	d1,d3
-	add.l	d2,d3
-	move.l	20(sp),d1
-	sub.l	24(sp),d1
-	move.l	d6,24(sp)
-	move.l	d1,d2
-	swap	d2
-	ext.l	d2
+	move.l	60(sp),d1
+	move.l	d5,56(sp)
+	move.l	d1,d4
+	swap	d4
+	ext.l	d4
 	and.l	#65535,d1
-	mulu.w	#6710,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d2,d6
-	muls.w	#32345,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#6710,d2
-	lsl.l	#4,d2
-	add.l	d6,d2
-	add.l	d1,d2
-	move.l	12(sp),d1
-	sub.l	16(sp),d1
-	move.l	d7,16(sp)
-	move.l	d1,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d1
-	mulu.w	#5792,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d6,d7
-	muls.l	#40550,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#5792,d6
-	lsl.l	#4,d6
-	add.l	d7,d6
-	add.l	d1,d6
-	move.l	a2,d1
-	sub.l	8(sp),d1
-	move.l	d5,a2
-	move.l	d1,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d1
-	mulu.w	#4698,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d7,d5
-	muls.l	#48376,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#4698,d7
-	lsl.l	#4,d7
-	add.l	d5,d7
-	add.l	d1,d7
-	move.l	a3,d1
-	sub.l	4(sp),d1
-	move.l	d6,a3
+	muls.l	#-1423,d1
+	asr.l	d7,d1
+	move.l	d4,d5
+	muls.w	#31072,d5
+	asr.l	d7,d5
+	muls.w	#-22768,d4
+	add.l	d5,d4
+	add.l	d1,d4
+	move.l	72(sp),d1
+	move.l	d0,60(sp)
 	move.l	d1,d5
 	swap	d5
 	ext.l	d5
 	and.l	#65535,d1
-	mulu.w	#3462,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d5,d6
-	muls.w	#5820,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#3462,d5
-	lsl.l	#4,d5
-	add.l	d6,d5
+	muls.l	#-6276,d1
+	asr.l	d7,d1
+	move.l	d5,d0
+	muls.l	#36957,d0
+	asr.l	d7,d0
+	muls.l	#-100416,d5
+	add.l	d0,d5
 	add.l	d1,d5
-	move.l	a4,d1
-	sub.l	0(sp),d1
-	move.l	d0,a4
-	move.l	d1,d6
-	swap	d6
-	ext.l	d6
-	and.l	#65535,d1
-	mulu.w	#2120,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d6,d0
-	muls.w	#16097,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	muls.w	#2120,d6
-	lsl.l	#4,d6
-	add.l	d0,d6
-	add.l	d1,d6
-	move.l	a5,d0
-	sub.l	a6,d0
-	move.l	d4,a5
+	move.l	52(sp),d0
+	add.l	64(sp),d0
+	move.l	52(sp),d1
+	add.l	d1,d1
+	sub.l	64(sp),d1
+	move.l	d5,64(sp)
+	move.l	d1,d5
+	add.l	d3,d5
+	move.l	d5,52(sp)
+	move.l	d1,d5
+	sub.l	d3,d5
+	add.l	d4,d1
+	move.l	d6,d3
+	add.l	d2,d3
+	move.l	d1,72(sp)
+	move.l	d6,d1
+	sub.l	d2,d1
+	add.l	60(sp),d6
+	move.l	d0,d2
+	add.l	68(sp),d2
+	move.l	d2,80(sp)
+	move.l	56(sp),d2
+	sub.l	d6,d2
+	move.l	64(sp),d6
+	sub.l	52(sp),d6
+	sub.l	d4,d5
+	sub.l	60(sp),d1
+	add.l	d0,d0
+	move.l	68(sp),d4
+	sub.l	d0,d4
+	add.l	56(sp),d3
+	move.l	72(sp),d0
+	add.l	64(sp),d0
+	move.l	d0,64(sp)
+	move.l	44(sp),d0
+	sub.l	48(sp),d0
+	move.l	d3,48(sp)
+	move.l	d4,44(sp)
+	move.l	d0,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d0
+	mulu.w	#8160,d0
+	asr.l	d7,d0
+	move.l	d3,d4
+	muls.l	#54196,d4
+	asr.l	d7,d4
+	muls.l	#130560,d3
+	add.l	d4,d3
+	add.l	d0,d3
+	move.l	32(sp),d0
+	sub.l	40(sp),d0
+	move.l	d1,40(sp)
+	move.l	d0,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d0
+	mulu.w	#7912,d0
+	asr.l	d7,d0
+	move.l	d4,d1
+	muls.l	#56647,d1
+	asr.l	d7,d1
+	muls.l	#126592,d4
+	add.l	d1,d4
+	add.l	d0,d4
+	move.l	28(sp),d0
+	sub.l	36(sp),d0
+	move.l	d5,36(sp)
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#713,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d4
-	muls.l	#64215,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#713,d1
-	lsl.l	#4,d1
-	add.l	d4,d1
-	add.l	d0,d1
-	move.l	d2,d0
-	add.l	d7,d0
-	sub.l	d7,d2
-	move.l	d5,d4
-	add.l	d3,d4
-	sub.l	d3,d5
-	move.l	a5,d3
-	add.l	d6,d3
-	move.l	a5,d7
-	sub.l	d6,d7
-	move.l	d1,d6
-	add.l	a4,d6
-	sub.l	a4,d1
-	move.l	d3,a4
-	move.l	d0,d3
-	add.l	d4,d3
-	move.l	d7,a5
-	move.l	d0,d7
-	sub.l	d4,d7
-	sub.l	d6,d0
-	sub.l	d6,d4
-	add.l	d6,d3
-	move.l	d2,d6
-	sub.l	d5,d6
-	add.l	d1,d6
-	move.l	d3,a6
-	move.l	d5,d3
-	add.l	d1,d3
-	move.l	d7,0(sp)
-	move.l	d2,d7
-	sub.l	d1,d7
-	add.l	d5,d2
-	move.l	d2,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d2
-	muls.l	#-5266,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
+	mulu.w	#7424,d0
+	asr.l	d7,d0
 	move.l	d1,d5
-	muls.w	#18606,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-5266,d1
-	lsl.l	#4,d1
+	muls.w	#31024,d5
+	asr.l	d7,d5
+	muls.l	#118784,d1
 	add.l	d5,d1
-	add.l	d2,d1
-	move.l	d7,d2
-	swap	d2
-	ext.l	d2
-	and.l	#65535,d7
-	muls.l	#-8068,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	move.l	d2,d5
-	muls.w	#29811,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#-8068,d2
-	lsl.l	#4,d2
-	add.l	d5,d2
-	add.l	d7,d2
-	move.l	d3,d5
+	add.l	d0,d1
+	move.l	20(sp),d0
+	sub.l	24(sp),d0
+	move.l	d6,24(sp)
+	move.l	d0,d5
 	swap	d5
 	ext.l	d5
-	and.l	#65535,d3
-	muls.l	#-2802,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d5,d7
-	muls.w	#11206,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-2802,d5
-	lsl.l	#4,d5
-	add.l	d7,d5
-	add.l	d3,d5
-	move.l	d6,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d6
-	muls.l	#-7095,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	move.l	d3,d7
-	muls.l	#34072,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	muls.w	#-7095,d3
-	lsl.l	#4,d3
-	add.l	d7,d3
-	add.l	d6,d3
-	move.l	a5,d6
-	move.l	d3,4(sp)
-	move.l	d6,d7
-	swap	d7
-	ext.l	d7
-	and.l	#65535,d6
-	muls.l	#-7095,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	move.l	d7,d3
-	muls.l	#34072,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#-7095,d7
-	lsl.l	#4,d7
-	add.l	d3,d7
-	add.l	d6,d7
-	move.l	d4,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d4
-	mulu.w	#7697,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	move.l	d3,d6
-	muls.l	#63042,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#7697,d3
-	lsl.l	#4,d3
-	add.l	d6,d3
-	add.l	d4,d3
-	move.l	d0,d4
-	swap	d4
-	ext.l	d4
 	and.l	#65535,d0
-	muls.l	#-1423,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d4,d6
-	muls.w	#31072,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	muls.w	#-1423,d4
-	lsl.l	#4,d4
-	add.l	d6,d4
-	add.l	d0,d4
-	move.l	0(sp),d0
-	move.l	d1,a5
+	mulu.w	#6710,d0
+	asr.l	d7,d0
+	move.l	d5,d6
+	muls.w	#32345,d6
+	asr.l	d7,d6
+	muls.l	#107360,d5
+	add.l	d6,d5
+	add.l	d0,d5
+	move.l	a2,d0
+	sub.l	16(sp),d0
+	move.l	d2,a2
 	move.l	d0,d6
 	swap	d6
 	ext.l	d6
 	and.l	#65535,d0
-	muls.l	#-6276,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d6,d1
-	muls.l	#36957,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	muls.w	#-6276,d6
-	lsl.l	#4,d6
-	add.l	d1,d6
+	mulu.w	#5792,d0
+	asr.l	d7,d0
+	move.l	d6,d2
+	muls.l	#40550,d2
+	asr.l	d7,d2
+	muls.l	#92672,d6
+	add.l	d2,d6
 	add.l	d0,d6
 	move.l	a3,d0
-	add.l	a4,d0
-	move.l	a3,d1
-	add.l	d1,d1
-	sub.l	a4,d1
+	sub.l	12(sp),d0
 	move.l	d6,a3
-	move.l	d1,d6
+	move.l	d0,d2
+	swap	d2
+	ext.l	d2
+	and.l	#65535,d0
+	mulu.w	#4698,d0
+	asr.l	d7,d0
+	move.l	d2,d6
+	muls.l	#48376,d6
+	asr.l	d7,d6
+	muls.l	#75168,d2
+	add.l	d6,d2
+	add.l	d0,d2
+	move.l	a4,d0
+	sub.l	8(sp),d0
+	move.l	d3,a4
+	move.l	d0,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d0
+	mulu.w	#3462,d0
+	asr.l	d7,d0
+	move.l	d6,d3
+	muls.w	#5820,d3
+	asr.l	d7,d3
+	muls.l	#55392,d6
 	add.l	d3,d6
-	move.l	d6,a4
-	move.l	d1,d6
-	sub.l	d3,d6
-	add.l	d4,d1
-	move.l	d7,d3
-	add.l	d5,d3
-	move.l	d1,0(sp)
-	move.l	d7,d1
-	sub.l	d5,d1
-	add.l	d2,d7
-	move.l	d0,d5
-	add.l	a6,d5
-	move.l	d5,8(sp)
-	move.l	a5,d5
-	sub.l	d7,d5
-	move.l	a3,d7
-	sub.l	a4,d7
-	sub.l	d4,d6
-	sub.l	d2,d1
-	add.l	d0,d0
-	move.l	a6,d2
-	sub.l	d0,d2
-	add.l	a5,d3
-	move.l	0(sp),d0
-	add.l	a3,d0
-	sub.l	8(sp),d5
-	sub.l	d5,d7
-	move.l	4(sp),d4
-	sub.l	d7,d4
-	sub.l	d4,d6
-	sub.l	d6,d1
+	add.l	d0,d6
+	move.l	a5,d0
+	sub.l	4(sp),d0
+	move.l	d4,a5
+	move.l	d0,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d0
+	mulu.w	#2120,d0
+	asr.l	d7,d0
+	move.l	d3,d4
+	muls.w	#16097,d4
+	asr.l	d7,d4
+	muls.l	#33920,d3
+	add.l	d4,d3
+	add.l	d0,d3
+	move.l	a6,d0
+	sub.l	0(sp),d0
+	move.l	d3,a6
+	move.l	d0,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d0
+	mulu.w	#713,d0
+	asr.l	d7,d0
+	move.l	d4,d3
+	muls.l	#64215,d3
+	asr.l	d7,d3
+	muls.w	#11408,d4
+	add.l	d3,d4
+	add.l	d0,d4
+	move.l	d5,d0
+	add.l	d2,d0
+	sub.l	d2,d5
+	move.l	d6,d2
+	add.l	d1,d2
+	sub.l	d1,d6
+	move.l	a5,d1
+	add.l	a6,d1
+	move.l	a5,d3
+	sub.l	a6,d3
+	move.l	d1,a5
+	move.l	d4,d1
+	add.l	a4,d1
+	sub.l	a4,d4
+	move.l	d3,a4
+	move.l	d0,d3
+	add.l	d2,d3
+	move.l	d4,a6
+	move.l	d0,d4
+	sub.l	d2,d4
+	sub.l	d1,d0
 	sub.l	d1,d2
+	add.l	d1,d3
+	move.l	d5,d1
+	sub.l	d6,d1
+	add.l	a6,d1
+	move.l	d3,0(sp)
+	move.l	d6,d3
+	add.l	a6,d3
+	move.l	d4,4(sp)
+	move.l	d5,d4
+	sub.l	a6,d4
+	add.l	d6,d5
+	move.l	d0,a6
+	move.l	d5,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d5
+	muls.l	#-5266,d5
+	asr.l	d7,d5
+	move.l	d6,d0
+	muls.w	#18606,d0
+	asr.l	d7,d0
+	muls.l	#-84256,d6
+	add.l	d0,d6
+	add.l	d5,d6
+	move.l	d4,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d4
+	muls.l	#-8068,d4
+	asr.l	d7,d4
+	move.l	d0,d5
+	muls.w	#29811,d5
+	asr.l	d7,d5
+	muls.l	#-129088,d0
+	add.l	d5,d0
+	add.l	d4,d0
+	move.l	d3,d4
+	swap	d4
+	ext.l	d4
+	and.l	#65535,d3
+	muls.l	#-2802,d3
+	asr.l	d7,d3
+	move.l	d4,d5
+	muls.w	#11206,d5
+	asr.l	d7,d5
+	muls.l	#-44832,d4
+	add.l	d5,d4
+	add.l	d3,d4
+	move.l	d1,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d1
+	muls.l	#-7095,d1
+	asr.l	d7,d1
+	move.l	d3,d5
+	muls.l	#34072,d5
+	asr.l	d7,d5
+	muls.l	#-113520,d3
+	add.l	d5,d3
+	add.l	d1,d3
+	move.l	a4,d1
+	move.l	d3,8(sp)
+	move.l	d1,d5
+	swap	d5
+	ext.l	d5
+	and.l	#65535,d1
+	muls.l	#-7095,d1
+	asr.l	d7,d1
+	move.l	d5,d3
+	muls.l	#34072,d3
+	asr.l	d7,d3
+	muls.l	#-113520,d5
+	add.l	d3,d5
+	add.l	d1,d5
+	move.l	d2,d1
+	swap	d1
+	ext.l	d1
+	and.l	#65535,d2
+	mulu.w	#7697,d2
+	asr.l	d7,d2
+	move.l	d1,d3
+	muls.l	#63042,d3
+	asr.l	d7,d3
+	muls.l	#123152,d1
+	add.l	d3,d1
+	add.l	d2,d1
+	move.l	a6,d2
+	move.l	d6,a4
+	move.l	d2,d3
+	swap	d3
+	ext.l	d3
+	and.l	#65535,d2
+	muls.l	#-1423,d2
+	asr.l	d7,d2
+	move.l	d3,d6
+	muls.w	#31072,d6
+	asr.l	d7,d6
+	muls.w	#-22768,d3
+	add.l	d6,d3
+	add.l	d2,d3
+	move.l	4(sp),d2
+	move.l	d0,a6
+	move.l	d2,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d2
+	muls.l	#-6276,d2
+	asr.l	d7,d2
+	move.l	d6,d0
+	muls.l	#36957,d0
+	asr.l	d7,d0
+	muls.l	#-100416,d6
+	add.l	d0,d6
+	add.l	d2,d6
+	move.l	a3,d0
+	add.l	a5,d0
+	move.l	a3,d2
+	add.l	d2,d2
+	sub.l	a5,d2
+	move.l	d6,a3
+	move.l	d2,d6
+	add.l	d1,d6
+	move.l	d6,a5
+	move.l	d2,d6
+	sub.l	d1,d6
+	add.l	d3,d2
+	move.l	d5,d1
+	add.l	d4,d1
+	move.l	d2,4(sp)
+	move.l	d5,d2
+	sub.l	d4,d2
+	add.l	a6,d5
+	move.l	d0,d4
+	add.l	0(sp),d4
+	move.l	d4,12(sp)
+	move.l	a4,d4
+	sub.l	d5,d4
+	move.l	a3,d5
+	sub.l	a5,d5
+	sub.l	d3,d6
+	sub.l	a6,d2
+	add.l	d0,d0
+	move.l	0(sp),d3
+	sub.l	d0,d3
+	add.l	a4,d1
+	move.l	4(sp),d0
+	add.l	a3,d0
+	sub.l	12(sp),d4
+	sub.l	d4,d5
+	move.l	d4,a3
+	move.l	8(sp),d4
+	sub.l	d5,d4
+	sub.l	d4,d6
+	sub.l	d6,d2
 	sub.l	d2,d3
-	sub.l	d3,d0
-	move.l	d0,a3
-	move.l	76(sp),d0
+	sub.l	d3,d1
+	sub.l	d1,d0
+	move.l	d0,a4
+	move.l	80(sp),d0
 	tst.l	d0
 	bpl.s	1f
 	addq.l	#1,d0
 1:
 	asr.l	#1,d0
-	move.l	d3,a4
-	move.l	8(sp),d3
-	tst.l	d3
+	move.l	d1,a5
+	move.l	12(sp),d1
+	tst.l	d1
 	bpl.s	1f
-	addq.l	#1,d3
+	addq.l	#1,d1
 1:
-	asr.l	#1,d3
-	sub.l	d0,d3
-	move.l	d0,a5
+	asr.l	#1,d1
+	sub.l	d0,d1
+	move.l	d0,a6
 	move.l	a2,d0
 	tst.l	d0
 	bpl.s	1f
 	addq.l	#1,d0
 1:
 	asr.l	#1,d0
-	sub.l	d3,d0
+	sub.l	d1,d0
+	move.l	d1,a2
+	move.l	a3,d1
+	tst.l	d1
+	bpl.s	1f
+	addq.l	#1,d1
+1:
+	asr.l	#1,d1
+	sub.l	d0,d1
+	move.l	d0,a3
+	move.l	24(sp),d0
+	tst.l	d0
+	bpl.s	1f
+	addq.l	#1,d0
+1:
+	asr.l	#1,d0
+	sub.l	d1,d0
 	tst.l	d5
 	bpl.s	1f
 	addq.l	#1,d5
 1:
 	asr.l	#1,d5
 	sub.l	d0,d5
-	move.l	d3,a2
-	move.l	16(sp),d3
-	tst.l	d3
-	bpl.s	1f
-	addq.l	#1,d3
-1:
-	asr.l	#1,d3
-	sub.l	d5,d3
-	tst.l	d7
-	bpl.s	1f
-	addq.l	#1,d7
-1:
-	asr.l	#1,d7
-	sub.l	d3,d7
-	move.l	d0,a6
-	move.l	72(sp),d0
-	tst.l	d0
-	bpl.s	1f
-	addq.l	#1,d0
-1:
-	asr.l	#1,d0
-	sub.l	d7,d0
-	tst.l	d4
-	bpl.s	1f
-	addq.l	#1,d4
-1:
-	asr.l	#1,d4
-	sub.l	d0,d4
-	move.l	d5,72(sp)
-	move.l	24(sp),d5
-	tst.l	d5
-	bpl.s	1f
-	addq.l	#1,d5
-1:
-	asr.l	#1,d5
-	sub.l	d4,d5
-	tst.l	d6
-	bpl.s	1f
-	addq.l	#1,d6
-1:
-	asr.l	#1,d6
-	sub.l	d5,d6
-	move.l	d3,24(sp)
-	move.l	32(sp),d3
-	tst.l	d3
-	bpl.s	1f
-	addq.l	#1,d3
-1:
-	asr.l	#1,d3
-	sub.l	d6,d3
+	move.l	d1,24(sp)
+	move.l	76(sp),d1
 	tst.l	d1
 	bpl.s	1f
 	addq.l	#1,d1
 1:
 	asr.l	#1,d1
-	sub.l	d3,d1
-	move.l	d7,32(sp)
-	move.l	40(sp),d7
-	tst.l	d7
-	bpl.s	1f
-	addq.l	#1,d7
-1:
-	asr.l	#1,d7
-	sub.l	d1,d7
-	tst.l	d2
-	bpl.s	1f
-	addq.l	#1,d2
-1:
-	asr.l	#1,d2
-	sub.l	d7,d2
-	move.l	d0,40(sp)
-	move.l	44(sp),d0
-	tst.l	d0
-	bpl.s	1f
-	addq.l	#1,d0
-1:
-	asr.l	#1,d0
-	sub.l	d2,d0
-	move.l	d4,44(sp)
-	move.l	a4,d4
+	sub.l	d5,d1
 	tst.l	d4
 	bpl.s	1f
 	addq.l	#1,d4
 1:
 	asr.l	#1,d4
-	sub.l	d0,d4
-	move.l	d5,a4
-	move.l	48(sp),d5
-	tst.l	d5
+	sub.l	d1,d4
+	move.l	d0,76(sp)
+	move.l	36(sp),d0
+	tst.l	d0
 	bpl.s	1f
-	addq.l	#1,d5
+	addq.l	#1,d0
 1:
-	asr.l	#1,d5
-	sub.l	d4,d5
-	move.l	d6,48(sp)
-	move.l	a3,d6
+	asr.l	#1,d0
+	sub.l	d4,d0
 	tst.l	d6
 	bpl.s	1f
 	addq.l	#1,d6
 1:
 	asr.l	#1,d6
-	sub.l	d5,d6
-	move.l	d6,a3
-	move.l	a3,d6
-	neg.l	d6
-	move.l	d6,16(sp)
-	move.l	d5,d6
-	neg.l	d6
-	move.l	d6,8(sp)
-	move.l	d4,d6
-	neg.l	d6
-	move.l	d6,76(sp)
-	move.l	d0,d6
-	neg.l	d6
-	move.l	d6,4(sp)
-	move.l	d2,d6
-	neg.l	d6
-	move.l	d6,0(sp)
-	move.l	d7,d6
-	neg.l	d6
-	move.l	d6,12(sp)
-	move.l	d1,d6
-	neg.l	d6
-	move.l	d6,20(sp)
-	move.l	d3,d6
-	neg.l	d6
-	move.l	d6,28(sp)
-	move.l	48(sp),d6
-	neg.l	d6
-	move.l	d6,36(sp)
-	move.l	a4,d6
-	neg.l	d6
-	move.l	d6,56(sp)
-	move.l	44(sp),d6
-	neg.l	d6
-	move.l	d6,68(sp)
-	move.l	40(sp),d6
-	neg.l	d6
-	move.l	d6,60(sp)
-	move.l	32(sp),d6
-	neg.l	d6
-	move.l	d6,64(sp)
-	move.l	24(sp),d6
-	neg.l	d6
-	move.l	d6,52(sp)
-	move.l	72(sp),d6
-	neg.l	d6
-	move.l	d6,80(sp)
-	move.l	a6,d6
-	neg.l	d6
-	move.l	d6,84(sp)
-	move.l	a2,d6
-	neg.l	d6
-	move.l	d6,88(sp)
-	move.l	a5,d6
-	neg.l	d6
-	move.l	d6,92(sp)
-	move.l	a5,d6
-	neg.l	d6
+	sub.l	d0,d6
+	move.l	d5,36(sp)
+	move.l	40(sp),d5
+	tst.l	d5
+	bpl.s	1f
+	addq.l	#1,d5
+1:
+	asr.l	#1,d5
+	sub.l	d6,d5
+	tst.l	d2
+	bpl.s	1f
+	addq.l	#1,d2
+1:
+	asr.l	#1,d2
+	sub.l	d5,d2
+	move.l	d1,40(sp)
+	move.l	44(sp),d1
+	tst.l	d1
+	bpl.s	1f
+	addq.l	#1,d1
+1:
+	asr.l	#1,d1
+	sub.l	d2,d1
+	tst.l	d3
+	bpl.s	1f
+	addq.l	#1,d3
+1:
+	asr.l	#1,d3
+	sub.l	d1,d3
+	move.l	d4,44(sp)
+	move.l	48(sp),d4
+	tst.l	d4
+	bpl.s	1f
+	addq.l	#1,d4
+1:
+	asr.l	#1,d4
+	sub.l	d3,d4
+	move.l	d0,48(sp)
+	move.l	a5,d0
+	tst.l	d0
+	bpl.s	1f
+	addq.l	#1,d0
+1:
+	asr.l	#1,d0
+	sub.l	d4,d0
 	move.l	d6,a5
-	move.l	a2,d6
-	neg.l	d6
-	move.l	d6,a2
-	move.l	a6,d6
-	neg.l	d6
-	move.l	d6,a6
-	move.l	72(sp),d6
-	neg.l	d6
-	move.l	d6,72(sp)
-	move.l	24(sp),d6
-	neg.l	d6
-	move.l	d6,24(sp)
-	move.l	32(sp),d6
-	neg.l	d6
-	move.l	d6,32(sp)
-	move.l	40(sp),d6
-	neg.l	d6
-	move.l	d6,40(sp)
-	move.l	44(sp),d6
-	neg.l	d6
-	move.l	d6,44(sp)
-	move.l	a4,d6
-	neg.l	d6
-	move.l	d6,a4
-	move.l	48(sp),d6
-	move.l	d5,96(sp)
-	move.l	d4,100(sp)
+	move.l	64(sp),d6
+	tst.l	d6
+	bpl.s	1f
+	addq.l	#1,d6
+1:
+	asr.l	#1,d6
+	sub.l	d0,d6
+	move.l	d5,64(sp)
+	move.l	a4,d5
+	tst.l	d5
+	bpl.s	1f
+	addq.l	#1,d5
+1:
+	asr.l	#1,d5
+	sub.l	d6,d5
+	move.l	d5,a4
+	move.l	a4,d5
+	neg.l	d5
+	move.l	d5,12(sp)
 	move.l	d6,d5
+	neg.l	d5
+	move.l	d5,80(sp)
+	move.l	d0,d5
+	neg.l	d5
+	move.l	d5,8(sp)
+	move.l	d4,d5
+	neg.l	d5
+	move.l	d5,4(sp)
+	move.l	d3,d5
+	neg.l	d5
+	move.l	d5,0(sp)
+	move.l	d1,d5
+	neg.l	d5
+	move.l	d5,16(sp)
+	move.l	d2,d5
+	neg.l	d5
+	move.l	d5,20(sp)
+	move.l	64(sp),d5
+	neg.l	d5
+	move.l	d5,28(sp)
+	move.l	a5,d5
+	neg.l	d5
+	move.l	d5,32(sp)
+	move.l	48(sp),d5
+	neg.l	d5
+	move.l	d5,72(sp)
+	move.l	44(sp),d5
+	neg.l	d5
+	move.l	d5,56(sp)
+	move.l	40(sp),d5
+	neg.l	d5
+	move.l	d5,68(sp)
+	move.l	36(sp),d5
+	neg.l	d5
+	move.l	d5,60(sp)
+	move.l	76(sp),d5
+	neg.l	d5
+	move.l	d5,52(sp)
+	move.l	24(sp),d5
+	neg.l	d5
+	move.l	d5,84(sp)
+	move.l	a3,d5
+	neg.l	d5
+	move.l	d5,88(sp)
+	move.l	a2,d5
+	neg.l	d5
+	move.l	d5,92(sp)
+	move.l	a6,d5
+	neg.l	d5
+	move.l	d5,96(sp)
+	move.l	a6,d5
+	neg.l	d5
+	move.l	d5,a6
+	move.l	a2,d5
+	neg.l	d5
+	move.l	d5,a2
+	move.l	a3,d5
+	neg.l	d5
+	move.l	d5,a3
+	move.l	24(sp),d5
+	neg.l	d5
+	move.l	d5,24(sp)
+	move.l	76(sp),d5
+	neg.l	d5
+	move.l	d5,76(sp)
+	move.l	36(sp),d5
+	neg.l	d5
+	move.l	d5,36(sp)
+	move.l	40(sp),d5
+	neg.l	d5
+	move.l	d5,40(sp)
+	move.l	44(sp),d5
+	neg.l	d5
+	move.l	d5,44(sp)
+	move.l	48(sp),d5
+	neg.l	d5
+	move.l	d5,48(sp)
+	move.l	a5,d5
+	move.l	d6,100(sp)
+	move.l	d0,104(sp)
+	move.l	d5,d6
+	swap	d6
+	ext.l	d6
+	and.l	#65535,d5
+	mulu.w	#178,d5
+	asr.l	d7,d5
+	move.l	d6,d0
+	muls.l	#43582,d0
+	asr.l	d7,d0
+	muls.w	#2848,d6
+	add.l	d0,d6
+	add.l	d5,d6
+	move.l	d6,0(a1)
+	move.l	64(sp),d0
+	move.l	d0,d5
 	swap	d5
 	ext.l	d5
-	and.l	#65535,d6
-	mulu.w	#178,d6
-	asr.l	#8,d6
-	asr.l	#4,d6
-	move.l	d5,d4
-	muls.l	#43582,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#178,d5
-	lsl.l	#4,d5
-	add.l	d4,d5
-	add.l	d6,d5
-	move.l	d5,0(a1)
-	move.l	d3,d4
-	swap	d4
-	ext.l	d4
-	and.l	#65535,d3
-	mulu.w	#534,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	move.l	d4,d5
-	muls.l	#41634,d5
-	asr.l	#8,d5
-	asr.l	#4,d5
-	muls.w	#534,d4
-	lsl.l	#4,d4
-	add.l	d5,d4
-	add.l	d3,d4
-	move.l	d4,4(a1)
-	move.l	d1,d3
-	swap	d3
-	ext.l	d3
-	and.l	#65535,d1
-	mulu.w	#886,d1
-	asr.l	#8,d1
-	asr.l	#4,d1
-	move.l	d3,d4
-	muls.l	#35170,d4
-	asr.l	#8,d4
-	asr.l	#4,d4
-	muls.w	#886,d3
-	lsl.l	#4,d3
-	add.l	d4,d3
-	add.l	d1,d3
-	move.l	d3,8(a1)
-	move.l	d7,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d7
-	mulu.w	#1231,d7
-	asr.l	#8,d7
-	asr.l	#4,d7
-	move.l	d1,d3
-	muls.l	#45282,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#1231,d1
-	lsl.l	#4,d1
-	add.l	d3,d1
-	add.l	d7,d1
-	move.l	d1,12(a1)
-	move.l	d2,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d2
-	mulu.w	#1567,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	move.l	d1,d3
-	muls.w	#30890,d3
-	asr.l	#8,d3
-	asr.l	#4,d3
-	muls.w	#1567,d1
-	lsl.l	#4,d1
-	add.l	d3,d1
-	add.l	d2,d1
-	move.l	d1,16(a1)
-	move.l	d0,d1
-	swap	d1
-	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#1891,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d2
-	muls.w	#21124,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#1891,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d0,d1
-	move.l	d1,20(a1)
-	move.l	100(sp),d0
+	mulu.w	#534,d0
+	asr.l	d7,d0
+	move.l	d5,d6
+	muls.l	#41634,d6
+	asr.l	d7,d6
+	muls.w	#8544,d5
+	add.l	d6,d5
+	add.l	d0,d5
+	move.l	d5,4(a1)
+	move.l	d2,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d2
+	mulu.w	#886,d2
+	asr.l	d7,d2
+	move.l	d0,d5
+	muls.l	#35170,d5
+	asr.l	d7,d5
+	muls.w	#14176,d0
+	add.l	d5,d0
+	add.l	d2,d0
+	move.l	d0,8(a1)
+	move.l	d1,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d1
+	mulu.w	#1231,d1
+	asr.l	d7,d1
+	move.l	d0,d2
+	muls.l	#45282,d2
+	asr.l	d7,d2
+	muls.w	#19696,d0
+	add.l	d2,d0
+	add.l	d1,d0
+	move.l	d0,12(a1)
+	move.l	d3,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d3
+	mulu.w	#1567,d3
+	asr.l	d7,d3
+	move.l	d0,d1
+	muls.w	#30890,d1
+	asr.l	d7,d1
+	muls.w	#25072,d0
+	add.l	d1,d0
+	add.l	d3,d0
+	move.l	d0,16(a1)
+	move.l	d4,d0
+	swap	d0
+	ext.l	d0
+	and.l	#65535,d4
+	mulu.w	#1891,d4
+	asr.l	d7,d4
+	move.l	d0,d1
+	muls.w	#21124,d1
+	asr.l	d7,d1
+	muls.w	#30256,d0
+	add.l	d1,d0
+	add.l	d4,d0
+	move.l	d0,20(a1)
+	move.l	104(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2200,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#51065,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2200,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#35200,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,24(a1)
-	move.l	96(sp),d0
+	move.l	100(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2493,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#31904,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2493,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#39888,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,28(a1)
-	move.l	a3,d0
+	move.l	a4,d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2767,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#14253,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2767,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#44272,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,32(a1)
-	move.l	16(sp),d0
+	move.l	12(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3019,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#58194,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3019,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#48304,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,36(a1)
-	move.l	8(sp),d0
+	move.l	80(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3249,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#37702,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3249,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#51984,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,40(a1)
-	move.l	76(sp),d0
+	move.l	8(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3454,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#34823,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3454,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#55264,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,44(a1)
@@ -3889,14 +3626,11 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3633,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#12869,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3633,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#58128,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,48(a1)
@@ -3906,31 +3640,25 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3784,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#13800,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3784,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#60544,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,52(a1)
-	move.l	12(sp),d0
+	move.l	16(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3906,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#27829,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3906,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#62496,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,56(a1)
@@ -3940,14 +3668,11 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3998,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#59536,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3998,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#63968,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,60(a1)
@@ -3957,99 +3682,81 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#4060,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#62793,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#4060,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#64960,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,64(a1)
-	move.l	36(sp),d0
+	move.l	32(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#4092,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#6653,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#4092,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#65472,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,68(a1)
+	move.l	72(sp),d0
+	move.l	d0,d1
+	swap	d1
+	ext.l	d1
+	and.l	#65535,d0
+	mulu.w	#4092,d0
+	asr.l	d7,d0
+	move.l	d1,d2
+	muls.w	#6653,d2
+	asr.l	d7,d2
+	muls.l	#65472,d1
+	add.l	d2,d1
+	add.l	d0,d1
+	move.l	d1,72(a1)
 	move.l	56(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#4092,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#4060,d0
+	asr.l	d7,d0
 	move.l	d1,d2
-	muls.w	#6653,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#4092,d1
-	lsl.l	#4,d1
+	muls.l	#62793,d2
+	asr.l	d7,d2
+	muls.l	#64960,d1
 	add.l	d2,d1
 	add.l	d0,d1
-	move.l	d1,72(a1)
+	move.l	d1,76(a1)
 	move.l	68(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#4060,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#3998,d0
+	asr.l	d7,d0
 	move.l	d1,d2
-	muls.l	#62793,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#4060,d1
-	lsl.l	#4,d1
+	muls.l	#59536,d2
+	asr.l	d7,d2
+	muls.l	#63968,d1
 	add.l	d2,d1
 	add.l	d0,d1
-	move.l	d1,76(a1)
+	move.l	d1,80(a1)
 	move.l	60(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#3998,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d2
-	muls.l	#59536,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3998,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d0,d1
-	move.l	d1,80(a1)
-	move.l	64(sp),d0
-	move.l	d0,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d0
 	mulu.w	#3906,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#27829,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3906,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#62496,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,84(a1)
@@ -4059,99 +3766,81 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#3784,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#13800,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3784,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#60544,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,88(a1)
-	move.l	80(sp),d0
-	move.l	d0,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d0
-	mulu.w	#3633,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d2
-	muls.w	#12869,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3633,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d0,d1
-	move.l	d1,92(a1)
 	move.l	84(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#3454,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#3633,d0
+	asr.l	d7,d0
 	move.l	d1,d2
-	muls.l	#34823,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3454,d1
-	lsl.l	#4,d1
+	muls.w	#12869,d2
+	asr.l	d7,d2
+	muls.l	#58128,d1
 	add.l	d2,d1
 	add.l	d0,d1
-	move.l	d1,96(a1)
+	move.l	d1,92(a1)
 	move.l	88(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
-	mulu.w	#3249,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	mulu.w	#3454,d0
+	asr.l	d7,d0
 	move.l	d1,d2
-	muls.l	#37702,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3249,d1
-	lsl.l	#4,d1
+	muls.l	#34823,d2
+	asr.l	d7,d2
+	muls.l	#55264,d1
 	add.l	d2,d1
 	add.l	d0,d1
-	move.l	d1,100(a1)
+	move.l	d1,96(a1)
 	move.l	92(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
+	mulu.w	#3249,d0
+	asr.l	d7,d0
+	move.l	d1,d2
+	muls.l	#37702,d2
+	asr.l	d7,d2
+	muls.l	#51984,d1
+	add.l	d2,d1
+	add.l	d0,d1
+	move.l	d1,100(a1)
+	move.l	96(sp),d0
+	move.l	d0,d1
+	swap	d1
+	ext.l	d1
+	and.l	#65535,d0
 	mulu.w	#3019,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#58194,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#3019,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#48304,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,104(a1)
-	move.l	a5,d0
+	move.l	a6,d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2767,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#14253,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2767,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#44272,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,108(a1)
@@ -4161,82 +3850,67 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2493,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#31904,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2493,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#39888,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,112(a1)
-	move.l	a6,d0
+	move.l	a3,d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#2200,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#51065,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#2200,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.l	#35200,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,116(a1)
-	move.l	72(sp),d0
-	move.l	d0,d1
-	swap	d1
-	ext.l	d1
-	and.l	#65535,d0
-	mulu.w	#1891,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
-	move.l	d1,d2
-	muls.w	#21124,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#1891,d1
-	lsl.l	#4,d1
-	add.l	d2,d1
-	add.l	d0,d1
-	move.l	d1,120(a1)
 	move.l	24(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
+	mulu.w	#1891,d0
+	asr.l	d7,d0
+	move.l	d1,d2
+	muls.w	#21124,d2
+	asr.l	d7,d2
+	muls.w	#30256,d1
+	add.l	d2,d1
+	add.l	d0,d1
+	move.l	d1,120(a1)
+	move.l	76(sp),d0
+	move.l	d0,d1
+	swap	d1
+	ext.l	d1
+	and.l	#65535,d0
 	mulu.w	#1567,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.w	#30890,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#1567,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.w	#25072,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,124(a1)
-	move.l	32(sp),d0
+	move.l	36(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#1231,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#45282,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#1231,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.w	#19696,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,128(a1)
@@ -4246,14 +3920,11 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#886,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#35170,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#886,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.w	#14176,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,132(a1)
@@ -4263,35 +3934,29 @@ _mpga_imdct_l0:
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#534,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#41634,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#534,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.w	#8544,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,136(a1)
-	move.l	a4,d0
+	move.l	48(sp),d0
 	move.l	d0,d1
 	swap	d1
 	ext.l	d1
 	and.l	#65535,d0
 	mulu.w	#178,d0
-	asr.l	#8,d0
-	asr.l	#4,d0
+	asr.l	d7,d0
 	move.l	d1,d2
 	muls.l	#43582,d2
-	asr.l	#8,d2
-	asr.l	#4,d2
-	muls.w	#178,d1
-	lsl.l	#4,d1
+	asr.l	d7,d2
+	muls.w	#2848,d1
 	add.l	d2,d1
 	add.l	d0,d1
 	move.l	d1,140(a1)
-	lea	104(sp),sp
+	lea	108(sp),sp
 	movem.l	(sp)+,d2-d7/a2-a6
 	rts
 	.endif

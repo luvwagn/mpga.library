@@ -39,7 +39,8 @@ def emit(ops, variant, spill_aregs):
                 return u
         return END
 
-    DREGS = ["d%d" % i for i in range(8)]
+    # the 68060's build keeps 12 in d7 for its shifts (one ASR.L each)
+    DREGS = ["d%d" % i for i in range(7 if variant == 1 else 8)]
     reg, home, held = {}, {}, {}
     nslots = [0]
     freeslots = []
@@ -134,17 +135,18 @@ def emit(ops, variant, spill_aregs):
             out.append("\tmulu.w\t#%d,%s" % (ch, r))
         else:
             out.append("\tmuls.l\t#%d,%s" % (ch, r))
-        out.append("\tasr.l\t#8,%s" % r)
-        out.append("\tasr.l\t#4,%s" % r)
+        out.append("\tasr.l\td7,%s" % r)
         out.append("\tmove.l\t%s,%s" % (hx, t))
         if cl < 32768:
             out.append("\tmuls.w\t#%d,%s" % (cl, t))
         else:
             out.append("\tmuls.l\t#%d,%s" % (cl, t))
-        out.append("\tasr.l\t#8,%s" % t)
-        out.append("\tasr.l\t#4,%s" % t)
-        out.append("\tmuls.w\t#%d,%s" % (ch, hx))
-        out.append("\tlsl.l\t#4,%s" % hx)
+        out.append("\tasr.l\td7,%s" % t)
+        # xh yh << 4 as xh (yh << 4): the same modulo 2^32, one instruction
+        if -32768 <= (ch << 4) < 32768:
+            out.append("\tmuls.w\t#%d,%s" % (ch << 4, hx))
+        else:
+            out.append("\tmuls.l\t#%d,%s" % (ch << 4, hx))
         out.append("\tadd.l\t%s,%s" % (t, hx))
         out.append("\tadd.l\t%s,%s" % (r, hx))
         del held[hx]
@@ -177,8 +179,11 @@ def emit(ops, variant, spill_aregs):
                 out.append("\tasr.l\t#1,%s" % r)
             else:
                 out.append("\tadd.l\t#2048,%s" % r)
-                out.append("\tasr.l\t#8,%s" % r)
-                out.append("\tasr.l\t#4,%s" % r)
+                if variant == 1:
+                    out.append("\tasr.l\td7,%s" % r)
+                else:
+                    out.append("\tasr.l\t#8,%s" % r)
+                    out.append("\tasr.l\t#4,%s" % r)
             kill(a[0], i)
             place(d, r)
         elif op == "mul":
@@ -242,6 +247,9 @@ def function(name, ops, saves, prologue, spill_aregs, variants=(0, 1)):
             text.append("\tlea\t-%d(sp),sp" % frame)
         for l in prologue(4 * nsave + frame + 4):
             text.append(l)
+        if variant == 1:
+            assert "d7" in expand(saves)
+            text.append("\tmoveq\t#12,d7")
         for l in code:
             text.append(re.sub(r"SLOT(\d+)\(sp\)", lambda m: "%d(sp)" % (4 * int(m.group(1))), l))
         if frame:

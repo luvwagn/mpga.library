@@ -14,6 +14,11 @@ ambmpega.library: changes
   lines are both zero is left out (they stay zero); the same samples. MP3:
   4.49 M 68020 cycles -> 4.39 M; ambmpega060.library 730 k instructions ->
   703 k (-3.7%).
+- ambmpega060.library's dct32 and IMDCT (tools/gen68k.py): each product's
+  xh yh << 4 one multiply by yh << 4 (the same modulo 2^32), and 12 kept
+  in d7 so that each >> 12 is one ASR.L: 703 k instructions a frame ->
+  665 k (-5.5%), the same samples (and the same CRCs as the real 68060's
+  run of 1.2).
 - A new fixture, l3_44_ms.mp3 (tests/mkfixtures.sh): mid/side stereo and
   some short blocks, which no fixture had.
 - Tried and not kept: big_values Huffman decoding in assembler (-1.3%
