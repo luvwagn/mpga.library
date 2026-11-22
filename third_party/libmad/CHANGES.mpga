@@ -61,3 +61,7 @@ Changes:
    mpga_imdct_l0, which tools/gen_layer3.py writes from this file's
    operations and constants: the same samples; the host builds the C as
    it was.
+
+8. (21 November 2026) layer3.c: III_stereo's mid/side loop leaves a line
+   whose mid and side are both zero as it is (zero), without its two
+   multiplies: over half the lines in 128 kbit/s MP3. The same samples.

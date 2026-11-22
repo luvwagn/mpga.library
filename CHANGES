@@ -1,6 +1,18 @@
 ambmpega.library: changes
 =========================
 
+1.4 (21 November 2026)
+----------------------
+
+- Mid/side stereo: the lines zero in both channels (over half of them in
+  128 kbit/s MP3) are left as they are, without their two multiplies;
+  the same samples. A frame of 128 kbit/s MP3: ambmpega.library 4.56 M
+  68020 cycles -> 4.49 M; ambmpega060.library 759 k instructions ->
+  730 k (-3.9%). (These figures are mptime's and bench.py's, a frame of
+  the 10 s excerpt; 1.3's own were measured slightly differently.)
+- A new fixture, l3_44_ms.mp3 (tests/mkfixtures.sh): mid/side stereo and
+  some short blocks, which no fixture had.
+
 1.3 (21 November 2026)
 ----------------------
 

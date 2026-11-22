@@ -36,7 +36,7 @@ MAD     = third_party/libmad
 MAD_SRC = $(addprefix $(MAD)/,bit.c fixed.c frame.c huffman.c layer12.c layer3.c stream.c synth.c timer.c)
 SRC     = src/mpga.c $(MAD_SRC)
 HDR     = $(wildcard $(MAD)/*.h $(MAD)/*.dat src/port/*.h include/*/*.h)
-LIBDATE = 1.3 (21.11.2026) libmad 0.15.1b
+LIBDATE = 1.4 (21.11.2026) libmad 0.15.1b
 # VARIANT 060 (make's own recursion: make build/ambmpega060.library) is
 # the 68060's build; otherwise the 68020's
 ifeq ($(VARIANT),060)

@@ -1587,6 +1587,11 @@ enum mad_error III_stereo(mad_fixed_t xr[2][576],
 	m = xr[0][l + i];
 	s = xr[1][l + i];
 
+	/* ambmpega.library: both zero (over half the lines at 128 kbit/s)
+	 * stay zero; their two multiplies left out */
+	if ((m | s) == 0)
+	  continue;
+
 	xr[0][l + i] = mad_f_mul(m + s, invsqrt2);  /* l = (m + s) / sqrt(2) */
 	xr[1][l + i] = mad_f_mul(m - s, invsqrt2);  /* r = (m - s) / sqrt(2) */
       }
