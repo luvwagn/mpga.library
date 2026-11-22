@@ -33,14 +33,22 @@ clone, or the ZZ9000's, which decodes on the card).
 - **Two builds:** `ambmpega.library` for any 68020 or later, and
   `ambmpega060.library` for a 68060, which has no `MULS.L` 32 x 32 -> 64:
   68060.library would emulate each one, about 19,700 a frame of 128 kbit/s
-  MP3. There each product is made from three 32-bit multiplies, at most
-  2^-24 of full scale below the 64-bit one: the same 83 dB, the samples
+  MP3 (on a real 68060 at 50 MHz, 336 ms a frame against 20 ms). There
+  each product is made from three 32-bit multiplies, at most 2^-24 of
+  full scale below the 64-bit one: the same 83 dB, the samples
   within a step of the other build's. A program can ship both and open the
   68060's only where `AttnFlags` says 68060, or time both there, as
   Ambiance does: an emulator set to a 68060 may do the 64-bit multiply
   itself (Amiberry does, even with unimplemented instructions trapping).
 
-Not yet: the 32-point DCT and Layer III's IMDCT in 68k assembler.
+- **In 68k assembler:** the synthesis window (`src/synth_68k.s`), and
+  the 32-point DCT and Layer III's IMDCT for long blocks with its window
+  (`src/dct32_68k.s`, `src/layer3_68k.s`), the last two written from
+  libmad's C by `tools/gen_dct32.py` and `tools/gen_layer3.py` for both
+  builds: the same operations, so the same samples as the C.
+
+Not yet: Layer III's Huffman decoding (`III_decode`, now the largest part
+after the window) and short blocks' IMDCT in assembler.
 
 ## Why not mpega.library?
 
@@ -111,9 +119,16 @@ make test       the fixtures (tests/mkfixtures.sh made them from synthetic
                 tests/expected060.txt), its samples within a step of the
                 68020's, and no 64-bit multiply or divide in it
 make snr        each fixture against ffmpeg's floating-point decoder
+make prof MP3=file [N=frames] [WAY=n] [INSTR=1] [VARIANT=060]
+                where a 68020's cycles go, by function, under vamos
+                (INSTR=1: instructions; VARIANT=060: the 68060's build)
 make LIBNAME=mpega.library
                 the same library under mpega.library's own name
 ```
+
+`src/dct32_68k.s` and `src/layer3_68k.s` are written by the tools from
+libmad's C (Python 3); make writes them again when the C or the tools
+change.
 
 Needs [AmigaPorts' m68k-amigaos-gcc](https://github.com/AmigaPorts/m68k-amigaos-gcc)
 16.2 (rc24 or later; the continuation of bebbo's amiga-gcc) with libnix, a
@@ -128,8 +143,10 @@ Musashi core counts them, for 10 s of music at 128 kbit/s stereo MP3
 
 | | 44.1 kHz stereo | 22 kHz | mono 22 kHz | SNR (MP3) |
 |---|---|---|---|---|
-| ambmpega.library, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M | 83 dB |
-| ambmpega.library, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M | 70 dB |
+| ambmpega.library 1.3, high | 4.58 / 4.24 M | 3.01 / 3.04 M | 2.24 / 2.26 M | 83 dB |
+| ambmpega.library 1.3, medium | 4.12 / 3.78 M | 2.79 / 2.81 M | 2.13 / 2.14 M | 70 dB |
+| ambmpega.library 1.2, high | 4.92 / 4.36 M | 3.27 / 3.16 M | 2.44 / 2.31 M | 83 dB |
+| ambmpega.library 1.2, medium | 4.46 / 3.90 M | 3.05 / 2.93 M | 2.33 / 2.20 M | 70 dB |
 | mpega.library 2.4 (Tavenard, integer) | **4.07 / 2.92 M** | **2.37 M** | **1.42 M** | 34 dB |
 | mpega080 2.6.3 (libmad), 68020 build | 4.23 / 3.97 M | 4.24 M | 4.07 M | 80 dB |
 | AmiKit mpega.library 3.1 (libmad), `-hifi` | 5.91 / 5.38 M | 5.71 M | 5.56 M | 80 dB |
@@ -138,20 +155,37 @@ SNR is against ffmpeg's floating-point decoder (`make snr`; ffmpeg's own
 fixed-point decoder scores 86 dB). mpega 2.4's 020, 040 and 060 integer
 builds are the same code; its FPU builds cannot run under vamos.
 
+On a real 68060 at 50 MHz (68060.library 46.4; `mptime`, the same MP3,
+120 frames, with 1.2):
+
+| | high, 44.1 kHz stereo | medium | high, 22 kHz mono |
+|---|---|---|---|
+| ambmpega060.library 1.2 | 20.3 ms | 19.7 ms | 12.1 ms |
+| ambmpega.library 1.2 (its 64-bit multiplies trapped) | 336.4 ms | 336.6 ms | 216.0 ms |
+
+A frame lasts 26.12 ms, so the 68060 build plays 44.1 kHz stereo in real
+time there with a fifth to spare; the 68020 build is 16 times slower, a
+trapped `MULS.L` 32 x 32 -> 64 costing about 545 clocks. That 68060 does
+about an instruction a clock and a fifth, so the 68060 build's speed
+follows its instruction count (vamos counts them): 850 k a frame of this
+MP3 in 1.2, 749 k in 1.3 (medium 869 k -> 768 k), which should be about
+17.9 ms there.
+
 What these figures are not:
 
-- **Real hardware.** Musashi models no caches or wait states; a real
-  68030 or 68060, or an emulator's JIT, will give other times, though
-  probably the same order.
-- **Real time on a 68020/030.** A frame lasts 26.12 ms, so 4.46 M cycles
-  a frame is about 170 M 68020 cycles a second: full-rate stereo MP3 is
+- **Real hardware, for the 68020's.** Musashi models no caches or wait
+  states; a real 68030, or an emulator's JIT, will give other times,
+  though probably the same order.
+- **Real time on a 68020/030.** A frame lasts 26.12 ms, so 4.12 M cycles
+  a frame is about 158 M 68020 cycles a second: full-rate stereo MP3 is
   beyond a 68020 or 68030 with any of these decoders, and at 22 kHz mono
   mpega 2.4 (about 54 M a second) has the real edge on those machines.
-- **A 68060.** `ambmpega.library` uses `MULS.L` 32 x 32 -> 64 at both
-  qualities, about 19,700 a frame, which a 68060 lacks; 68060.library
-  emulates each one, so on a 68060 it is slow. `ambmpega060.library` is
-  the one for it: 0.86 M instructions a frame against 0.57 M (vamos counts
-  them), with no traps. Not yet timed on a real 68060.
+- **An emulated 68060.** Amiberry set to a 68060 does the 64-bit
+  multiply itself, even with unimplemented instructions trapping, so there
+  `ambmpega.library` is the faster; only a real 68060 traps it.
 
-At medium quality the synthesis window is still 42% of the time (its
-36,288 products a frame), the 32-point DCT 17%: where the work goes next.
+Where a 68020's cycles go now (MP3, medium): the 16-bit synthesis window
+40%, Huffman decoding (`III_decode`) 16%, the IMDCT 13%, the DCT 12%, the
+alias reduction 6%. The 68060 build's instructions (MP3, high): the IMDCT
+18%, Huffman decoding 18%, the DCT 18%, the window 17%, the alias
+reduction 10% (assembler there gained under 2%, so it stays C).
