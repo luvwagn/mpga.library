@@ -954,6 +954,37 @@ mad_fixed_t III_requantize(unsigned int value, signed int exp)
   return frac ? mad_f_mul(requantized, root_table[3 + frac]) : requantized;
 }
 
+# if defined(MPGA_HUFF_ASM)
+/*
+ * ambmpega.library: the big_values loop below in 68k assembler
+ * (src/huff_68k.s, mpga_huff_big), on this state; the same decisions, bits
+ * and values as the C, which the host builds. Offsets are the assembler's.
+ */
+struct mpga_huff {
+  unsigned long bitcache;		/*  0 */
+  signed int cachesz;			/*  4 */
+  signed int bits_left;			/*  8 */
+  signed int fakebits;			/* 12 */
+  mad_fixed_t *xrptr;			/* 16 */
+  mad_fixed_t const *sfbound;		/* 20 */
+  unsigned char const *sfbwidth;	/* 24 */
+  signed int const *expptr;		/* 28 */
+  signed int exp;			/* 32 */
+  struct mad_bitptr *peek;		/* 36 */
+  unsigned int big_values;		/* 40 */
+  unsigned int rcount;			/* 44 */
+  unsigned int r1count;			/* 48: region1_count + 1 */
+  struct hufftable const *entry[3];	/* 52, 56, 60 */
+  mad_fixed_t (*requantize)(unsigned int, signed int);	/* 64 */
+};
+enum mad_error mpga_huff_big(struct mpga_huff *);
+static mad_fixed_t III_requantize(unsigned int, signed int);
+static mad_fixed_t mpga_requantize(unsigned int value, signed int exp)
+{
+  return III_requantize(value, exp);
+}
+# endif
+
 /* we must take care that sz >= bits and sz < sizeof(long) lest bits == 0 */
 # define MASK(cache, sz, bits)	\
     (((cache) >> ((sz) - (bits))) & ((1 << (bits)) - 1))
@@ -1023,6 +1054,45 @@ enum mad_error III_huffdecode(struct mad_bitptr *ptr, mad_fixed_t xr[576],
 
     big_values = channel->big_values;
 
+# if defined(MPGA_HUFF_ASM)
+    {
+      struct mpga_huff h;
+      enum mad_error error;
+
+      (void) reqhits; (void) reqcache; (void) linbits; (void) startbits;
+      h.bitcache   = bitcache;
+      h.cachesz    = cachesz;
+      h.bits_left  = bits_left;
+      h.fakebits   = fakebits;
+      h.xrptr      = xrptr;
+      h.sfbound    = sfbound;
+      h.sfbwidth   = sfbwidth;
+      h.expptr     = expptr;
+      h.exp        = exp;
+      h.peek       = &peek;
+      h.big_values = big_values;
+      h.rcount     = rcount;
+      h.r1count    = channel->region1_count + 1;
+      h.entry[0]   = entry;
+      h.entry[1]   = &mad_huff_pair_table[channel->table_select[1]];
+      h.entry[2]   = &mad_huff_pair_table[channel->table_select[2]];
+      h.requantize = mpga_requantize;
+
+      error = mpga_huff_big(&h);
+      if (error)
+	return error;
+
+      bitcache  = h.bitcache;
+      cachesz   = h.cachesz;
+      bits_left = h.bits_left;
+      fakebits  = h.fakebits;
+      xrptr     = h.xrptr;
+      sfbound   = h.sfbound;
+      sfbwidth  = h.sfbwidth;
+      expptr    = h.expptr;
+      exp       = h.exp;
+    }
+# else
     while (big_values-- && cachesz + bits_left - fakebits > 0) {
       union huffpair const *pair;
       unsigned int clumpsz, value;
@@ -1219,6 +1289,7 @@ enum mad_error III_huffdecode(struct mad_bitptr *ptr, mad_fixed_t xr[576],
 
       xrptr += 2;
     }
+# endif
   }
 
   /* count1 */

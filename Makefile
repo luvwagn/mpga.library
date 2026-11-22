@@ -124,7 +124,7 @@ src/dct32_68k.s: tools/gen_dct32.py tools/gen68k.py $(MAD)/synth.c
 	@$(PYTHON) tools/gen_dct32.py $(MAD)/synth.c > $@.tmp && mv $@.tmp $@
 # the 68k's Layer III IMDCT for long blocks and alias reduction likewise
 # (tools/gen_layer3.py)
-$(OBJ)/$(MAD)/layer3.o: UPSTREAM = -w -DMPGA_IMDCT_ASM
+$(OBJ)/$(MAD)/layer3.o: UPSTREAM = -w -DMPGA_IMDCT_ASM -DMPGA_HUFF_ASM
 src/layer3_68k.s: tools/gen_layer3.py tools/gen68k.py $(MAD)/layer3.c
 	@echo "  GEN   $@"
 	@$(PYTHON) tools/gen_layer3.py $(MAD)/layer3.c > $@.tmp && mv $@.tmp $@
@@ -132,12 +132,17 @@ $(OBJ)/layer3_68k.o: src/layer3_68k.s
 	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) --defsym MPGA060=$(if $(filter 060,$(VARIANT)),1,0) -o $@ $<
+# the 68k's Layer III Huffman decoding of big_values, by hand (both builds)
+$(OBJ)/huff_68k.o: src/huff_68k.s
+	@mkdir -p $(OBJ)
+	@echo "  AS    $<"
+	@$(AS) -o $@ $<
 $(OBJ)/dct32_68k.o: src/dct32_68k.s
 	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) --defsym MPGA060=$(if $(filter 060,$(VARIANT)),1,0) -o $@ $<
 
-$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/out_68k.o
+$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/huff_68k.o $(OBJ)/out_68k.o
 	@echo "  LD    $@"
 	@$(LIBCC) -o $@.dbg $^ -lamiga
 	@$(STRIP) -o $@ $@.dbg
@@ -201,7 +206,7 @@ snr: $(HOSTOBJ)/mpga_test $(FIX)
 N   ?= 300
 PROFDIR = build/prof$(VARIANT)
 PROFOBJ = $(PROFDIR)/mpga_test.o $(patsubst %.c,$(PROFDIR)/%.o,$(notdir $(SRC))) $(OBJ)/stack.o \
-          $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/out_68k.o
+          $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/huff_68k.o $(OBJ)/out_68k.o
 $(PROFDIR)/mpga_test.o: tests/mpga_test.c $(HDR)
 	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<
@@ -216,7 +221,7 @@ $(PROFDIR)/timer.o: $(MAD)/timer.c $(HDR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
 $(PROFDIR)/layer3.o: $(MAD)/layer3.c $(HDR)
 	@mkdir -p $(PROFDIR)
-	@$(LIBCC) -w -DMPGA_IMDCT_ASM $(FLAGS) -c -o $@ $<
+	@$(LIBCC) -w -DMPGA_IMDCT_ASM -DMPGA_HUFF_ASM $(FLAGS) -c -o $@ $<
 $(PROFDIR)/%.o: $(MAD)/%.c $(HDR)
 	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
