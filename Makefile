@@ -59,7 +59,9 @@ endif
 AS      = m68k-amigaos-as $(CPU)
 LIB     = build/$(LIBNAME)
 HOSTOBJ = build/host$(VARIANT)
-FLAGS   = -DHAVE_CONFIG_H $(FPM) -Isrc/port -I$(MAD) -Iinclude
+# ASO_ZEROCHECK: libmad's own option, alias reduction's butterflies left
+# out where both lines are zero (they stay zero): the same samples
+FLAGS   = -DHAVE_CONFIG_H $(FPM) -DASO_ZEROCHECK -Isrc/port -I$(MAD) -Iinclude
 LIBCC   = $(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -fno-strict-aliasing
 FIX     = $(sort $(wildcard tests/fixtures/*.mp3 tests/fixtures/*.mp2))
 
