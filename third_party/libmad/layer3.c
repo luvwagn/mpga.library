@@ -2118,6 +2118,16 @@ void imdct36(mad_fixed_t const X[18], mad_fixed_t x[36])
 #  endif
 
 /*
+ * ambmpega.library (CHANGES.mpga): with MPGA_IMDCT_ASM (the 68k's builds)
+ * imdct36, and with it the normal window, are src/layer3_68k.s, written
+ * from this C's operations by tools/gen_layer3.py: the same samples.
+ */
+# if defined(MPGA_IMDCT_ASM)
+void mpga_imdct36(mad_fixed_t const [18], mad_fixed_t [36]);
+void mpga_imdct_l0(mad_fixed_t const [18], mad_fixed_t [36]);
+# endif
+
+/*
  * NAME:	III_imdct_l()
  * DESCRIPTION:	perform IMDCT and windowing for long blocks
  */
@@ -2129,7 +2139,15 @@ void III_imdct_l(mad_fixed_t const X[18], mad_fixed_t z[36],
 
   /* IMDCT */
 
+# if defined(MPGA_IMDCT_ASM)
+  if (block_type == 0) {
+    mpga_imdct_l0(X, z);
+    return;
+  }
+  mpga_imdct36(X, z);
+# else
   imdct36(X, z);
+# endif
 
   /* windowing */
 

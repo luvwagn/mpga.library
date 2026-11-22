@@ -5,11 +5,19 @@ ambmpega.library: changes
 ----------------------
 
 - dct32 in 68k assembler (src/dct32_68k.s), both builds, written from
-  libmad's C by tools/gen_dct32.py: the same samples. ambmpega.library's
+  libmad's C by tools/gen_dct32.py (on tools/gen68k.py): the same samples. ambmpega.library's
   products are one MULS.L 32 x 32 -> 64 each by the constant shifted so
   that the high register is the result. A frame of 128 kbit/s MP3: 4.94 M
   68020 cycles -> 4.82 M; Layer II 4.07 M -> 3.94 M. ambmpega060.library:
   850 k instructions a frame -> 788 k (MP3), 587 k -> 526 k (Layer II).
+- Layer III's IMDCT for long blocks in 68k assembler too, both builds
+  (src/layer3_68k.s, tools/gen_layer3.py): imdct36 with the normal
+  window in one, the same samples. MP3: 4.82 M 68020 cycles -> 4.58 M;
+  ambmpega060.library 788 k instructions -> 749 k.
+- In all, a frame of 128 kbit/s MP3: ambmpega.library 4.94 M 68020 cycles
+  -> 4.58 M (-7%); ambmpega060.library 850 k instructions -> 749 k (-12%),
+  which on a real 68060 at 50 MHz (20.3 ms a frame in 1.2) should be
+  about 17.9 ms. Layer II: 4.07 M -> 3.94 M; 587 k -> 526 k (-10%).
 - make prof INSTR=1: instructions by function (tools/prof_instr.py), and
   VARIANT=060 profiles the 68060's build.
 

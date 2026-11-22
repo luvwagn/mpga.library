@@ -70,7 +70,7 @@ all: $(LIB)
 test: test-one check-060
 else
 all: $(LIB) build/ambmpega060.library
-build/ambmpega060.library: FORCE
+build/ambmpega060.library: FORCE src/dct32_68k.s src/layer3_68k.s
 	@$(MAKE) --no-print-directory VARIANT=060 $@
 test: test-one
 	@$(MAKE) --no-print-directory VARIANT=060 test
@@ -119,15 +119,25 @@ $(OBJ)/synth_68k.o: src/synth_68k.s
 # the 68k's synthesis window and dct32 in assembler (the host builds
 # libmad's C); dct32 written from the C by tools/gen_dct32.py, both builds'
 $(OBJ)/$(MAD)/synth.o: UPSTREAM = -w -DMPGA_WINDOW_ASM -DMPGA_DCT_ASM
-src/dct32_68k.s: tools/gen_dct32.py $(MAD)/synth.c
+src/dct32_68k.s: tools/gen_dct32.py tools/gen68k.py $(MAD)/synth.c
 	@echo "  GEN   $@"
-	@$(PYTHON) tools/gen_dct32.py $(MAD)/synth.c > $@
+	@$(PYTHON) tools/gen_dct32.py $(MAD)/synth.c > $@.tmp && mv $@.tmp $@
+# the 68k's Layer III IMDCT for long blocks and alias reduction likewise
+# (tools/gen_layer3.py)
+$(OBJ)/$(MAD)/layer3.o: UPSTREAM = -w -DMPGA_IMDCT_ASM
+src/layer3_68k.s: tools/gen_layer3.py tools/gen68k.py $(MAD)/layer3.c
+	@echo "  GEN   $@"
+	@$(PYTHON) tools/gen_layer3.py $(MAD)/layer3.c > $@.tmp && mv $@.tmp $@
+$(OBJ)/layer3_68k.o: src/layer3_68k.s
+	@mkdir -p $(OBJ)
+	@echo "  AS    $<"
+	@$(AS) --defsym MPGA060=$(if $(filter 060,$(VARIANT)),1,0) -o $@ $<
 $(OBJ)/dct32_68k.o: src/dct32_68k.s
 	@mkdir -p $(OBJ)
 	@echo "  AS    $<"
 	@$(AS) --defsym MPGA060=$(if $(filter 060,$(VARIANT)),1,0) -o $@ $<
 
-$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/out_68k.o
+$(LIB): $(OBJ)/libinit.o $(patsubst %.c,$(OBJ)/%.o,$(SRC)) $(OBJ)/stack.o $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/out_68k.o
 	@echo "  LD    $@"
 	@$(LIBCC) -o $@.dbg $^ -lamiga
 	@$(STRIP) -o $@ $@.dbg
@@ -191,7 +201,7 @@ snr: $(HOSTOBJ)/mpga_test $(FIX)
 N   ?= 300
 PROFDIR = build/prof$(VARIANT)
 PROFOBJ = $(PROFDIR)/mpga_test.o $(patsubst %.c,$(PROFDIR)/%.o,$(notdir $(SRC))) $(OBJ)/stack.o \
-          $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/out_68k.o
+          $(OBJ)/synth_68k.o $(OBJ)/dct32_68k.o $(OBJ)/layer3_68k.o $(OBJ)/out_68k.o
 $(PROFDIR)/mpga_test.o: tests/mpga_test.c $(HDR)
 	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w -DMPGA_STATIC $(FLAGS) -c -o $@ $<
@@ -204,6 +214,9 @@ $(PROFDIR)/synth.o: $(MAD)/synth.c $(HDR)
 $(PROFDIR)/timer.o: $(MAD)/timer.c $(HDR)
 	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<
+$(PROFDIR)/layer3.o: $(MAD)/layer3.c $(HDR)
+	@mkdir -p $(PROFDIR)
+	@$(LIBCC) -w -DMPGA_IMDCT_ASM $(FLAGS) -c -o $@ $<
 $(PROFDIR)/%.o: $(MAD)/%.c $(HDR)
 	@mkdir -p $(PROFDIR)
 	@$(LIBCC) -w $(FLAGS) -c -o $@ $<

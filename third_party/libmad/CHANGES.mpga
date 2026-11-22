@@ -54,3 +54,10 @@ Changes:
    dct32 is ambmpega.library's src/dct32_68k.s, which tools/gen_dct32.py
    writes from this file's dct32: the same operations, so the same
    samples; the host builds the C as it was.
+
+7. (21 November 2026) layer3.c: with MPGA_IMDCT_ASM (the 68k's builds)
+   III_imdct_l's imdct36 is ambmpega.library's src/layer3_68k.s
+   (mpga_imdct36), and with the normal window (block type 0) its
+   mpga_imdct_l0, which tools/gen_layer3.py writes from this file's
+   operations and constants: the same samples; the host builds the C as
+   it was.
