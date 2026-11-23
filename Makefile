@@ -44,6 +44,9 @@ LIBNAME = ambmpega060.library
 LIBID   = $(LIBNAME) $(LIBDATE), 68060
 OBJ     = build/060
 CPU     = -m68060
+# (no bit field instructions: gcc's BFEXTU for a shift and a mask is
+# several cycles on a 68060, where the two pair)
+CCCPU   = -mno-bitfield
 FPM     = -DFPM_68060 -DOPT_SPEED
 VCPU    = 68040
 EXPECT  = tests/expected060.txt
@@ -62,7 +65,7 @@ HOSTOBJ = build/host$(VARIANT)
 # ASO_ZEROCHECK: libmad's own option, alias reduction's butterflies left
 # out where both lines are zero (they stay zero): the same samples
 FLAGS   = -DHAVE_CONFIG_H $(FPM) -DASO_ZEROCHECK -Isrc/port -I$(MAD) -Iinclude
-LIBCC   = $(CC) -O2 $(CPU) -noixemul -nostartfiles -fomit-frame-pointer -fno-strict-aliasing
+LIBCC   = $(CC) -O2 $(CPU) $(CCCPU) -noixemul -nostartfiles -fomit-frame-pointer -fno-strict-aliasing
 FIX     = $(sort $(wildcard tests/fixtures/*.mp3 tests/fixtures/*.mp2))
 
 .PHONY: all test test-one snr prof clean FORCE

@@ -1,6 +1,17 @@
 ambmpega.library: changes
 =========================
 
+Next
+----
+
+- ambmpega060.library built with -mno-bitfield: gcc had used BFEXTU
+  (several cycles on a 68060, not paired) for shifts and masks, most in
+  Layer III's Huffman decoding (III_decode). The same samples; 2 to 6%
+  faster on a 68060 by Ambiance's tools/m68kprof (its 68060 model, which
+  puts 1.4 within 2 to 7% of the real 68060's times: 16.1, 16.5 and 10.1
+  ms a frame of g128 against 15.7, 15.4 and 9.9). ambmpega.library (the
+  68020's) unchanged.
+
 1.4 (21 November 2026)
 ----------------------
 
